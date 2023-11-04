@@ -4,10 +4,10 @@ plugins {
 }
 
 application {
-    mainClassName = 'main.java.org.example.Main'
+    mainClassName = 'main.java.org.Main'
 }
 
-group = 'org.example'
+group = 'org'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -24,7 +24,7 @@ test {
 }
 
 run {
-    mainClass = 'main.java.org.example.Main'
+    mainClass = 'main.java.org.Main'
     standardInput = System.in
 }
 
@@ -38,6 +38,6 @@ sourceSets {
 
 jar {
     manifest {
-        attributes "Main-Class": "main.java.org.example.Main"
+        attributes "Main-Class": "main.java.org.Main"
     }
 }
