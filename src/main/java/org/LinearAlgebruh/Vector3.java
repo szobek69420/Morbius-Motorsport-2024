@@ -70,6 +70,10 @@ public class Vector3{
                 a.value[0]*b.value[1]-a.value[1]*b.value[0]);
     }
 
+    public static Vector3 multiplyWithScalar(float num, Vector3 vec){
+        return new Vector3(num*vec.value[0],num*vec.value[1],num*vec.value[2]);
+    }
+
     public static Vector3 multiplyWithMatrix(Matrix3 neo, Vector3 vec){
         float[][] neoValues=neo.getValuesByReference();
         return new Vector3(

@@ -1,4 +1,4 @@
-package main.java.org.Render;
+package main.java.org.Render.Camera;
 
 import main.java.org.LinearAlgebruh.Matrix3;
 import main.java.org.LinearAlgebruh.Vector3;
@@ -6,13 +6,17 @@ import main.java.org.Render.Drawables.Drawable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-public class Camera extends JPanel {
+public class Camera {
 
     private final int GAME_WIDTH,GAME_HEIGHT;
     private final float aspectYX;
     private final float aspectXY;
+
+
     private float nearPlane;
     private final float nearPlaneWidth;
     private final float nearPlaneHeight;
@@ -35,7 +39,7 @@ public class Camera extends JPanel {
         pitch=-5;
         yaw=20;
 
-        pos= new Vector3(-2,3,-5);
+        pos= new Vector3(-3,3,-10);
 
         GAME_WIDTH=width;
         GAME_HEIGHT=height;
@@ -50,10 +54,12 @@ public class Camera extends JPanel {
 
         onePerNearPlaneWidth=1/nearPlaneWidth;
         getOnePerNearPlaneHeight=1/nearPlaneHeight;
+
+        calculateOrientation();
     }
 
-    protected void paintComponent(Graphics g){
-        calculateOrientation();
+
+    public void render(Graphics g){
         g.setColor(Color.red);
 
         for(int i=0;i<drawables.size();i++)
@@ -75,6 +81,8 @@ public class Camera extends JPanel {
     }
 
     private void draw(Graphics g, Drawable d){
+
+        calculateOrientation();
 
         g.setColor(Color.red);
 
@@ -114,8 +122,7 @@ public class Camera extends JPanel {
                     Vector3.dotProduct(up,temp),
                     Vector3.dotProduct(forward,temp)
             );
-
-            System.out.println(transformedVertices[i]);
+            //System.out.println(transformedVertices[i]);
         }
 
         //backface cull
@@ -123,7 +130,7 @@ public class Camera extends JPanel {
         boolean[] shouldRender=new boolean[faceCount];
         for(int i=0;i<faceCount;i++){
             if(Vector3.dotProduct(
-                    this.forward,
+                    transformedVertices[indices[i*3+1]],
                     Vector3.crossProduct(
                             Vector3.difference(transformedVertices[indices[i*3+2]],transformedVertices[indices[i*3+1]]),
                             Vector3.difference(transformedVertices[indices[i*3]],transformedVertices[indices[i*3+1]])
@@ -146,7 +153,7 @@ public class Camera extends JPanel {
 
             x[i]=(int)((0.5f*GAME_WIDTH-(transformedVertices[i].get(0)*distanceRatio*onePerNearPlaneHeight)*0.5f*GAME_WIDTH)*aspectYX);
             y[i]=(int)(0.5f*GAME_HEIGHT-(transformedVertices[i].get(1)*distanceRatio*onePerNearPlaneHeight)*0.5f*GAME_HEIGHT);
-            System.out.println(x[i]+" "+y[i]);
+            //System.out.println(x[i]+" "+y[i]);
         }
 
         //draw
@@ -160,5 +167,26 @@ public class Camera extends JPanel {
 
     public void addDrawable(Drawable d){
         drawables.add(d);
+    }
+
+
+    //getter setters
+    public Vector3 getPosition(){
+        return pos.copy();
+    }
+    public void setPosition(Vector3 pos){
+        this.pos=pos;
+    }
+
+    public Vector3 getForward(){
+        return forward.copy();
+    }
+
+    public Vector3 getUp() {
+        return up.copy();
+    }
+
+    public Vector3 getLeft() {
+        return left.copy();
     }
 }
