@@ -30,13 +30,16 @@ public class RenderThread extends JPanel implements Runnable{
         double deltaTime;
         while(true) {
             long now = System.nanoTime();
-            deltaTime = (now -lastTime)*0.0000000001;
-            lastTime = now;
+            deltaTime = (now -lastTime)*0.000000001;
 
-            repaint();
+            if(deltaTime>0.01666){
+                lastTime = now;
 
-            for(Updateable u : updateables)
-                u.Update((float)deltaTime);
+                repaint();
+
+                for(Updateable u : updateables)
+                    u.Update(deltaTime);
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import main.java.org.Render.RenderThread;
 import main.java.org.Updateable.Player;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,11 +19,12 @@ public class Main {
         hehe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         hehe.setVisible(true);*/
 
-        var hehe=new JFrame();
-        hehe.setSize(1000,800);
+        var hehe=new JFrame("Morbius Motorsport 2024 - GOTY Edition");
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        hehe.setSize((int)screenSize.getWidth(),(int)screenSize.getHeight());
         hehe.addKeyListener(new InputManager.KeyInput());
 
-        var hehe2=new RenderThread(1000,800);
+        var hehe2=new RenderThread((int)screenSize.getWidth(),(int)screenSize.getHeight());
         RenderThread.mainCamera.addDrawable(new Cube());
         hehe2.addUpdateable(new Player());
 
