@@ -1,4 +1,4 @@
-package main.java.org.example;
+package main.java.org.LinearAlgebruh;
 
 public class Matrix3 implements Cloneable{
     private float[][] value;
