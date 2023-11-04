@@ -1,6 +1,7 @@
 package main.java.org.Render;
 
 import main.java.org.InputManagement.InputManager;
+import main.java.org.Physics.CollisionDetection;
 import main.java.org.Render.Camera.Camera;
 import main.java.org.Render.Drawables.Cube;
 import main.java.org.Updateable.Updateable;
@@ -11,12 +12,14 @@ import java.util.ArrayList;
 
 public class RenderThread extends JPanel implements Runnable{
     public static Camera mainCamera;
+    public static CollisionDetection physics;
     public ArrayList<Updateable> updateables;
 
     private Thread thread;
 
     public RenderThread(int width, int height){
         mainCamera=new Camera(width,height);
+        physics=new CollisionDetection();
 
         updateables=new ArrayList<>();
 
@@ -39,6 +42,8 @@ public class RenderThread extends JPanel implements Runnable{
                 InputManager.fetchMousePosition();
 
                 repaint();
+
+                physics.CalculatePhysics(deltaTime);
 
                 for(Updateable u : updateables)
                     u.Update(deltaTime);

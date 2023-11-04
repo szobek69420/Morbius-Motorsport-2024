@@ -1,6 +1,7 @@
 package main.java.org.Render.Drawables;
 
 import main.java.org.LinearAlgebruh.*;
+import main.java.org.Physics.AABB;
 
 import java.awt.*;
 
@@ -13,6 +14,8 @@ public abstract class Drawable {
     protected Vector3 pos;
 
     protected Vector3 scale;
+
+    protected AABB aabb;
 
 
     protected void calculateModelMatrix(){
@@ -42,5 +45,12 @@ public abstract class Drawable {
     }
     public final void setPosition(Vector3 pos){
         this.pos=pos;
+        aabb.setPosition(pos.copy());
     }
+    public final void setScale(Vector3 scale){
+        this.scale=scale;
+        aabb.setScale(scale.copy());
+        calculateModelMatrix();
+    }
+
 }

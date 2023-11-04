@@ -98,4 +98,10 @@ public class Vector3{
                 a.value[2]-b.value[2]
         );
     }
+
+    public static boolean isAGreaterThanB(Vector3 a, Vector3 b){
+        if(a.value[0]>b.value[0]&&a.value[1]>b.value[1]&&a.value[2]>b.value[2])
+            return true;
+        return false;
+    }
 }

@@ -30,6 +30,7 @@ public class Main {
         RenderThread.mainCamera.addDrawable(new Cube());
         var kubatemp=new Cube();
         kubatemp.setPosition(new Vector3(-5,2,7));
+        kubatemp.setScale(new Vector3(1.0f,0.5f,2.0f));
         RenderThread.mainCamera.addDrawable(kubatemp);
         hehe2.addUpdateable(new Player());
 

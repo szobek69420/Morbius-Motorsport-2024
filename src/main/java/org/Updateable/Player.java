@@ -2,19 +2,22 @@ package main.java.org.Updateable;
 
 import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
+import main.java.org.Physics.AABB;
 import main.java.org.Render.RenderThread;
 
 public class Player implements Updateable{
-    private Vector3 pos;
+    private AABB aabb;
 
     public Player(){
-        pos=new Vector3(0,0,-5);
+        aabb=new AABB(new Vector3(0,0,-5),new Vector3(0.25f,0.9f, 0.25f), false);
+        RenderThread.physics.addAABB(aabb);
     }
 
     @Override
     public void Update(double deltaTime){
-        Move(deltaTime);
         RotateCamera(deltaTime);
+        Move(deltaTime);
+        RenderThread.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
     }
 
     private void Move(double deltaTime){
@@ -34,22 +37,31 @@ public class Player implements Updateable{
 
         if(InputManager.SPACE)
             up++;
-        if(InputManager.L_SHIT)
-            up--;
+        //if(InputManager.L_SHIT)
+           // up--;
 
         //System.out.println(forward+" "+left);
 
-        forward*=10.0f*deltaTime;
-        left*=10.0f*deltaTime;
-        up*=10.0f*deltaTime;
+        //forward*=10.0f*deltaTime;
+        //left*=10.0f*deltaTime;
+        //up*=10.0f*deltaTime;
+        forward*=10;
+        left*=10;
+        up*=10;
 
-        Vector3 forwardVec=RenderThread.mainCamera.getForward();
-        forwardVec=new Vector3(forwardVec.get(0),0.0f, forwardVec.get(2));
-        pos=Vector3.sum(pos,Vector3.multiplyWithScalar(forward, forwardVec));
-        pos=Vector3.sum(pos,Vector3.multiplyWithScalar(left, RenderThread.mainCamera.getLeft()));
-        pos=Vector3.sum(pos, Vector3.multiplyWithScalar(up,Vector3.up));
+        Vector3 forwardVec=RenderThread.mainCamera.getForward().copy();
+        forwardVec.set(1,0);
+        Vector3.normalize(forwardVec);
 
-        RenderThread.mainCamera.setPosition(pos.copy());
+        Vector3 velocity=new Vector3(0,0,0);
+        velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(forward, forwardVec));
+        velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(left, RenderThread.mainCamera.getLeft()));
+        if(up>1)
+            velocity=Vector3.sum(velocity, new Vector3(0,up,0));
+        else
+            velocity=Vector3.sum(velocity, new Vector3(0,(float)(aabb.getVelocityByReference().get(1)-10.0f*deltaTime),0));
+
+        aabb.setVelocity(velocity);
         //System.out.println(pos);
     }
 

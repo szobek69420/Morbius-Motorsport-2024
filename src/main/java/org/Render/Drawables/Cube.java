@@ -2,6 +2,8 @@ package main.java.org.Render.Drawables;
 
 import main.java.org.LinearAlgebruh.Matrix3;
 import main.java.org.LinearAlgebruh.Vector3;
+import main.java.org.Physics.AABB;
+import main.java.org.Render.RenderThread;
 
 import java.awt.*;
 
@@ -50,6 +52,9 @@ public class Cube extends Drawable{
 
         scale=new Vector3(1,1,1);
         pos=new Vector3(0,0,0);
+
+        aabb=new AABB(new Vector3(0,0,0),new Vector3(1,1,1),true);
+        RenderThread.physics.addAABB(aabb);
         calculateModelMatrix();
     }
 

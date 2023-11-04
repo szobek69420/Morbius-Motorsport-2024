@@ -62,6 +62,8 @@ public class Camera {
 
 
     public void render(Graphics g){
+        calculateOrientation();
+
         g.setColor(Color.red);
 
         int[] indices=new int[drawables.size()];
@@ -100,6 +102,7 @@ public class Camera {
         for(int i=0;i<drawables.size();i++)
         {
             if(sqrDistances[indices[i]]<nearPlaneSquared){
+                //System.out.println(i+" "+sqrDistances[indices[i]]);
                 break;
             }
             draw(g,drawables.get(indices[i]));
@@ -123,8 +126,6 @@ public class Camera {
     }
 
     private void draw(Graphics g, Drawable d){
-
-        calculateOrientation();
 
         g.setColor(Color.red);
 
