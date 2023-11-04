@@ -33,6 +33,21 @@ public class Cube extends Drawable{
                     4,6,7
         };
 
+        faceColors=new Color[]{
+                new Color(220,0,0),
+                new Color(220,0,0),
+                new Color(190,0,0),
+                new Color(190,0,0),
+                new Color(130,0,0),
+                new Color(130,0,0),
+                new Color(160,0,0),
+                new Color(160,0,0),
+                new Color(100,0,0),
+                new Color(100,0,0),
+                new Color(250,0,0),
+                new Color(250,0,0)
+        };
+
         scale=new Vector3(1,1,1);
         pos=new Vector3(0,0,0);
         calculateModelMatrix();

@@ -1,5 +1,6 @@
 package main.java.org.Render;
 
+import main.java.org.InputManagement.InputManager;
 import main.java.org.Render.Camera.Camera;
 import main.java.org.Render.Drawables.Cube;
 import main.java.org.Updateable.Updateable;
@@ -34,6 +35,8 @@ public class RenderThread extends JPanel implements Runnable{
 
             if(deltaTime>0.01666){
                 lastTime = now;
+
+                InputManager.fetchMousePosition();
 
                 repaint();
 

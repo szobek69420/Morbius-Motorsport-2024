@@ -56,21 +56,11 @@ public class Player implements Updateable{
     private void RotateCamera(double deltaTime){
         //float left=RenderThread.mainCamera.getYaw();
         //float up=RenderThread.mainCamera.getPitch();
-        float up=0.0f;
-        float left=0.0f;
+        float up=-InputManager.deltaMouseY;
+        float left=-InputManager.deltaMouseX;
 
-        if(InputManager.UP)
-            up+=100.0f;
-        if(InputManager.DOWN)
-            up-=100.0f;
-
-        if(InputManager.LEFT)
-            left+=100.0f;
-        if(InputManager.RIGHT)
-            left-=100.0f;
-
-        up*=deltaTime;
-        left*=deltaTime;
+        up*=0.05f;
+        left*=0.05f;
 
         //System.out.println(deltaTime+" "+up+" "+left);
 

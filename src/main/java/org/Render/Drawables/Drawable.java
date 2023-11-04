@@ -7,6 +7,7 @@ import java.awt.*;
 public abstract class Drawable {
     protected Vector3[] vertices;
     protected int[] indices;
+    protected Color[] faceColors;
     protected Matrix3 modelMatrix;
 
     protected Vector3 pos;
@@ -28,11 +29,18 @@ public abstract class Drawable {
         return indices;
     }
 
+    public final Color[] getFaceColorsByReference(){
+        return faceColors;
+    }
+
     public final Matrix3 getModelMatrixByReference(){
         return modelMatrix;
     }
 
     public final Vector3 getPositionByReference(){
         return pos;
+    }
+    public final void setPosition(Vector3 pos){
+        this.pos=pos;
     }
 }
