@@ -104,4 +104,20 @@ public class Vector3{
             return true;
         return false;
     }
+
+    public static Vector3 avg(Vector3[] vex, int count){
+        float x=0,y=0,z=0;
+
+        for(int i=0;i<count;i++){
+            x+=vex[i].value[0];
+            y+=vex[i].value[1];
+            z+=vex[i].value[2];
+        }
+
+        x/=count;
+        y/=count;
+        z/=count;
+
+        return new Vector3(x,y,z);
+    }
 }

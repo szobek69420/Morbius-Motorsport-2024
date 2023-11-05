@@ -74,18 +74,19 @@ public class Camera {
             indices[i]=i;
             Vector3 temp=Vector3.difference(drawables.get(i).getPositionByReference(),pos);
 
-            if(Vector3.dotProduct(forward,temp)<0)
+            //System.out.println(forward+" "+temp+" "+Vector3.dotProduct(forward,temp)+" "+Vector3.sqrMagnitude(temp));
+            /*if(Vector3.dotProduct(forward,temp)<0)
             {
                 sqrDistances[i]=-69;
                 continue;
-            }
+            }*/
 
             sqrDistances[i]=Vector3.sqrMagnitude(temp);
         }
 
         //sorting
         for(int i=0;i<drawables.size();i++){
-            for(int j=0;j<drawables.size()-i-1;j++){
+            for(int j=0;j<drawables.size()-1;j++){
                 if(sqrDistances[j]<sqrDistances[j+1]){
 
                     float temp=sqrDistances[j];
@@ -99,12 +100,14 @@ public class Camera {
             }
         }
 
+        //System.out.println(left+" "+up+" "+forward);
         for(int i=0;i<drawables.size();i++)
         {
             if(sqrDistances[indices[i]]<nearPlaneSquared){
                 //System.out.println(i+" "+sqrDistances[indices[i]]);
-                break;
+                continue;
             }
+            //System.out.println("rendered: "+drawables.get(indices[i]).getName());
             draw(g,drawables.get(indices[i]));
         }
     }
@@ -119,6 +122,7 @@ public class Camera {
         left=Vector3.crossProduct(Vector3.up,forward);
         Vector3.normalize(left);
         up=Vector3.crossProduct(forward,left);
+        Vector3.normalize(up);
 
         viewMatrix=new Matrix3(left,up,forward);
         Matrix3.transpose(viewMatrix);
@@ -138,25 +142,15 @@ public class Camera {
         int indexCount=indices.length;
 
         Matrix3 modelMatrix=d.getModelMatrixByReference();
+        Vector3 scale=d.getScaleByReference();
 
         Vector3[] transformedVertices=new Vector3[vertexCount];
 
         //view space
         for(int i=0;i< vertexCount;i++){
-            /*transformedVertices[i]=Vector3.multiplyWithMatrix(
-                    viewMatrix,
-                    Vector3.difference(
-                            Vector3.sum(
-                                    Vector3.multiplyWithMatrix(
-                                            modelMatrix,
-                                            vertices[i]),
-                                    objectPosition)
-                            ,pos));*/
             Vector3 temp= Vector3.difference(
                                         Vector3.sum(
-                                                Vector3.multiplyWithMatrix(
-                                                        modelMatrix,
-                                                        vertices[i]),
+                                                new Vector3(scale.get(0)*vertices[i].get(0),scale.get(1)*vertices[i].get(1),scale.get(2)*vertices[i].get(2)),
                                                 objectPosition)
                                         ,pos);
 
@@ -169,26 +163,42 @@ public class Camera {
 
         //backface cull
         int faceCount=indexCount/3;
-        boolean[] shouldRender=new boolean[faceCount];
+        boolean[] isBehindView=new boolean[faceCount*3];
+        int[] clipCount=new int[faceCount];
         for(int i=0;i<faceCount;i++){
-            shouldRender[i]=true;
+            Vector3[] face=new Vector3[]{transformedVertices[indices[i*3]],transformedVertices[indices[i*3+1]],transformedVertices[indices[i*3+2]]};
+
             if(Vector3.dotProduct(
-                    transformedVertices[indices[i*3+1]],
+                    Vector3.avg(face,3),
                     Vector3.crossProduct(
-                            Vector3.difference(transformedVertices[indices[i*3+2]],transformedVertices[indices[i*3+1]]),
-                            Vector3.difference(transformedVertices[indices[i*3]],transformedVertices[indices[i*3+1]])
+                            Vector3.difference(face[2],face[1]),
+                            Vector3.difference(face[0],face[1])
                     )) <0
             ){
-                shouldRender[i]=true;
+                isBehindView[i*3]=false;
+                isBehindView[i*3+1]=false;
+                isBehindView[i*3+2]=false;
+                clipCount[i]=0;
 
-                if(transformedVertices[indices[i*3]].get(2)<0||
-                        transformedVertices[indices[i*3+1]].get(2)<0||
-                        transformedVertices[indices[i*3+2]].get(2)<0){
-                    shouldRender[i]=false;
+
+                if(face[0].get(2)<0){
+                    isBehindView[i*3]=true;
+                    clipCount[i]++;
+                }
+                if(face[1].get(2)<0){
+                    isBehindView[i*3+1]=true;
+                    clipCount[i]++;
+                }
+                if(face[2].get(2)<0){
+                    isBehindView[i*3+2]=true;
+                    clipCount[i]++;
                 }
             }
             else {
-                shouldRender[i]=false;
+                isBehindView[i*3]=true;
+                isBehindView[i*3+1]=true;
+                isBehindView[i*3+2]=true;
+                clipCount[i]=3;
             }
         }
 
@@ -198,22 +208,87 @@ public class Camera {
 
         float onePerNearPlaneHeight=1/nearPlaneHeight;
         for(int i=0;i< vertexCount;i++){
-            float distanceRatio=nearPlane/transformedVertices[i].get(2);
+            float distanceRatio=(float)(nearPlane/Math.abs(transformedVertices[i].get(2)));
 
             x[i]=(int)((0.5f*GAME_WIDTH-(transformedVertices[i].get(0)*distanceRatio*onePerNearPlaneWidth)*0.5f*GAME_WIDTH));
             y[i]=(int)(0.5f*GAME_HEIGHT-(transformedVertices[i].get(1)*distanceRatio*onePerNearPlaneHeight)*0.5f*GAME_HEIGHT);
-            //System.out.println(x[i]+" "+y[i]);
         }
 
         //draw
         Color[] colours=d.getFaceColorsByReference();
         Color orgColor=g.getColor();
         for(int i=0;i<faceCount;i++){
-            if(!shouldRender[i])
-                continue;
 
-            g.setColor(colours[i]);
-            g.fillPolygon(new int[]{x[indices[3*i]],x[indices[3*i+1]],x[indices[3*i+2]]},new int[]{y[indices[3*i]],y[indices[3*i+1]],y[indices[3*i+2]]},3);
+            switch (clipCount[i]){
+                case 0:
+                    g.setColor(colours[i]);
+                    //System.out.println("guter: "+x[indices[3*i]]+" "+y[indices[3*i]]+" "+x[indices[3*i+1]]+" "+y[indices[3*i+1]]+" "+x[indices[3*i+2]]+" "+y[indices[3*i+2]]);
+                    g.fillPolygon(new int[]{x[indices[3*i]],x[indices[3*i+1]],x[indices[3*i+2]]},new int[]{y[indices[3*i]],y[indices[3*i+1]],y[indices[3*i+2]]},3);
+                    break;
+
+                case 1:
+                    int[] modX2=new int[4];
+                    int[] modY2=new int[4];
+                    float[] joZ2=new float[2];
+                    int index3=0;
+                    int rossz=0;
+                    for(int j=0;j<3;j++){
+                        if(!isBehindView[i*3+j])
+                        {
+                            //System.out.println(x[indices[i*3+j]]+" "+y[indices[i*3+j]]);
+                            modX2[index3]=x[indices[i*3+j]];
+                            modY2[index3]=y[indices[i*3+j]];
+                            joZ2[index3]=transformedVertices[indices[i*3+j]].get(2);
+                            index3++;
+                        }
+                        else
+                            rossz=indices[i*3+j];
+                    }
+
+                    for(int j=0;j<2;j++){
+                        float arany=(nearPlane-transformedVertices[rossz].get(2))/(joZ2[j]-transformedVertices[rossz].get(2));
+                        modX2[2+j]=x[rossz]+(int)(arany*(modX2[j]-x[rossz]));
+                        modY2[2+j]=y[rossz]+(int)(arany*(modY2[j]-y[rossz]));
+                    }
+
+                    g.setColor(colours[i]);
+                    //g.fillPolygon(modX2,modY2,4);
+                    g.fillPolygon(new int[]{modX2[0],modX2[1],modX2[2]},new int[]{modY2[0],modY2[1],modY2[2]},3);
+                    g.fillPolygon(new int[]{modX2[1],modX2[2],modX2[3]},new int[]{modY2[1],modY2[2],modY2[3]},3);
+                    break;
+
+                case 2:
+                    int[] modX=new int[3];
+                    int[] modY=new int[3];
+                    float joZ=0;
+                    for(int j=0;j<3;j++){
+                        if(!isBehindView[i*3+j])
+                        {
+                            //System.out.println(x[indices[i*3+j]]+" "+y[indices[i*3+j]]);
+                            modX[0]=x[indices[i*3+j]];
+                            modY[0]=y[indices[i*3+j]];
+                            joZ=transformedVertices[indices[i*3+j]].get(2);
+                            break;
+                        }
+                    }
+
+                    int index2=1;
+                    //System.out.println(joZ+" "+modX[0]+" "+modY[0]);
+                    for(int j=0;j<3;j++){
+                        if(!isBehindView[i*3+j])
+                            continue;
+
+                        float arany=(nearPlane-transformedVertices[indices[i*3+j]].get(2))/(joZ-transformedVertices[indices[i*3+j]].get(2));
+                        modX[index2]=x[indices[i*3+j]]+(int)(arany*(modX[0]-x[indices[i*3+j]]));
+                        modY[index2]=y[indices[i*3+j]]+(int)(arany*(modY[0]-y[indices[i*3+j]]));
+                        index2++;
+                    }
+
+                    //System.out.println("skipped: "+x[indices[3*i]]+" "+y[indices[3*i]]+" "+x[indices[3*i+1]]+" "+y[indices[3*i+1]]+" "+x[indices[3*i+2]]+" "+y[indices[3*i+2]]);
+                    g.setColor(colours[i]);
+                    g.fillPolygon(modX,modY,3);
+                    break;
+            }
         }
         g.setColor(orgColor);
     }

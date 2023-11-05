@@ -6,6 +6,8 @@ import main.java.org.Physics.AABB;
 import java.awt.*;
 
 public abstract class Drawable {
+
+    private String name="amogus";
     protected Vector3[] vertices;
     protected int[] indices;
     protected Color[] faceColors;
@@ -52,5 +54,15 @@ public abstract class Drawable {
         aabb.setScale(scale.copy());
         calculateModelMatrix();
     }
+    public final Vector3 getScaleByReference(){
+        return this.scale;
+    }
 
+    public final void setName(String name){
+        this.name=name;
+    }
+
+    public final String getName(){
+        return this.name;
+    }
 }

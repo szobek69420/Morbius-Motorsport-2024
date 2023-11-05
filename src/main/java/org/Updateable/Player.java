@@ -37,8 +37,8 @@ public class Player implements Updateable{
 
         if(InputManager.SPACE)
             up++;
-        //if(InputManager.L_SHIT)
-           // up--;
+        if(InputManager.L_SHIT)
+           up--;
 
         //System.out.println(forward+" "+left);
 
@@ -56,6 +56,7 @@ public class Player implements Updateable{
         Vector3 velocity=new Vector3(0,0,0);
         velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(forward, forwardVec));
         velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(left, RenderThread.mainCamera.getLeft()));
+        //velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(up, Vector3.up));
         if(up>1)
             velocity=Vector3.sum(velocity, new Vector3(0,up,0));
         else
