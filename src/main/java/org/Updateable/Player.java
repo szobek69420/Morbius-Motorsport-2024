@@ -60,7 +60,7 @@ public class Player implements Updateable{
         if(up>1)
             velocity=Vector3.sum(velocity, new Vector3(0,up,0));
         else
-            velocity=Vector3.sum(velocity, new Vector3(0,(float)(aabb.getVelocityByReference().get(1)-10.0f*deltaTime),0));
+            velocity=Vector3.sum(velocity, new Vector3(0,(float)(aabb.getVelocityByReference().get(1)-20.0f*deltaTime),0));
 
         aabb.setVelocity(velocity);
         //System.out.println(pos);

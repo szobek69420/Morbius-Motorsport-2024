@@ -49,7 +49,7 @@ public class Camera {
         aspectYX=((float)GAME_HEIGHT/GAME_WIDTH);
 
 
-        nearPlane=0.1f;
+        nearPlane=0.05f;
         nearPlaneSquared=nearPlane*nearPlane;
         nearPlaneHeight=(float)Math.tan(0.0174532925*60.0)*nearPlane;
         nearPlaneWidth=nearPlaneHeight*aspectXY;
@@ -72,14 +72,7 @@ public class Camera {
         //calculating distance
         for(int i=0;i<drawables.size();i++){
             indices[i]=i;
-            Vector3 temp=Vector3.difference(drawables.get(i).getPositionByReference(),pos);
-
-            //System.out.println(forward+" "+temp+" "+Vector3.dotProduct(forward,temp)+" "+Vector3.sqrMagnitude(temp));
-            /*if(Vector3.dotProduct(forward,temp)<0)
-            {
-                sqrDistances[i]=-69;
-                continue;
-            }*/
+            Vector3 temp=Vector3.difference(drawables.get(i).getPositionByReference(),this.pos);
 
             sqrDistances[i]=Vector3.sqrMagnitude(temp);
         }
@@ -103,10 +96,11 @@ public class Camera {
         //System.out.println(left+" "+up+" "+forward);
         for(int i=0;i<drawables.size();i++)
         {
-            if(sqrDistances[indices[i]]<nearPlaneSquared){
+            if(sqrDistances[i]>10000){
                 //System.out.println(i+" "+sqrDistances[indices[i]]);
                 continue;
             }
+
             //System.out.println("rendered: "+drawables.get(indices[i]).getName());
             draw(g,drawables.get(indices[i]));
         }
@@ -163,6 +157,7 @@ public class Camera {
 
         //backface cull
         int faceCount=indexCount/3;
+        boolean isEverythingBehind=true;
         boolean[] isBehindView=new boolean[faceCount*3];
         int[] clipCount=new int[faceCount];
         for(int i=0;i<faceCount;i++){
@@ -193,6 +188,10 @@ public class Camera {
                     isBehindView[i*3+2]=true;
                     clipCount[i]++;
                 }
+
+                //check if anything is visible
+                if(clipCount[i]<3)
+                    isEverythingBehind=false;
             }
             else {
                 isBehindView[i*3]=true;
@@ -201,6 +200,9 @@ public class Camera {
                 clipCount[i]=3;
             }
         }
+
+        if(isEverythingBehind)//object not visible -> yeet
+            return;
 
         //screen positions
         int[] x=new int[vertexCount];
