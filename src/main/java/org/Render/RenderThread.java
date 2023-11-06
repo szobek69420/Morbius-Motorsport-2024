@@ -37,6 +37,7 @@ public class RenderThread extends JPanel implements Runnable{
             deltaTime = (now -lastTime)*0.000000001;
 
             if(deltaTime>0.01666){
+                //System.out.println(deltaTime);
                 lastTime = now;
 
                 InputManager.fetchMousePosition();

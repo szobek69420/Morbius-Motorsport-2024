@@ -229,26 +229,30 @@ public class Camera {
                 case 1:
                     int[] modX2=new int[4];
                     int[] modY2=new int[4];
-                    float[] joZ2=new float[2];
+                    Vector3[] jok2=new Vector3[2];
                     int index3=0;
-                    int rossz=0;
+                    Vector3 rossz=null;
                     for(int j=0;j<3;j++){
                         if(!isBehindView[i*3+j])
                         {
                             //System.out.println(x[indices[i*3+j]]+" "+y[indices[i*3+j]]);
                             modX2[index3]=x[indices[i*3+j]];
                             modY2[index3]=y[indices[i*3+j]];
-                            joZ2[index3]=transformedVertices[indices[i*3+j]].get(2);
+                            jok2[index3]=transformedVertices[indices[i*3+j]];
                             index3++;
                         }
                         else
-                            rossz=indices[i*3+j];
+                            rossz=transformedVertices[indices[i*3+j]];
                     }
 
                     for(int j=0;j<2;j++){
-                        float arany=(nearPlane-transformedVertices[rossz].get(2))/(joZ2[j]-transformedVertices[rossz].get(2));
-                        modX2[2+j]=x[rossz]+(int)(arany*(modX2[j]-x[rossz]));
-                        modY2[2+j]=y[rossz]+(int)(arany*(modY2[j]-y[rossz]));
+                        //float arany=(nearPlane-transformedVertices[rossz].get(2))/(joZ2[j]-transformedVertices[rossz].get(2));
+                        //modX2[2+j]=x[rossz]+(int)(arany*(modX2[j]-x[rossz]));
+                        //modY2[2+j]=y[rossz]+(int)(arany*(modY2[j]-y[rossz]));
+                        float arany=(nearPlane-rossz.get(2))/(jok2[j].get(2)-rossz.get(2));
+
+                        modX2[2+j]=(int)((0.5f*GAME_WIDTH-((rossz.get(0)+(jok2[j].get(0)-rossz.get(0))*arany)*onePerNearPlaneWidth)*0.5f*GAME_WIDTH));
+                        modY2[2+j]=(int)(0.5f*GAME_HEIGHT-((rossz.get(1)+(jok2[j].get(1)-rossz.get(1))*arany)*onePerNearPlaneHeight)*0.5f*GAME_HEIGHT);
                     }
 
                     g.setColor(colours[i]);
@@ -260,14 +264,14 @@ public class Camera {
                 case 2:
                     int[] modX=new int[3];
                     int[] modY=new int[3];
-                    float joZ=0;
+                    Vector3 jo=null;
                     for(int j=0;j<3;j++){
                         if(!isBehindView[i*3+j])
                         {
                             //System.out.println(x[indices[i*3+j]]+" "+y[indices[i*3+j]]);
                             modX[0]=x[indices[i*3+j]];
                             modY[0]=y[indices[i*3+j]];
-                            joZ=transformedVertices[indices[i*3+j]].get(2);
+                            jo=transformedVertices[indices[i*3+j]];
                             break;
                         }
                     }
@@ -278,9 +282,16 @@ public class Camera {
                         if(!isBehindView[i*3+j])
                             continue;
 
-                        float arany=(nearPlane-transformedVertices[indices[i*3+j]].get(2))/(joZ-transformedVertices[indices[i*3+j]].get(2));
-                        modX[index2]=x[indices[i*3+j]]+(int)(arany*(modX[0]-x[indices[i*3+j]]));
-                        modY[index2]=y[indices[i*3+j]]+(int)(arany*(modY[0]-y[indices[i*3+j]]));
+                        //float arany=(nearPlane-transformedVertices[indices[i*3+j]].get(2))/(joZ-transformedVertices[indices[i*3+j]].get(2));
+                        //modX[index2]=x[indices[i*3+j]]+(int)(arany*(modX[0]-x[indices[i*3+j]]));
+                        //modY[index2]=y[indices[i*3+j]]+(int)(arany*(modY[0]-y[indices[i*3+j]]));
+                        Vector3 tempRossz=transformedVertices[indices[i*3+j]];
+
+                        float arany=(nearPlane-tempRossz.get(2))/(jo.get(2)-tempRossz.get(2));
+
+                        modX[index2]=(int)((0.5f*GAME_WIDTH-((tempRossz.get(0)+(jo.get(0)-tempRossz.get(0))*arany)*onePerNearPlaneWidth)*0.5f*GAME_WIDTH));
+                        modY[index2]=(int)(0.5f*GAME_HEIGHT-((tempRossz.get(1)+(jo.get(1)-tempRossz.get(1))*arany)*onePerNearPlaneHeight)*0.5f*GAME_HEIGHT);
+
                         index2++;
                     }
 

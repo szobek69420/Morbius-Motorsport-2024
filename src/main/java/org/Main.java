@@ -36,9 +36,16 @@ public class Main {
 
         var kubatemp2=new Cube();
         kubatemp2.setPosition(new Vector3(6,-10,7));
-        kubatemp2.setScale(new Vector3(1.0f,6f,1.0f));
+        kubatemp2.setScale(new Vector3(6.0f,6f,6.0f));
         kubatemp2.setName("amogus3");
         RenderThread.mainCamera.addDrawable(kubatemp2);
+        Vector3[] pens=new Vector3[]{new Vector3(0,2,-50),new Vector3(1,2,1),new Vector3(-2,-1,-50),new Vector3(1,1,1),new Vector3(2,-1,-50),new Vector3(1,1,1)};
+        for(int i=0;i<pens.length/2;i++){
+            var kubatemp3=new Cube();
+            kubatemp3.setPosition(pens[i*2]);
+            kubatemp3.setScale(pens[i*2+1]);
+            RenderThread.mainCamera.addDrawable(kubatemp3);
+        }
         hehe2.addUpdateable(new Player());
 
         hehe.add(hehe2);
