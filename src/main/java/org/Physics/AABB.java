@@ -5,10 +5,18 @@ import main.java.org.LinearAlgebruh.Vector3;
 import java.util.Vector;
 
 public class AABB {
+
+    public static enum CollisionType{
+        NONE,TOP,BOTTOM,SIDE
+    }
+
     private Vector3 position;
     private Vector3 scale;
 
     private Vector3 velocity;
+
+    private CollisionType lastCollisionType;
+    private long lastCollision;
 
     public final boolean isKinematic;
 
@@ -18,6 +26,9 @@ public class AABB {
         this.scale=scale;
 
         this.velocity=new Vector3(0,0,0);
+
+        this.lastCollision=0;
+        this.lastCollisionType=CollisionType.NONE;
 
         this.isKinematic=isKinematic;
     }
@@ -48,6 +59,7 @@ public class AABB {
         }
 
         if(isIntersecting[0]&&isIntersecting[1]&&isIntersecting[2]){
+
             float min=Math.abs(delta[0]);
             int index=0;
             if(min>Math.abs(delta[1])){
@@ -57,6 +69,20 @@ public class AABB {
             if(min>Math.abs(delta[2])){
                 min=Math.abs(delta[2]);
                 index=2;
+            }
+
+            nonKinematic.lastCollision=System.nanoTime();
+            switch (index){
+                case 1:
+                    if(nonKinematic.getVelocityByReference().get(1)>0)
+                        nonKinematic.lastCollisionType=CollisionType.TOP;
+                    else
+                        nonKinematic.lastCollisionType=CollisionType.BOTTOM;
+                    break;
+
+                default:
+                    nonKinematic.lastCollisionType=CollisionType.SIDE;
+                    break;
             }
 
             nonKinematic.position.set(index,nonKinematic.position.get(index)+delta[index]);
@@ -89,5 +115,13 @@ public class AABB {
     }
     public void setVelocity(Vector3 velocity){
         this.velocity=velocity;
+    }
+
+    public CollisionType getLastCollisionType(){
+        return lastCollisionType;
+    }
+
+    public long getLastCollision(){
+        return lastCollision;
     }
 }

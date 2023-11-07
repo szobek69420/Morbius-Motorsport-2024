@@ -8,6 +8,11 @@ import main.java.org.Render.RenderThread;
 public class Player implements Updateable{
     private AABB aabb;
 
+    private static final float MAX_VELOCITY=10;
+    private static final float MAX_VELOCITY_SQUARED=100;
+
+    private boolean canJump=false;
+
     public Player(){
         aabb=new AABB(new Vector3(0,0,-5),new Vector3(0.25f,0.9f, 0.25f), false);
         RenderThread.physics.addAABB(aabb);
@@ -15,6 +20,11 @@ public class Player implements Updateable{
 
     @Override
     public void Update(double deltaTime){
+        if((System.nanoTime()-aabb.getLastCollision())*0.000000001<deltaTime&&aabb.getLastCollisionType()== AABB.CollisionType.BOTTOM)
+            canJump=true;
+        if(aabb.getVelocityByReference().get(1)<-40.0f*deltaTime)
+            canJump=false;
+
         RotateCamera(deltaTime);
         Move(deltaTime);
         RenderThread.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
@@ -53,16 +63,37 @@ public class Player implements Updateable{
         forwardVec.set(1,0);
         Vector3.normalize(forwardVec);
 
-        Vector3 velocity=new Vector3(0,0,0);
-        velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(forward, forwardVec));
-        velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(left, RenderThread.mainCamera.getLeft()));
-        //velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(up, Vector3.up));
-        if(up>1)
-            velocity=Vector3.sum(velocity, new Vector3(0,up,0));
+        Vector3 acceleration=Vector3.multiplyWithScalar(forward, forwardVec);
+        acceleration=Vector3.sum(acceleration,Vector3.multiplyWithScalar(left, RenderThread.mainCamera.getLeft()));
+        acceleration=Vector3.difference(acceleration,aabb.getVelocityByReference());
+        acceleration.set(1,0);
+
+        float accelMag=Vector3.magnitude(acceleration);
+
+        if(accelMag>20.0f*deltaTime){
+            Vector3.normalize(acceleration);
+            acceleration=Vector3.multiplyWithScalar(20*(float)deltaTime,acceleration);
+        }
+
+
+        Vector3 velocity=Vector3.sum(aabb.getVelocityByReference(),acceleration);
+
+        float magnitude=velocity.get(0)*velocity.get(0)+velocity.get(2)*velocity.get(2);
+        if(magnitude>MAX_VELOCITY_SQUARED){
+            magnitude=MAX_VELOCITY/(float)Math.sqrt(magnitude);
+            velocity.set(0,velocity.get(0)*magnitude);
+            velocity.set(2,velocity.get(2)*magnitude);
+        }
+
+        if(up>1&&canJump){
+            canJump=false;
+            velocity.set(1,20);
+        }
         else
-            velocity=Vector3.sum(velocity, new Vector3(0,(float)(aabb.getVelocityByReference().get(1)-20.0f*deltaTime),0));
+            velocity.set(1,velocity.get(1)-20.0f*(float)deltaTime);
 
         aabb.setVelocity(velocity);
+
         //System.out.println(pos);
     }
 

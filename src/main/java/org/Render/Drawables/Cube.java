@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class Cube extends Drawable{
 
-    public Cube(){
+    public Cube(Color color){
         vertices=new Vector3[8];
         vertices[0]=new Vector3(1,-1,-1);
         vertices[1]=new Vector3(-1, -1, -1);
@@ -35,19 +35,23 @@ public class Cube extends Drawable{
                     4,6,7
         };
 
+        int r=color.getRed();
+        int g=color.getGreen();
+        int b=color.getBlue();
+
         faceColors=new Color[]{
-                new Color(220,0,0),
-                new Color(220,0,0),
-                new Color(190,0,0),
-                new Color(190,0,0),
-                new Color(130,0,0),
-                new Color(130,0,0),
-                new Color(160,0,0),
-                new Color(160,0,0),
-                new Color(100,0,0),
-                new Color(100,0,0),
-                new Color(250,0,0),
-                new Color(250,0,0)
+                new Color(7*r/8,7*g/8,7*b/8),
+                new Color(7*r/8,7*g/8,7*b/8),
+                new Color(6*r/8,6*g/8,6*b/8),
+                new Color(6*r/8,6*g/8,6*b/8),
+                new Color(4*r/8,4*g/8,4*b/8),
+                new Color(4*r/8,4*g/8,4*b/8),
+                new Color(5*r/8,5*g/8,5*b/8),
+                new Color(5*r/8,5*g/8,5*b/8),
+                new Color(3*r/8,3*g/8,3*b/8),
+                new Color(3*r/8,3*g/8,3*b/8),
+                new Color(r,g,b),
+                new Color(r,g,b)
         };
 
         scale=new Vector3(1,1,1);

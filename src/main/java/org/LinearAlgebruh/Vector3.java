@@ -50,7 +50,7 @@ public class Vector3{
     }
 
     public static float magnitude(Vector3 vec){
-        return (float)Math.sqrt((double)(vec.value[0]*vec.value[0]+vec.value[1]*vec.value[1]+vec.value[2]*vec.value[2]));
+        return (float)Math.sqrt(vec.value[0]*vec.value[0]+vec.value[1]*vec.value[1]+vec.value[2]*vec.value[2]);
     }
     public static void normalize(Vector3 vec){
         float temp=magnitude(vec);
@@ -119,5 +119,13 @@ public class Vector3{
         z/=count;
 
         return new Vector3(x,y,z);
+    }
+
+    public static Vector3 lerp(Vector3 a, Vector3 b, float i){
+        return new Vector3(
+          a.value[0]+(b.value[0]-a.value[0])*i,
+          a.value[1]+(b.value[1]-a.value[1])*i,
+          a.value[2]+(b.value[2]-a.value[2])*i
+        );
     }
 }

@@ -27,21 +27,21 @@ public class Main {
         hehe.addKeyListener(new InputManager.KeyInput());
 
         var hehe2=new RenderThread((int)screenSize.getWidth(),(int)screenSize.getHeight());
-        RenderThread.mainCamera.addDrawable(new Cube());
-        var kubatemp=new Cube();
+        RenderThread.mainCamera.addDrawable(new Cube(Color.red));
+        var kubatemp=new Cube(Color.green);
         kubatemp.setPosition(new Vector3(-5,2,7));
         kubatemp.setScale(new Vector3(1.0f,0.5f,2.0f));
         kubatemp.setName("amogus2");
         RenderThread.mainCamera.addDrawable(kubatemp);
 
-        var kubatemp2=new Cube();
-        kubatemp2.setPosition(new Vector3(6,-10,7));
+        var kubatemp2=new Cube(Color.magenta);
+        kubatemp2.setPosition(new Vector3(0,-10,0));
         kubatemp2.setScale(new Vector3(6.0f,6f,6.0f));
         kubatemp2.setName("amogus3");
         RenderThread.mainCamera.addDrawable(kubatemp2);
-        Vector3[] pens=new Vector3[]{new Vector3(0,2,-50),new Vector3(1,2,1),new Vector3(-2,-1,-50),new Vector3(1,1,1),new Vector3(2,-1,-50),new Vector3(1,1,1)};
+        Vector3[] pens=new Vector3[]{new Vector3(50,20,0),new Vector3(1,20,1),new Vector3(50,-1,-2),new Vector3(1,1,1),new Vector3(50,-1,2),new Vector3(1,1,1)};
         for(int i=0;i<pens.length/2;i++){
-            var kubatemp3=new Cube();
+            var kubatemp3=new Cube(Color.yellow);
             kubatemp3.setPosition(pens[i*2]);
             kubatemp3.setScale(pens[i*2+1]);
             RenderThread.mainCamera.addDrawable(kubatemp3);
