@@ -1,5 +1,7 @@
 package main.java.org.InputManagement;
 
+import main.java.org.Screens.GameScreen;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -86,7 +88,9 @@ public class InputManager  {
                 case KeyEvent.VK_LEFT->LEFT=false;
                 case KeyEvent.VK_RIGHT->RIGHT=false;
 
-                case KeyEvent.VK_ESCAPE -> System.exit(0);
+                case KeyEvent.VK_ESCAPE -> {
+                    if(!GameScreen.isPaused()) GameScreen.pause();
+                }
             }
         }
     }

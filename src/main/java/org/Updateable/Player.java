@@ -3,7 +3,7 @@ package main.java.org.Updateable;
 import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Physics.AABB;
-import main.java.org.Render.RenderThread;
+import main.java.org.Screens.GameScreen;
 
 public class Player implements Updateable{
     private AABB aabb;
@@ -15,7 +15,7 @@ public class Player implements Updateable{
 
     public Player(){
         aabb=new AABB(new Vector3(0,0,-5),new Vector3(0.25f,0.9f, 0.25f), false);
-        RenderThread.physics.addAABB(aabb);
+        GameScreen.physics.addAABB(aabb);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class Player implements Updateable{
 
         RotateCamera(deltaTime);
         Move(deltaTime);
-        RenderThread.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
+        GameScreen.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
     }
 
     private void Move(double deltaTime){
@@ -59,12 +59,12 @@ public class Player implements Updateable{
         left*=10;
         up*=10;
 
-        Vector3 forwardVec=RenderThread.mainCamera.getForward().copy();
+        Vector3 forwardVec=GameScreen.mainCamera.getForward().copy();
         forwardVec.set(1,0);
         Vector3.normalize(forwardVec);
 
         Vector3 acceleration=Vector3.multiplyWithScalar(forward, forwardVec);
-        acceleration=Vector3.sum(acceleration,Vector3.multiplyWithScalar(left, RenderThread.mainCamera.getLeft()));
+        acceleration=Vector3.sum(acceleration,Vector3.multiplyWithScalar(left, GameScreen.mainCamera.getLeft()));
         acceleration=Vector3.difference(acceleration,aabb.getVelocityByReference());
         acceleration.set(1,0);
 
@@ -108,8 +108,8 @@ public class Player implements Updateable{
 
         //System.out.println(deltaTime+" "+up+" "+left);
 
-        up+=RenderThread.mainCamera.getPitch();
-        left+=RenderThread.mainCamera.getYaw();
+        up+=GameScreen.mainCamera.getPitch();
+        left+=GameScreen.mainCamera.getYaw();
 
         if(up<-88)
             up=-88;
@@ -121,7 +121,7 @@ public class Player implements Updateable{
         if(left>360)
             left-=360;
 
-        RenderThread.mainCamera.setPitch(up);
-        RenderThread.mainCamera.setYaw(left);
+        GameScreen.mainCamera.setPitch(up);
+        GameScreen.mainCamera.setYaw(left);
     }
 }

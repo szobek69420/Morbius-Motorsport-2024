@@ -2,6 +2,7 @@ package main.java.org.Render.Drawables;
 
 import main.java.org.LinearAlgebruh.*;
 import main.java.org.Physics.AABB;
+import main.java.org.Render.Camera.Camera;
 
 import java.awt.*;
 
@@ -23,6 +24,8 @@ public abstract class Drawable {
     protected void calculateModelMatrix(){
         modelMatrix=new Matrix3(new float[][]{{scale.get(0),0,0},{0,scale.get(1),0},{0,0,scale.get(2)}});
     }
+
+    public abstract void render(Graphics g, Camera cam);
 
 
 
