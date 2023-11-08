@@ -15,7 +15,8 @@ public class MainFrame extends JFrame {
         TITLE_SCREEN,
         LEVEL_SELECTOR,
         GAME,
-        END_SCREEN
+        END_SCREEN,
+        QUIT
     }
 
     private GAME_STAGES currentStage;
@@ -28,7 +29,7 @@ public class MainFrame extends JFrame {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize((int)screenSize.getWidth(),(int)screenSize.getHeight());
-        //hehe.setBackground(new Color(83,255,246));
+        //this.setBackground(new Color(83,255,246));
         this.setBackground(new Color(0,0,0));
         //hehe.setIconImage(new ImageIcon(hehe.getClass().getResource("/assets/sprites/logo_1.png")).getImage());
 
@@ -111,14 +112,16 @@ public class MainFrame extends JFrame {
     public void fillGameScreen(GameScreen gameScreen){//temporary
 
         GameScreen.mainCamera.addDrawable(new Cube(Color.red));
-        var kubatemp=new Cube(Color.green);
+        //var kubatemp=new Cube(Color.green);
+        var kubatemp=new Cube(Color.red);
         kubatemp.setPosition(new Vector3(-5,2,7));
         kubatemp.setScale(new Vector3(1.0f,0.5f,2.0f));
         kubatemp.setName("amogus2");
         GameScreen.mainCamera.addDrawable(kubatemp);
 
-        var kubatemp2=new Cube(Color.magenta);
-        kubatemp2.setPosition(new Vector3(0,-10,0));
+        //var kubatemp2=new Cube(Color.magenta);
+        var kubatemp2=new Cube(Color.red);
+        kubatemp2.setPosition(new Vector3(5,-10,0));
         kubatemp2.setScale(new Vector3(6.0f,6f,6.0f));
         kubatemp2.setName("amogus3");
         GameScreen.mainCamera.addDrawable(kubatemp2);
