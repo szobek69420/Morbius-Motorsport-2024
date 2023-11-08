@@ -78,6 +78,7 @@ public class GameScreen extends JPanel{
 
     @Override
     public void paint(Graphics g){
+
         Image image = createImage(getWidth(),getHeight());
         Graphics graphics = image.getGraphics();
 
@@ -108,16 +109,16 @@ public class GameScreen extends JPanel{
         public PauseMenu(int screenWidth, int screenHeight){
             super();
 
-            this.setBackground(new Color(0,0,0,255));
+            this.setBackground(new Color(0,0,0,100));
             this.setLayout(null);
             //this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
             //this.setBorder(new EmptyBorder(new Insets(screenWidth/6,0,0,0)));
 
-            int currentY=screenHeight/4;
+            int currentY=screenHeight/5;
 
             //menu name
             JLabel title=new JLabel("Paused",SwingConstants.CENTER);
-            title.setFont(new Font("Arial", Font.PLAIN, 120));
+            title.setFont(new Font("Monocraft", Font.PLAIN, 120));
             title.setBackground(new Color(0,0,0,0));
             title.setForeground(new Color(0,255,255));
 
@@ -131,7 +132,7 @@ public class GameScreen extends JPanel{
             //continue button
             var butt=new JButton();
             butt.setText("Resume");
-            butt.setFont(new Font("Arial", Font.PLAIN, 50));
+            butt.setFont(new Font("Monocraft", Font.PLAIN, 50));
             butt.setForeground(Color.white);
             butt.setBackground(new Color(0,0,0,255));
 
@@ -152,17 +153,16 @@ public class GameScreen extends JPanel{
             //main menu button
             var butt2=new JButton();
             butt2.setText("Main menu");
-            butt2.setFont(new Font("Arial", Font.PLAIN, 50));
+            butt2.setFont(new Font("Monocraft", Font.PLAIN, 50));
             butt2.setForeground(Color.white);
             butt2.setBackground(new Color(0,0,0,255));
 
 
             butt2.setBounds(screenWidth/2-200,currentY,400,80);
-            currentY=screenHeight/4;
 
             butt2.addActionListener(e->{
                 if(butt2.isEnabled()){
-                    GameScreen.unpause();
+                    ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.TITLE_SCREEN);
                 }
             });
             this.add(butt2);
