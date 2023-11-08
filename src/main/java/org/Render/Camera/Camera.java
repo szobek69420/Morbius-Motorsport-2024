@@ -18,10 +18,11 @@ public class Camera {
 
 
     private float nearPlane;
+    private float nearPlaneSquared;
     private final float nearPlaneWidth;
     private final float nearPlaneHeight;
     private final float onePerNearPlaneWidth;
-    private final float getOnePerNearPlaneHeight;
+    private final float onePerNearPlaneHeight;
 
 
     private ArrayList<Drawable> drawables;
@@ -48,22 +49,61 @@ public class Camera {
         aspectYX=((float)GAME_HEIGHT/GAME_WIDTH);
 
 
-        nearPlane=0.1f;
-        nearPlaneWidth=0.1f*aspectXY;
-        nearPlaneHeight=0.1f;
+        nearPlane=0.05f;
+        nearPlaneSquared=nearPlane*nearPlane;
+        nearPlaneHeight=(float)Math.tan(0.0174532925*60.0)*nearPlane;
+        nearPlaneWidth=nearPlaneHeight*aspectXY;
 
         onePerNearPlaneWidth=1/nearPlaneWidth;
-        getOnePerNearPlaneHeight=1/nearPlaneHeight;
+        onePerNearPlaneHeight=1/nearPlaneHeight;
 
         calculateOrientation();
     }
 
 
     public void render(Graphics g){
+        calculateOrientation();
+
         g.setColor(Color.red);
 
+        int[] indices=new int[drawables.size()];
+        float[] sqrDistances=new float[drawables.size()];
+
+        //calculating distance
+        for(int i=0;i<drawables.size();i++){
+            indices[i]=i;
+            Vector3 temp=Vector3.difference(drawables.get(i).getPositionByReference(),this.pos);
+
+            sqrDistances[i]=Vector3.sqrMagnitude(temp);
+        }
+
+        //sorting
+        for(int i=0;i<drawables.size();i++){
+            for(int j=0;j<drawables.size()-1;j++){
+                if(sqrDistances[j]<sqrDistances[j+1]){
+
+                    float temp=sqrDistances[j];
+                    sqrDistances[j]=sqrDistances[j+1];
+                    sqrDistances[j+1]=temp;
+
+                    int temp2=indices[j];
+                    indices[j]=indices[j+1];
+                    indices[j+1]=temp2;
+                }
+            }
+        }
+
+        //System.out.println(left+" "+up+" "+forward);
         for(int i=0;i<drawables.size();i++)
-            draw(g,drawables.get(i));
+        {
+            if(sqrDistances[i]>10000){
+                //System.out.println(i+" "+sqrDistances[indices[i]]);
+                continue;
+            }
+
+            //System.out.println("rendered: "+drawables.get(indices[i]).getName());
+            drawables.get(indices[i]).render(g,this);
+        }
     }
 
     private void calculateOrientation(){
@@ -74,96 +114,15 @@ public class Camera {
         );
 
         left=Vector3.crossProduct(Vector3.up,forward);
+        Vector3.normalize(left);
         up=Vector3.crossProduct(forward,left);
+        Vector3.normalize(up);
 
         viewMatrix=new Matrix3(left,up,forward);
         Matrix3.transpose(viewMatrix);
+
     }
 
-    private void draw(Graphics g, Drawable d){
-
-        calculateOrientation();
-
-        g.setColor(Color.red);
-
-        Vector3 objectPosition=d.getPositionByReference();
-
-        Vector3[] vertices=d.getVerticesByReference();
-        int vertexCount=vertices.length;
-
-        int[] indices=d.getIndicesByReference();
-        int indexCount=indices.length;
-
-        Matrix3 modelMatrix=d.getModelMatrixByReference();
-
-        Vector3[] transformedVertices=new Vector3[vertexCount];
-
-        //view space
-        for(int i=0;i< vertexCount;i++){
-            /*transformedVertices[i]=Vector3.multiplyWithMatrix(
-                    viewMatrix,
-                    Vector3.difference(
-                            Vector3.sum(
-                                    Vector3.multiplyWithMatrix(
-                                            modelMatrix,
-                                            vertices[i]),
-                                    objectPosition)
-                            ,pos));*/
-            Vector3 temp= Vector3.difference(
-                                        Vector3.sum(
-                                                Vector3.multiplyWithMatrix(
-                                                        modelMatrix,
-                                                        vertices[i]),
-                                                objectPosition)
-                                        ,pos);
-
-            transformedVertices[i]=new Vector3(
-                    Vector3.dotProduct(left,temp),
-                    Vector3.dotProduct(up,temp),
-                    Vector3.dotProduct(forward,temp)
-            );
-            //System.out.println(transformedVertices[i]);
-        }
-
-        //backface cull
-        int faceCount=indexCount/3;
-        boolean[] shouldRender=new boolean[faceCount];
-        for(int i=0;i<faceCount;i++){
-            if(Vector3.dotProduct(
-                    transformedVertices[indices[i*3+1]],
-                    Vector3.crossProduct(
-                            Vector3.difference(transformedVertices[indices[i*3+2]],transformedVertices[indices[i*3+1]]),
-                            Vector3.difference(transformedVertices[indices[i*3]],transformedVertices[indices[i*3+1]])
-                    )) <0
-            ){
-                    shouldRender[i]=true;
-            }
-            else {
-                shouldRender[i]=false;
-            }
-        }
-
-        //screen positions
-        int[] x=new int[vertexCount];
-        int[] y=new int[vertexCount];
-
-        float onePerNearPlaneHeight=1/nearPlaneHeight;
-        for(int i=0;i< vertexCount;i++){
-            float distanceRatio=nearPlane/transformedVertices[i].get(2);
-
-            x[i]=(int)((0.5f*GAME_WIDTH-(transformedVertices[i].get(0)*distanceRatio*onePerNearPlaneHeight)*0.5f*GAME_WIDTH)*aspectYX);
-            y[i]=(int)(0.5f*GAME_HEIGHT-(transformedVertices[i].get(1)*distanceRatio*onePerNearPlaneHeight)*0.5f*GAME_HEIGHT);
-            //System.out.println(x[i]+" "+y[i]);
-        }
-
-        //draw
-        for(int i=0;i<faceCount;i++){
-            if(!shouldRender[i])
-                continue;
-
-            g.drawPolygon(new int[]{x[indices[3*i]],x[indices[3*i+1]],x[indices[3*i+2]]},new int[]{y[indices[3*i]],y[indices[3*i+1]],y[indices[3*i+2]]},3);
-        }
-    }
 
     public void addDrawable(Drawable d){
         drawables.add(d);
@@ -204,5 +163,25 @@ public class Camera {
 
     public void setYaw(float yaw){
         this.yaw=yaw;
+    }
+
+    public float getNearPlane(){
+        return nearPlane;
+    }
+
+    public float getNearPlaneWidth(){
+        return nearPlaneWidth;
+    }
+
+    public float getNearPlaneHeight(){
+        return nearPlaneHeight;
+    }
+
+    public int getScreenWidth(){
+        return GAME_WIDTH;
+    }
+
+    public int getScreenHeight(){
+        return GAME_HEIGHT;
     }
 }

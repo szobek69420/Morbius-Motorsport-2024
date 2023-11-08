@@ -50,7 +50,7 @@ public class Vector3{
     }
 
     public static float magnitude(Vector3 vec){
-        return (float)Math.sqrt((double)(vec.value[0]*vec.value[0]+vec.value[1]*vec.value[1]+vec.value[2]*vec.value[2]));
+        return (float)Math.sqrt(vec.value[0]*vec.value[0]+vec.value[1]*vec.value[1]+vec.value[2]*vec.value[2]);
     }
     public static void normalize(Vector3 vec){
         float temp=magnitude(vec);
@@ -96,6 +96,36 @@ public class Vector3{
                 a.value[0]-b.value[0],
                 a.value[1]-b.value[1],
                 a.value[2]-b.value[2]
+        );
+    }
+
+    public static boolean isAGreaterThanB(Vector3 a, Vector3 b){
+        if(a.value[0]>b.value[0]&&a.value[1]>b.value[1]&&a.value[2]>b.value[2])
+            return true;
+        return false;
+    }
+
+    public static Vector3 avg(Vector3[] vex, int count){
+        float x=0,y=0,z=0;
+
+        for(int i=0;i<count;i++){
+            x+=vex[i].value[0];
+            y+=vex[i].value[1];
+            z+=vex[i].value[2];
+        }
+
+        x/=count;
+        y/=count;
+        z/=count;
+
+        return new Vector3(x,y,z);
+    }
+
+    public static Vector3 lerp(Vector3 a, Vector3 b, float i){
+        return new Vector3(
+          a.value[0]+(b.value[0]-a.value[0])*i,
+          a.value[1]+(b.value[1]-a.value[1])*i,
+          a.value[2]+(b.value[2]-a.value[2])*i
         );
     }
 }

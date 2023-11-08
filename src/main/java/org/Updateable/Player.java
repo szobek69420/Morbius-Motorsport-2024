@@ -2,19 +2,32 @@ package main.java.org.Updateable;
 
 import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
-import main.java.org.Render.RenderThread;
+import main.java.org.Physics.AABB;
+import main.java.org.Screens.GameScreen;
 
 public class Player implements Updateable{
-    private Vector3 pos;
+    private AABB aabb;
+
+    private static final float MAX_VELOCITY=10;
+    private static final float MAX_VELOCITY_SQUARED=100;
+
+    private boolean canJump=false;
 
     public Player(){
-        pos=new Vector3(0,0,-5);
+        aabb=new AABB(new Vector3(0,0,-5),new Vector3(0.25f,0.9f, 0.25f), false);
+        GameScreen.physics.addAABB(aabb);
     }
 
     @Override
     public void Update(double deltaTime){
-        Move(deltaTime);
+        if((System.nanoTime()-aabb.getLastCollision())*0.000000001<deltaTime&&aabb.getLastCollisionType()== AABB.CollisionType.BOTTOM)
+            canJump=true;
+        if(aabb.getVelocityByReference().get(1)<-40.0f*deltaTime)
+            canJump=false;
+
         RotateCamera(deltaTime);
+        Move(deltaTime);
+        GameScreen.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
     }
 
     private void Move(double deltaTime){
@@ -35,47 +48,68 @@ public class Player implements Updateable{
         if(InputManager.SPACE)
             up++;
         if(InputManager.L_SHIT)
-            up--;
+           up--;
 
         //System.out.println(forward+" "+left);
 
-        forward*=10.0f*deltaTime;
-        left*=10.0f*deltaTime;
-        up*=10.0f*deltaTime;
+        //forward*=10.0f*deltaTime;
+        //left*=10.0f*deltaTime;
+        //up*=10.0f*deltaTime;
+        forward*=10;
+        left*=10;
+        up*=10;
 
-        Vector3 forwardVec=RenderThread.mainCamera.getForward();
-        forwardVec=new Vector3(forwardVec.get(0),0.0f, forwardVec.get(2));
-        pos=Vector3.sum(pos,Vector3.multiplyWithScalar(forward, forwardVec));
-        pos=Vector3.sum(pos,Vector3.multiplyWithScalar(left, RenderThread.mainCamera.getLeft()));
-        pos=Vector3.sum(pos, Vector3.multiplyWithScalar(up,Vector3.up));
+        Vector3 forwardVec=GameScreen.mainCamera.getForward().copy();
+        forwardVec.set(1,0);
+        Vector3.normalize(forwardVec);
 
-        RenderThread.mainCamera.setPosition(pos.copy());
+        Vector3 acceleration=Vector3.multiplyWithScalar(forward, forwardVec);
+        acceleration=Vector3.sum(acceleration,Vector3.multiplyWithScalar(left, GameScreen.mainCamera.getLeft()));
+        acceleration=Vector3.difference(acceleration,aabb.getVelocityByReference());
+        acceleration.set(1,0);
+
+        float accelMag=Vector3.magnitude(acceleration);
+
+        if(accelMag>20.0f*deltaTime){
+            Vector3.normalize(acceleration);
+            acceleration=Vector3.multiplyWithScalar(20*(float)deltaTime,acceleration);
+        }
+
+
+        Vector3 velocity=Vector3.sum(aabb.getVelocityByReference(),acceleration);
+
+        float magnitude=velocity.get(0)*velocity.get(0)+velocity.get(2)*velocity.get(2);
+        if(magnitude>MAX_VELOCITY_SQUARED){
+            magnitude=MAX_VELOCITY/(float)Math.sqrt(magnitude);
+            velocity.set(0,velocity.get(0)*magnitude);
+            velocity.set(2,velocity.get(2)*magnitude);
+        }
+
+        if(up>1&&canJump){
+            canJump=false;
+            velocity.set(1,20);
+        }
+        else
+            velocity.set(1,velocity.get(1)-20.0f*(float)deltaTime);
+
+        aabb.setVelocity(velocity);
+
         //System.out.println(pos);
     }
 
     private void RotateCamera(double deltaTime){
         //float left=RenderThread.mainCamera.getYaw();
         //float up=RenderThread.mainCamera.getPitch();
-        float up=0.0f;
-        float left=0.0f;
+        float up=-InputManager.deltaMouseY;
+        float left=-InputManager.deltaMouseX;
 
-        if(InputManager.UP)
-            up+=100.0f;
-        if(InputManager.DOWN)
-            up-=100.0f;
-
-        if(InputManager.LEFT)
-            left+=100.0f;
-        if(InputManager.RIGHT)
-            left-=100.0f;
-
-        up*=deltaTime;
-        left*=deltaTime;
+        up*=0.05f;
+        left*=0.05f;
 
         //System.out.println(deltaTime+" "+up+" "+left);
 
-        up+=RenderThread.mainCamera.getPitch();
-        left+=RenderThread.mainCamera.getYaw();
+        up+=GameScreen.mainCamera.getPitch();
+        left+=GameScreen.mainCamera.getYaw();
 
         if(up<-88)
             up=-88;
@@ -87,7 +121,7 @@ public class Player implements Updateable{
         if(left>360)
             left-=360;
 
-        RenderThread.mainCamera.setPitch(up);
-        RenderThread.mainCamera.setYaw(left);
+        GameScreen.mainCamera.setPitch(up);
+        GameScreen.mainCamera.setYaw(left);
     }
 }
