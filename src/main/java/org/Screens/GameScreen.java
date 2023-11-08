@@ -8,6 +8,7 @@ import main.java.org.Render.Drawables.Cube;
 import main.java.org.Updateable.Updateable;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ public class GameScreen extends JPanel{
         else if(justPaused){
             justPaused=false;
             InputManager.showCursor(MainFrame.currentFrame);
-
 
             pauseMenu=new PauseMenu(screenWidth,screenHeight);
             this.add(pauseMenu);
@@ -108,17 +108,65 @@ public class GameScreen extends JPanel{
         public PauseMenu(int screenWidth, int screenHeight){
             super();
 
-            //this.setPreferredSize(new Dimension(screenWidth,screenHeight));
-            this.setBackground(new Color(0,0,0,100));
-            this.setLayout(new BorderLayout());
+            this.setBackground(new Color(0,0,0,255));
+            this.setLayout(null);
+            //this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+            //this.setBorder(new EmptyBorder(new Insets(screenWidth/6,0,0,0)));
 
-            var butt=new JButton("amogus");
-            butt.setFont(new Font("Arial", Font.PLAIN, 500));
+            int currentY=screenHeight/4;
+
+            //menu name
+            JLabel title=new JLabel("Paused",SwingConstants.CENTER);
+            title.setFont(new Font("Arial", Font.PLAIN, 120));
+            title.setBackground(new Color(0,0,0,0));
+            title.setForeground(new Color(0,255,255));
+
+            title.setBounds(screenWidth/2-300,currentY,600,200);
+            currentY+=300;
+            this.add(title);
+
+            //spacing
+            //this.add(Box.createRigidArea(new Dimension(0,100)));
+
+            //continue button
+            var butt=new JButton();
+            butt.setText("Resume");
+            butt.setFont(new Font("Arial", Font.PLAIN, 50));
+            butt.setForeground(Color.white);
+            butt.setBackground(new Color(0,0,0,255));
+
+
+            butt.setBounds(screenWidth/2-200,currentY,400,80);
+            currentY+=130;
 
             butt.addActionListener(e->{
-                GameScreen.unpause();
+                if(butt.isEnabled()){
+                    GameScreen.unpause();
+                }
             });
-            this.add(butt,BorderLayout.CENTER);
+            this.add(butt);
+
+            //spacing
+            //this.add(Box.createRigidArea(new Dimension(0,50)));
+
+            //main menu button
+            var butt2=new JButton();
+            butt2.setText("Main menu");
+            butt2.setFont(new Font("Arial", Font.PLAIN, 50));
+            butt2.setForeground(Color.white);
+            butt2.setBackground(new Color(0,0,0,255));
+
+
+            butt2.setBounds(screenWidth/2-200,currentY,400,80);
+            currentY=screenHeight/4;
+
+            butt2.addActionListener(e->{
+                if(butt2.isEnabled()){
+                    GameScreen.unpause();
+                }
+            });
+            this.add(butt2);
+
             this.grabFocus();
         }
     }
