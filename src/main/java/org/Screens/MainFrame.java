@@ -41,6 +41,7 @@ public class MainFrame extends JFrame {
         while(true){
             switch (currentStage){
                 case TITLE_SCREEN -> titleScreen();
+                case LEVEL_SELECTOR -> levelSelectionScreen();
                 case GAME -> game();
             }
         }
@@ -67,6 +68,25 @@ public class MainFrame extends JFrame {
         }
 
         this.remove(titleScreen);
+    }
+
+    private void levelSelectionScreen()  {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        LevelSelectionScreen levelScreen=new LevelSelectionScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
+        this.add(levelScreen);
+        this.setVisible(true);
+        this.repaint();
+
+        while(currentStage==GAME_STAGES.LEVEL_SELECTOR){
+            try{
+                Thread.sleep(50);
+            }
+            catch (InterruptedException ie){
+
+            }
+        }
+
+        this.remove(levelScreen);
     }
 
     private void game(){

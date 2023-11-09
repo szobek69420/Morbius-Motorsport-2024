@@ -82,7 +82,7 @@ public class TitleScreen extends JPanel {
 
             butt.addActionListener(e->{
                 if(butt.isEnabled()){
-                    ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.GAME);
+                    ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.LEVEL_SELECTOR);
                 }
             });
             this.add(butt);
@@ -116,7 +116,7 @@ public class TitleScreen extends JPanel {
             this.setBackground(new Color(0,0,0,255));
 
             File bgFile=new File(new File(Main.assetsDirectory,"sprites"),"bg_3.png");
-            System.out.println(bgFile.getAbsolutePath());
+            //System.out.println(bgFile.getAbsolutePath());
 
             background=null;
             try{
