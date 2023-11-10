@@ -8,10 +8,11 @@ import main.java.org.Screens.GameScreen;
 public class Player implements Updateable{
     private AABB aabb;
 
-    private static final float MAX_VELOCITY=10;
-    private static final float MAX_VELOCITY_SQUARED=100;
+    private static final float MAX_VELOCITY=4;
+    private static final float MAX_VELOCITY_SQUARED=16;
 
     private boolean canJump=false;
+    private boolean isSprinting=false;
 
     public Player(){
         aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false);
@@ -27,6 +28,11 @@ public class Player implements Updateable{
 
         if(aabb.getPositionByReference().get(1)<-50)
             GameScreen.die();
+
+        if(InputManager.CONTROL&&InputManager.W&&canJump)
+            isSprinting=true;
+        if(!InputManager.W)
+            isSprinting=false;
 
         RotateCamera(deltaTime);
         Move(deltaTime);
@@ -81,16 +87,23 @@ public class Player implements Updateable{
 
         Vector3 velocity=Vector3.sum(aabb.getVelocityByReference(),acceleration);
 
+        float maxVel=MAX_VELOCITY;
+        float maxVelSqr=MAX_VELOCITY_SQUARED;
+        if(isSprinting){
+            maxVelSqr*=9;
+            maxVel*=3;
+        }
+
         float magnitude=velocity.get(0)*velocity.get(0)+velocity.get(2)*velocity.get(2);
-        if(magnitude>MAX_VELOCITY_SQUARED){
-            magnitude=MAX_VELOCITY/(float)Math.sqrt(magnitude);
+        if(magnitude>maxVelSqr){
+            magnitude=maxVel/(float)Math.sqrt(magnitude);
             velocity.set(0,velocity.get(0)*magnitude);
             velocity.set(2,velocity.get(2)*magnitude);
         }
 
         if(up>1&&canJump){
             canJump=false;
-            velocity.set(1,20);
+            velocity.set(1,10);
         }
         else
             velocity.set(1,velocity.get(1)-20.0f*(float)deltaTime);
