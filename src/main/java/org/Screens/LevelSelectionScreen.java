@@ -36,7 +36,7 @@ public class LevelSelectionScreen extends JPanel {
     private boolean[] fetchLevelData(){
         boolean[] done=new boolean[LEVEL_COUNT];
 
-        File levelData=new File(Main.dataDirectory,"1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B");
+        File levelData=new File(Main.dataDirectory,"1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B.bingchilling");
         if(levelData.exists()){
             try(Scanner sc=new Scanner(levelData)){
                 for(int i=0;i<LEVEL_COUNT;i++){
@@ -86,6 +86,7 @@ public class LevelSelectionScreen extends JPanel {
             this.add(title);
 
             //level start buttons
+            MainFrame.LEVELS[] levels=new MainFrame.LEVELS[]{MainFrame.LEVELS.LEVEL_1, MainFrame.LEVELS.LEVEL_2, MainFrame.LEVELS.LEVEL_3, MainFrame.LEVELS.LEVEL_4, MainFrame.LEVELS.LEVEL_5};
             for(int i=1;i<=LEVEL_COUNT;i++){
                 var butt=new JButton();
                 butt.setText(((Integer)i).toString());
@@ -106,8 +107,10 @@ public class LevelSelectionScreen extends JPanel {
                 butt.setBounds(currentX,currentY,150,150);
                 currentX+=200;
 
+                MainFrame.LEVELS level=levels[i-1];
                 butt.addActionListener(e->{
                     if(butt.isEnabled()){
+                        ((MainFrame)MainFrame.currentFrame).setCurrentLevel(level);
                         ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.GAME);
                     }
                 });

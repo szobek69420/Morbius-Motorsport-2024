@@ -14,7 +14,7 @@ public class Player implements Updateable{
     private boolean canJump=false;
 
     public Player(){
-        aabb=new AABB(new Vector3(0,0,-5),new Vector3(0.25f,0.9f, 0.25f), false);
+        aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false);
         GameScreen.physics.addAABB(aabb);
     }
 
@@ -24,6 +24,9 @@ public class Player implements Updateable{
             canJump=true;
         if(aabb.getVelocityByReference().get(1)<-40.0f*deltaTime)
             canJump=false;
+
+        if(aabb.getPositionByReference().get(1)<-50)
+            GameScreen.die();
 
         RotateCamera(deltaTime);
         Move(deltaTime);
@@ -123,5 +126,10 @@ public class Player implements Updateable{
 
         GameScreen.mainCamera.setPitch(up);
         GameScreen.mainCamera.setYaw(left);
+    }
+
+    public void respawn(){
+        aabb.setVelocity(new Vector3(0,0,0));
+        aabb.setPosition(new Vector3(0,0,0));
     }
 }

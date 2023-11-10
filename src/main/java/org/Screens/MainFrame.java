@@ -8,6 +8,10 @@ import main.java.org.Updateable.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class MainFrame extends JFrame {
 
@@ -19,13 +23,44 @@ public class MainFrame extends JFrame {
         QUIT
     }
 
+    public static enum LEVELS{
+        LEVEL_1,
+        LEVEL_2,
+        LEVEL_3,
+        LEVEL_4,
+        LEVEL_5
+    }
+    public static int getLevelNumber(LEVELS level){
+        switch (level){
+            case LEVEL_1 -> {
+                return 0;
+            }
+            case LEVEL_2 -> {
+                return 1;
+            }
+            case LEVEL_3 -> {
+                return 2;
+            }
+            case LEVEL_4 -> {
+                return 3;
+            }
+            case LEVEL_5 -> {
+                return 4;
+            }
+        }
+
+        return -1;
+    }
+
     private GAME_STAGES currentStage;
     public static JFrame currentFrame=null;
+    private LEVELS levelSelected;
 
     public MainFrame(String name){
         super(name);
         currentFrame=this;
         currentStage=GAME_STAGES.TITLE_SCREEN;
+        levelSelected=LEVELS.LEVEL_1;
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize((int)screenSize.getWidth(),(int)screenSize.getHeight());
@@ -49,6 +84,9 @@ public class MainFrame extends JFrame {
 
     public void setCurrentStage(GAME_STAGES currentStage){
         this.currentStage=currentStage;
+    }
+    public void setCurrentLevel(LEVELS levelSelected){
+        this.levelSelected=levelSelected;
     }
 
     private void titleScreen()  {
@@ -131,23 +169,70 @@ public class MainFrame extends JFrame {
 
     public void fillGameScreen(GameScreen gameScreen){//temporary
 
-        GameScreen.mainCamera.addDrawable(new Cube(Color.red));
-        //var kubatemp=new Cube(Color.green);
-        var kubatemp=new Cube(Color.red);
-        kubatemp.setPosition(new Vector3(-5,2,7));
-        kubatemp.setScale(new Vector3(1.0f,0.5f,2.0f));
-        kubatemp.setName("amogus2");
-        GameScreen.mainCamera.addDrawable(kubatemp);
+        File levelFile=new File(Main.dataDirectory);
+        switch (levelSelected){
+            case LEVEL_1:
+                levelFile=new File(levelFile,"190467C1EA52B2B69EA0F7700C3507C9199F4A50ADDFB522B7DA2.bingchilling");
+                break;
 
-        //var kubatemp2=new Cube(Color.magenta);
-        var kubatemp2=new Cube(Color.red);
-        kubatemp2.setPosition(new Vector3(5,-10,0));
-        kubatemp2.setScale(new Vector3(6.0f,6f,6.0f));
-        kubatemp2.setName("amogus3");
-        GameScreen.mainCamera.addDrawable(kubatemp2);
+            case LEVEL_2:
+                levelFile=new File(levelFile,"190467C1EA52B2B69EA0F7700C3507C9199F4A50ADDFB522B7DA2.bingchilling");
+                break;
 
+            case LEVEL_3:
+                levelFile=new File(levelFile,"190467C1EA52B2B69EA0F7700C3507C9199F4A50ADDFB522B7DA2.bingchilling");
+                break;
 
+            case LEVEL_4:
+                levelFile=new File(levelFile,"190467C1EA52B2B69EA0F7700C3507C9199F4A50ADDFB522B7DA2.bingchilling");
+                break;
 
-        gameScreen.addUpdateable(new Player());
+            case LEVEL_5:
+                levelFile=new File(levelFile,"190467C1EA52B2B69EA0F7700C3507C9199F4A50ADDFB522B7DA2.bingchilling");
+                break;
+        }
+
+        if(!levelFile.exists()){
+            System.err.println("Bro the level files are missing");
+            this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        }
+
+        int blockCount=0;
+        Vector3[] blockPosition=null;
+        Vector3[] blockScale=null;
+        Color[] blockColour=null;
+
+        try(Scanner sc=new Scanner(levelFile)){
+            blockCount=sc.nextInt();
+
+            blockPosition=new Vector3[blockCount];
+            blockScale=new Vector3[blockCount];
+            blockColour=new Color[blockCount];
+
+            for(int i=0;i<blockCount;i++){
+
+                int[] temp=new int[9];
+
+                for(int j=0;j<9;j++)
+                    temp[j]=sc.nextInt();
+
+                blockPosition[i]=new Vector3(temp[0]*0.01f,temp[1]*0.01f,temp[2]*0.01f);
+                blockScale[i]=new Vector3(temp[3]*0.01f,temp[4]*0.01f,temp[5]*0.01f);
+                blockColour[i]=new Color(temp[6],temp[7],temp[8]);
+            }
+        }
+        catch (IOException ex){
+            System.err.println("bro the fucking level file is kaputt");
+        }
+
+        //creating level
+        for(int i=0;i<blockCount;i++){
+            var kuba=new Cube(blockColour[i]);
+            kuba.setPosition(blockPosition[i]);
+            kuba.setScale(blockScale[i]);
+            kuba.setName("kuba"+i);
+
+            GameScreen.mainCamera.addDrawable(kuba);
+        }
     }
 }
