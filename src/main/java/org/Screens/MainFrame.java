@@ -68,6 +68,7 @@ public class MainFrame extends JFrame {
         this.setBackground(new Color(0,0,0));
         //hehe.setIconImage(new ImageIcon(hehe.getClass().getResource("/assets/sprites/logo_1.png")).getImage());
 
+
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
     }

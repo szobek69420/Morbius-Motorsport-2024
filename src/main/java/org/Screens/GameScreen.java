@@ -8,10 +8,13 @@ import main.java.org.Render.Drawables.Cube;
 import main.java.org.Updateable.Player;
 import main.java.org.Updateable.Updateable;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GameScreen extends JPanel{
@@ -32,6 +35,8 @@ public class GameScreen extends JPanel{
     private PauseMenu pauseMenu=null;
     private DeathScreen deathScreen=null;
 
+    private Font timerFont=null;
+
     private int screenWidth,screenHeight;
 
     private double time;
@@ -49,10 +54,14 @@ public class GameScreen extends JPanel{
 
         this.time=0;
 
-        this.setLayout(new GridLayout(1,1));
-
         player=new Player();
         this.addUpdateable(player);
+
+        timerFont=new Font("Monocraft",Font.PLAIN,50);
+
+
+        this.setLayout(new GridLayout(1,1));
+        MainFrame.currentFrame.setVisible(true);
     }
 
 
@@ -70,6 +79,7 @@ public class GameScreen extends JPanel{
                 u.Update(deltaTime);
         }
         else if(justPaused){
+            repaint();//azert kell, hogy az ido ne legyen kiirva a hatterben ( a paint fuggvenyen belul csak akkor jeleniti meg, ha nem paused)
             justPaused=false;
             InputManager.showCursor(MainFrame.currentFrame);
 
@@ -82,6 +92,7 @@ public class GameScreen extends JPanel{
             if(pauseMenu!=null){
                 this.remove(pauseMenu);
                 pauseMenu=null;
+
                 justUnpaused=false;
 
                 MainFrame.currentFrame.requestFocus();
@@ -90,6 +101,7 @@ public class GameScreen extends JPanel{
             paused=false;
         }
         else if(justDied){
+            repaint();
             justDied=false;
             InputManager.showCursor(MainFrame.currentFrame);
 
@@ -102,7 +114,10 @@ public class GameScreen extends JPanel{
             if(deathScreen!=null){
                 this.remove(deathScreen);
                 deathScreen=null;
+
                 justUndied=false;
+
+                this.time=0;
 
                 player.respawn();
 
@@ -115,11 +130,18 @@ public class GameScreen extends JPanel{
 
     @Override
     public void paint(Graphics g){
-
         Image image = createImage(getWidth(),getHeight());
         Graphics graphics = image.getGraphics();
 
         mainCamera.render(graphics);
+        graphics.setFont(timerFont);
+
+        if(!paused){
+            graphics.setColor(new Color(0,255,255));
+            graphics.drawString("Time: "+timeString(time),screenWidth-500,50);
+
+            graphics.fillRect(screenWidth/2-2,screenHeight/2-2,4,4);
+        }
 
         g.drawImage(image,0,0,this);
     }
@@ -129,6 +151,23 @@ public class GameScreen extends JPanel{
     }
 
     //static
+    public static String timeString(double time){
+        int hundreths=(int)(100*(time-(int)time));
+        int seconds=((int)time)%60;
+        int minutes=((int)time/60)%60;
+
+        char[] chars=new char[8];
+        chars[0]=(char)(minutes/10+'0');
+        chars[1]=(char)(minutes%10+'0');
+        chars[2]=':';
+        chars[3]=(char)(seconds/10+'0');
+        chars[4]=(char)(seconds%10+'0');
+        chars[5]=':';
+        chars[6]=(char)(hundreths/10+'0');
+        chars[7]=(char)(hundreths%10+'0');
+
+        return String.copyValueOf(chars);
+    }
     public static boolean isPaused(){
         return paused;
     }
@@ -150,6 +189,7 @@ public class GameScreen extends JPanel{
     public static void undie(){
         GameScreen.justUndied=true;
     }
+
 
     private static class PauseMenu extends JPanel{
         public PauseMenu(int screenWidth, int screenHeight){
@@ -213,7 +253,7 @@ public class GameScreen extends JPanel{
             });
             this.add(butt2);
 
-            this.grabFocus();
+            this.requestFocus();
         }
     }
 
