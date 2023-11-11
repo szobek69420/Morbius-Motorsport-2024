@@ -293,7 +293,7 @@ public class GameScreen extends JPanel{
             JLabel title=new JLabel("Paused",SwingConstants.CENTER);
             title.setFont(new Font("Monocraft", Font.PLAIN, 120));
             title.setBackground(new Color(0,0,0,0));
-            title.setForeground(new Color(0,255,255));
+            title.setForeground(Color.white);
 
             title.setBounds(screenWidth/2-300,currentY,600,200);
             currentY+=300;
@@ -306,8 +306,9 @@ public class GameScreen extends JPanel{
             var butt=new JButton();
             butt.setText("Resume");
             butt.setFont(new Font("Monocraft", Font.PLAIN, 50));
-            butt.setForeground(Color.white);
+            butt.setForeground(new Color(0,255,255));
             butt.setBackground(new Color(0,0,0,255));
+            butt.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
 
             butt.setBounds(screenWidth/2-200,currentY,400,80);
@@ -327,8 +328,9 @@ public class GameScreen extends JPanel{
             var butt2=new JButton();
             butt2.setText("Main menu");
             butt2.setFont(new Font("Monocraft", Font.PLAIN, 50));
-            butt2.setForeground(Color.white);
+            butt2.setForeground(new Color(0,255,255));
             butt2.setBackground(new Color(0,0,0,255));
+            butt2.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
 
             butt2.setBounds(screenWidth/2-200,currentY,400,80);
@@ -374,8 +376,9 @@ public class GameScreen extends JPanel{
             var butt=new JButton();
             butt.setText("Restart");
             butt.setFont(new Font("Monocraft", Font.PLAIN, 50));
-            butt.setForeground(Color.white);
+            butt.setForeground(new Color(0,255,255));
             butt.setBackground(new Color(0,0,0,255));
+            butt.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
 
             butt.setBounds(screenWidth/2-200,currentY,400,80);
@@ -395,8 +398,9 @@ public class GameScreen extends JPanel{
             var butt2=new JButton();
             butt2.setText("Main menu");
             butt2.setFont(new Font("Monocraft", Font.PLAIN, 50));
-            butt2.setForeground(Color.white);
+            butt2.setForeground(new Color(0,255,255));
             butt2.setBackground(new Color(0,0,0,255));
+            butt2.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
 
             butt2.setBounds(screenWidth/2-200,currentY,400,80);
@@ -421,17 +425,37 @@ public class GameScreen extends JPanel{
             //this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
             //this.setBorder(new EmptyBorder(new Insets(screenWidth/6,0,0,0)));
 
-            int currentY=screenHeight/5;
+            int currentY=screenHeight/7;
 
             //menu name
-            JLabel title=new JLabel("gg bruh",SwingConstants.CENTER);
+            JLabel title=new JLabel("meh",SwingConstants.CENTER);
             title.setFont(new Font("Monocraft", Font.PLAIN, 100));
             title.setBackground(new Color(0,0,0,0));
             title.setForeground(new Color(255,209,0));
 
             title.setBounds(screenWidth/2-500,currentY,1000,200);
-            currentY+=300;
+            currentY+=250;
             this.add(title);
+
+            //time label
+            JLabel timeLabel=new JLabel("Time: "+time,SwingConstants.CENTER);
+            timeLabel.setFont(new Font("Monocraft", Font.PLAIN, 50));
+            timeLabel.setBackground(new Color(0,0,0,0));
+            timeLabel.setForeground(Color.white);
+
+            timeLabel.setBounds(screenWidth/2-500,currentY,1000,50);
+            currentY+=70;
+            this.add(timeLabel);
+
+            //highscorelabel
+            JLabel highscoreLabel=new JLabel("Best: "+highscore,SwingConstants.CENTER);
+            highscoreLabel.setFont(new Font("Monocraft", Font.PLAIN, 50));
+            highscoreLabel.setBackground(new Color(0,0,0,0));
+            highscoreLabel.setForeground(Color.white);
+
+            highscoreLabel.setBounds(screenWidth/2-500,currentY,1000,50);
+            currentY+=150;
+            this.add(highscoreLabel);
 
             //spacing
             //this.add(Box.createRigidArea(new Dimension(0,100)));
@@ -440,12 +464,13 @@ public class GameScreen extends JPanel{
             var butt=new JButton();
             butt.setText("Restart");
             butt.setFont(new Font("Monocraft", Font.PLAIN, 50));
-            butt.setForeground(Color.white);
+            butt.setForeground(new Color(0,255,255));
             butt.setBackground(new Color(0,0,0,255));
+            butt.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
 
             butt.setBounds(screenWidth/2-200,currentY,400,80);
-            currentY+=130;
+            currentY+=120;
 
             butt.addActionListener(e->{
                 if(butt.isEnabled()){
@@ -461,8 +486,9 @@ public class GameScreen extends JPanel{
             var butt2=new JButton();
             butt2.setText("Main menu");
             butt2.setFont(new Font("Monocraft", Font.PLAIN, 50));
-            butt2.setForeground(Color.white);
+            butt2.setForeground(new Color(0,255,255));
             butt2.setBackground(new Color(0,0,0,255));
+            butt2.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
 
             butt2.setBounds(screenWidth/2-200,currentY,400,80);

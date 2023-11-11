@@ -74,9 +74,9 @@ public class TitleScreen extends JPanel {
             var butt=new JButton();
             butt.setText("It's morbin' time");
             butt.setFont(new Font("Monocraft", Font.PLAIN, 40));
-            butt.setForeground(Color.white);
+            butt.setForeground(new Color(0,255,255));
             butt.setBackground(new Color(0,0,0,255));
-            butt.setBorder(BorderFactory.createLineBorder(Color.white,5));
+            butt.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
             butt.setBounds(200,screenHeight/2+100,600,80);
 
@@ -91,9 +91,9 @@ public class TitleScreen extends JPanel {
             var butt2=new JButton();
             butt2.setText("I'm gay (quit)");
             butt2.setFont(new Font("Monocraft", Font.PLAIN, 40));
-            butt2.setForeground(Color.white);
+            butt2.setForeground(new Color(0,255,255));
             butt2.setBackground(new Color(0,0,0,255));
-            butt2.setBorder(BorderFactory.createLineBorder(Color.white,5));
+            butt2.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
             butt2.setBounds(200,screenHeight/2+220,600,80);
 

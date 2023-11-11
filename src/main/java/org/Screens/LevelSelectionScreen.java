@@ -109,11 +109,11 @@ public class LevelSelectionScreen extends JPanel {
                 butt.setBackground(new Color(0,0,0,255));
 
                 if(levelData[i-1].done){
-                    butt.setForeground(Color.green);
+                    butt.setForeground(new Color(0,255,255));
                     butt.setBorder(BorderFactory.createLineBorder(Color.green,5));
                 }
                 else{
-                    butt.setForeground(Color.white);
+                    butt.setForeground(new Color(0,255,255));
                     butt.setBorder(BorderFactory.createLineBorder(Color.white,5));
                 }
 
@@ -138,7 +138,7 @@ public class LevelSelectionScreen extends JPanel {
             backButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
             backButton.setBackground(new Color(0,0,0,255));
             backButton.setForeground(new Color(0,255,255));
-            backButton.setBorder(BorderFactory.createLineBorder(Color.white,5));
+            backButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
             backButton.setBounds(screenWidth/2-150,currentY+250,300,80);
 
