@@ -8,6 +8,8 @@ import main.java.org.Updateable.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
@@ -69,6 +71,15 @@ public class MainFrame extends JFrame {
         this.setBackground(new Color(0,0,0));
         //hehe.setIconImage(new ImageIcon(hehe.getClass().getResource("/assets/sprites/logo_1.png")).getImage());
 
+        this.addFocusListener(new FocusListener() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(currentStage==GAME_STAGES.GAME&&!GameScreen.isPaused())
+                    GameScreen.pause();
+            }
+            @Override
+            public void focusGained(FocusEvent e) {}
+        });
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -90,6 +101,7 @@ public class MainFrame extends JFrame {
     public void setCurrentLevel(LEVELS levelSelected){
         this.levelSelected=levelSelected;
     }
+    public LEVELS getCurrentLevel(){return this.levelSelected;}
     public void setHighscore(double highscore){
         this.highscore=highscore;
     }

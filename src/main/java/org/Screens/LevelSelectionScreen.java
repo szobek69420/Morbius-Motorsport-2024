@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class LevelSelectionScreen extends JPanel {
 
-    private static final int LEVEL_COUNT=5;
+    public static final int LEVEL_COUNT=5;
 
     private int screenWidth,screenHeight;
     public LevelSelectionScreen(int width, int height) {
@@ -180,6 +180,38 @@ public class LevelSelectionScreen extends JPanel {
             if(background!=null){
                 g.drawImage(background, 0, 0, null);
             }
+        }
+    }
+
+    public static void saveHighscore(MainFrame.LEVELS level, double highscoreInSeconds){
+        int levelNumber=MainFrame.getLevelNumber(level);
+
+        File levelDataFile=new File(Main.dataDirectory,"1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B.bingchilling");
+
+        LevelData[] levelData=new LevelData[LEVEL_COUNT];
+
+        try(Scanner sc=new Scanner(levelDataFile)){
+            for(int i=0;i<LEVEL_COUNT;i++){
+                boolean done=sc.nextBoolean();
+                double highscore=0.01*sc.nextInt();
+
+                levelData[i]=new LevelData(done,highscore);
+            }
+        }
+        catch (IOException ex){
+            System.err.println("bro what 3");
+        }
+
+        levelData[levelNumber].highscore=highscoreInSeconds;
+        levelData[levelNumber].done=true;
+        try(PrintWriter pw=new PrintWriter(new FileWriter(levelDataFile))){
+            for(int i=0;i<LEVEL_COUNT;i++){
+                pw.println(levelData[i].done);
+                pw.println((int)Math.round(levelData[i].highscore*100));
+            }
+        }
+        catch(IOException ex){
+                System.err.println("bro what 4");
         }
     }
 }

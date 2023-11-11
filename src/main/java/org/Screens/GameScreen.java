@@ -13,10 +13,14 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.Image;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class GameScreen extends JPanel{
@@ -26,6 +30,9 @@ public class GameScreen extends JPanel{
     private static boolean paused=false;
     private static boolean justPaused=false;
     private static boolean justUnpaused=false;
+    private static boolean focusLost=false;
+    private static boolean focusGained=false;
+
 
     private static boolean justDied=false;
     private static boolean justUndied=false;
@@ -63,10 +70,7 @@ public class GameScreen extends JPanel{
 
         this.time=0;
         this.highscore=highscore;
-        if(highscore<0)
-            this.highscoreString="00:00.00";
-        else
-            this.highscoreString=timeString(highscore);
+        this.highscoreString=timeString(highscore);
 
         player=new Player();
         this.addUpdateable(player);
@@ -100,6 +104,7 @@ public class GameScreen extends JPanel{
             pauseMenu=new PauseMenu(screenWidth,screenHeight);
             this.add(pauseMenu);
 
+            focusLost=false;
             MainFrame.currentFrame.setVisible(true);
         }
         else if(justUnpaused){
@@ -145,8 +150,12 @@ public class GameScreen extends JPanel{
             justFinished=false;
             InputManager.showCursor(MainFrame.currentFrame);
 
-            if(highscore<0||time<highscore)
-                finishScreen=new FinishScreen(screenWidth,screenHeight, timeString(time),timeString(time));
+            if(highscore<0||time<highscore) {
+                highscore=time;
+                highscoreString=timeString(highscore);
+                LevelSelectionScreen.saveHighscore(((MainFrame)MainFrame.currentFrame).getCurrentLevel(),time);
+                finishScreen = new FinishScreen(screenWidth, screenHeight, timeString(time), timeString(time));
+            }
             else
                 finishScreen=new FinishScreen(screenWidth,screenHeight, timeString(time),highscoreString);
 
@@ -207,6 +216,9 @@ public class GameScreen extends JPanel{
 
     //static
     public static String timeString(double time){
+        if(time<0)
+            return "unknown";
+
         int hundreths=(int)(100*(time-(int)time));
         int seconds=((int)time)%60;
         int minutes=((int)time/60)%60;
@@ -252,6 +264,17 @@ public class GameScreen extends JPanel{
 
     public static void unfinish(){
         GameScreen.justUnfinished=true;
+    }
+
+    public static void focusLost(){
+        if(!paused){
+            focusLost=true;
+            pause();
+        }
+    }
+
+    public static void focusGained(){
+        focusGained=true;
     }
 
 
@@ -317,7 +340,9 @@ public class GameScreen extends JPanel{
             });
             this.add(butt2);
 
-            this.requestFocus();
+            if(!focusLost){
+                this.requestFocus();
+            }
         }
     }
 
