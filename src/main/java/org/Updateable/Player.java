@@ -38,9 +38,6 @@ public class Player implements Updateable{
         Move(deltaTime);
         GameScreen.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
 
-        //float fov=60.0f+0.5f*(float)Math.sqrt(Math.pow(aabb.getVelocityByReference().get(0),2)+Math.pow(aabb.getVelocityByReference().get(2),2));
-        //fov=lerp(GameScreen.mainCamera.getFOV(),fov,1.0f);
-        //GameScreen.mainCamera.setFOV(fov);
     }
 
     private void Move(double deltaTime){
@@ -83,9 +80,9 @@ public class Player implements Updateable{
 
         float accelMag=Vector3.magnitude(acceleration);
 
-        if(accelMag>20.0f*deltaTime){
+        if(accelMag>30.0f*deltaTime){
             Vector3.normalize(acceleration);
-            acceleration=Vector3.multiplyWithScalar(20*(float)deltaTime,acceleration);
+            acceleration=Vector3.multiplyWithScalar(30*(float)deltaTime,acceleration);
         }
 
 
@@ -100,12 +97,12 @@ public class Player implements Updateable{
 
         float magnitude=velocity.get(0)*velocity.get(0)+velocity.get(2)*velocity.get(2);
         if(magnitude>maxVelSqr){
+            System.out.println(Math.sqrt(magnitude)+" "+maxVel);
+            magnitude=maxVel-(float)Math.sqrt(magnitude);
+            if(magnitude<-30.0f*(float)deltaTime)
+                magnitude=-30.0f*(float)deltaTime;
 
-            magnitude=maxVel-magnitude;
-            if(magnitude<-50.0f*(float)deltaTime)
-                magnitude=-50.0f*(float)deltaTime;
-
-            Vector3.sum(velocity,Vector3.multiplyWithScalar(magnitude,velocity));
+            velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(magnitude,new Vector3(velocity.get(0),0,velocity.get(2))));
         }
 
         if(up>1&&canJump){
