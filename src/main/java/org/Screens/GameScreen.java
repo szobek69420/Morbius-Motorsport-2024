@@ -30,20 +30,27 @@ public class GameScreen extends JPanel{
     private static boolean justDied=false;
     private static boolean justUndied=false;
 
+    private static boolean justFinished=false;
+    private static boolean justUnfinished=false;
+
+
     public ArrayList<Updateable> updateables;
 
     private Player player=null;
 
     private PauseMenu pauseMenu=null;
     private DeathScreen deathScreen=null;
+    private FinishScreen finishScreen=null;
 
     private Font timerFont=null;
 
     private int screenWidth,screenHeight;
 
     private double time;
+    private double highscore;
+    private String highscoreString;
 
-    public GameScreen(int width, int height){
+    public GameScreen(int width, int height, double highscore){
         mainCamera=new Camera(width,height);
         physics=new CollisionDetection();
 
@@ -55,6 +62,11 @@ public class GameScreen extends JPanel{
         screenHeight=height;
 
         this.time=0;
+        this.highscore=highscore;
+        if(highscore<0)
+            this.highscoreString="00:00.00";
+        else
+            this.highscoreString=timeString(highscore);
 
         player=new Player();
         this.addUpdateable(player);
@@ -128,6 +140,36 @@ public class GameScreen extends JPanel{
             }
             paused=false;
         }
+        else if(justFinished){
+            repaint();
+            justFinished=false;
+            InputManager.showCursor(MainFrame.currentFrame);
+
+            if(highscore<0||time<highscore)
+                finishScreen=new FinishScreen(screenWidth,screenHeight, timeString(time),timeString(time));
+            else
+                finishScreen=new FinishScreen(screenWidth,screenHeight, timeString(time),highscoreString);
+
+            this.add(finishScreen);
+
+            MainFrame.currentFrame.setVisible(true);
+        }
+        else if(justUnfinished){
+            if(finishScreen!=null){
+                this.remove(finishScreen);
+                finishScreen=null;
+
+                justUnfinished=false;
+
+                this.time=0;
+
+                player.respawn();
+
+                MainFrame.currentFrame.requestFocus();
+                InputManager.hideCursor(MainFrame.currentFrame);
+            }
+            paused=false;
+        }
     }
 
     @Override
@@ -142,10 +184,11 @@ public class GameScreen extends JPanel{
             //time
             graphics.setColor(new Color(0,255,255));
             graphics.drawString("Time: "+timeString(time),screenWidth-500,50);
+            graphics.drawString("High: "+highscoreString,30,50);
 
             //cursor
-            for(int i=-1;i<2;i++){
-                for(int j=-1;j<2;j++){
+            for(int i=-2;i<2;i++){
+                for(int j=-2;j<2;j++){
                     int color=image.getRGB(screenWidth/2+i,screenHeight/2+j);//argb
                     int inverse = color ^ 0xffffffff;
 
@@ -200,6 +243,15 @@ public class GameScreen extends JPanel{
 
     public static void undie(){
         GameScreen.justUndied=true;
+    }
+
+    public static void finish(){
+        GameScreen.paused=true;
+        GameScreen.justFinished=true;
+    }
+
+    public static void unfinish(){
+        GameScreen.justUnfinished=true;
     }
 
 
@@ -307,6 +359,72 @@ public class GameScreen extends JPanel{
             butt.addActionListener(e->{
                 if(butt.isEnabled()){
                     GameScreen.undie();
+                }
+            });
+            this.add(butt);
+
+            //spacing
+            //this.add(Box.createRigidArea(new Dimension(0,50)));
+
+            //main menu button
+            var butt2=new JButton();
+            butt2.setText("Main menu");
+            butt2.setFont(new Font("Monocraft", Font.PLAIN, 50));
+            butt2.setForeground(Color.white);
+            butt2.setBackground(new Color(0,0,0,255));
+
+
+            butt2.setBounds(screenWidth/2-200,currentY,400,80);
+
+            butt2.addActionListener(e->{
+                if(butt2.isEnabled()){
+                    ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.TITLE_SCREEN);
+                }
+            });
+            this.add(butt2);
+
+            this.grabFocus();
+        }
+    }
+
+    private static class FinishScreen extends JPanel{
+        public FinishScreen(int screenWidth, int screenHeight, String time, String highscore){
+            super();
+
+            this.setBackground(new Color(0,0,0,100));
+            this.setLayout(null);
+            //this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+            //this.setBorder(new EmptyBorder(new Insets(screenWidth/6,0,0,0)));
+
+            int currentY=screenHeight/5;
+
+            //menu name
+            JLabel title=new JLabel("gg bruh",SwingConstants.CENTER);
+            title.setFont(new Font("Monocraft", Font.PLAIN, 100));
+            title.setBackground(new Color(0,0,0,0));
+            title.setForeground(new Color(255,209,0));
+
+            title.setBounds(screenWidth/2-500,currentY,1000,200);
+            currentY+=300;
+            this.add(title);
+
+            //spacing
+            //this.add(Box.createRigidArea(new Dimension(0,100)));
+
+            //continue button
+            var butt=new JButton();
+            butt.setText("Restart");
+            butt.setFont(new Font("Monocraft", Font.PLAIN, 50));
+            butt.setForeground(Color.white);
+            butt.setBackground(new Color(0,0,0,255));
+
+
+            butt.setBounds(screenWidth/2-200,currentY,400,80);
+            currentY+=130;
+
+            butt.addActionListener(e->{
+                if(butt.isEnabled()){
+                    GameScreen.unfinish();
                 }
             });
             this.add(butt);

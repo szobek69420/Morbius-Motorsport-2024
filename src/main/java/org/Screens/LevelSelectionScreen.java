@@ -19,7 +19,7 @@ public class LevelSelectionScreen extends JPanel {
         screenWidth=width;
         screenHeight=height;
 
-        boolean[] levelsDone=fetchLevelData();
+        LevelData[] levelsDone=fetchLevelData();
 
         this.setLayout(null);
 
@@ -33,15 +33,18 @@ public class LevelSelectionScreen extends JPanel {
         this.add(tb);
     }
 
-    private boolean[] fetchLevelData(){
-        boolean[] done=new boolean[LEVEL_COUNT];
+    private LevelData[] fetchLevelData(){
+        LevelData[] leveldata=new LevelData[LEVEL_COUNT];
+
 
         File levelData=new File(Main.dataDirectory,"1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B.bingchilling");
         if(levelData.exists()){
             try(Scanner sc=new Scanner(levelData)){
                 for(int i=0;i<LEVEL_COUNT;i++){
-                    done[i]=sc.nextBoolean();
-                    int temp=sc.nextInt();
+                    boolean done=sc.nextBoolean();
+                    double highscore=0.01*sc.nextInt();
+
+                    leveldata[i]=new LevelData(done,highscore);
                 }
             }
             catch (IOException ex){
@@ -53,7 +56,7 @@ public class LevelSelectionScreen extends JPanel {
                 for(int i=0;i<LEVEL_COUNT;i++){
                     pw.println(false);
                     pw.println(-1);
-                    done[i]=false;
+                    leveldata[i]=new LevelData(false,-1);
                 }
             }
             catch(IOException ex){
@@ -61,12 +64,22 @@ public class LevelSelectionScreen extends JPanel {
             }
         }
 
-        return done;
+        return leveldata;
+    }
+
+    private static class LevelData{
+        public double highscore;
+        public boolean done;
+
+        public LevelData(boolean done, double highscore){
+            this.done=done;
+            this.highscore=highscore;
+        }
     }
 
 
     private class LevelSelectionScreenForeground extends JPanel{
-        public LevelSelectionScreenForeground(boolean[] done){
+        public LevelSelectionScreenForeground(LevelData[] levelData){
             super();
 
             this.setLayout(null);
@@ -95,7 +108,7 @@ public class LevelSelectionScreen extends JPanel {
                 butt.setFont(new Font("Monocraft", Font.PLAIN, 80));
                 butt.setBackground(new Color(0,0,0,255));
 
-                if(done[i-1]){
+                if(levelData[i-1].done){
                     butt.setForeground(Color.green);
                     butt.setBorder(BorderFactory.createLineBorder(Color.green,5));
                 }
@@ -108,9 +121,11 @@ public class LevelSelectionScreen extends JPanel {
                 currentX+=200;
 
                 MainFrame.LEVELS level=levels[i-1];
+                double highscore=levelData[i-1].highscore;
                 butt.addActionListener(e->{
                     if(butt.isEnabled()){
                         ((MainFrame)MainFrame.currentFrame).setCurrentLevel(level);
+                        ((MainFrame)MainFrame.currentFrame).setHighscore(highscore);
                         ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.GAME);
                     }
                 });

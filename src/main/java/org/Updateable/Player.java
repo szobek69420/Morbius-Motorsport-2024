@@ -15,7 +15,7 @@ public class Player implements Updateable{
     private boolean isSprinting=false;
 
     public Player(){
-        aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false);
+        aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false,"Player");
         GameScreen.physics.addAABB(aabb);
     }
 
@@ -28,6 +28,8 @@ public class Player implements Updateable{
 
         if(aabb.getPositionByReference().get(1)<-50)
             GameScreen.die();
+        if(aabb.getLastCollisionType()== AABB.CollisionType.BOTTOM&&aabb.getLastCollisionName().equals("Finish"))
+            GameScreen.finish();
 
         if(InputManager.CONTROL&&InputManager.W&&canJump)
             isSprinting=true;
@@ -80,9 +82,9 @@ public class Player implements Updateable{
 
         float accelMag=Vector3.magnitude(acceleration);
 
-        if(accelMag>30.0f*deltaTime){
+        if(accelMag>20.0f*deltaTime){
             Vector3.normalize(acceleration);
-            acceleration=Vector3.multiplyWithScalar(30*(float)deltaTime,acceleration);
+            acceleration=Vector3.multiplyWithScalar(20*(float)deltaTime,acceleration);
         }
 
 
@@ -97,7 +99,7 @@ public class Player implements Updateable{
 
         float magnitude=velocity.get(0)*velocity.get(0)+velocity.get(2)*velocity.get(2);
         if(magnitude>maxVelSqr){
-            System.out.println(Math.sqrt(magnitude)+" "+maxVel);
+
             magnitude=maxVel-(float)Math.sqrt(magnitude);
             if(magnitude<-30.0f*(float)deltaTime)
                 magnitude=-30.0f*(float)deltaTime;

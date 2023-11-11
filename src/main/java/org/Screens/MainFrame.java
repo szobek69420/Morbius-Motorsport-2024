@@ -53,6 +53,7 @@ public class MainFrame extends JFrame {
     }
 
     private GAME_STAGES currentStage;
+    private double highscore;
     public static JFrame currentFrame=null;
     private LEVELS levelSelected;
 
@@ -88,6 +89,9 @@ public class MainFrame extends JFrame {
     }
     public void setCurrentLevel(LEVELS levelSelected){
         this.levelSelected=levelSelected;
+    }
+    public void setHighscore(double highscore){
+        this.highscore=highscore;
     }
 
     private void titleScreen()  {
@@ -132,7 +136,7 @@ public class MainFrame extends JFrame {
 
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        GameScreen gameScreen=new GameScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
+        GameScreen gameScreen=new GameScreen((int)screenSize.getWidth(),(int)screenSize.getHeight(), highscore);
         this.add(gameScreen);
 
         fillGameScreen(gameScreen);
@@ -231,7 +235,9 @@ public class MainFrame extends JFrame {
             var kuba=new Cube(blockColour[i]);
             kuba.setPosition(blockPosition[i]);
             kuba.setScale(blockScale[i]);
-            kuba.setName("kuba"+i);
+
+            if(i==blockCount-1)
+                kuba.setName("Finish");
 
             GameScreen.mainCamera.addDrawable(kuba);
         }
