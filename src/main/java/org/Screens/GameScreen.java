@@ -12,7 +12,9 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.Image;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -130,17 +132,27 @@ public class GameScreen extends JPanel{
 
     @Override
     public void paint(Graphics g){
-        Image image = createImage(getWidth(),getHeight());
+        BufferedImage image = new BufferedImage(screenWidth,screenHeight,BufferedImage.TYPE_INT_RGB);
         Graphics graphics = image.getGraphics();
 
         mainCamera.render(graphics);
         graphics.setFont(timerFont);
 
         if(!paused){
+            //time
             graphics.setColor(new Color(0,255,255));
             graphics.drawString("Time: "+timeString(time),screenWidth-500,50);
 
-            graphics.fillRect(screenWidth/2-2,screenHeight/2-2,4,4);
+            //cursor
+            for(int i=-1;i<2;i++){
+                for(int j=-1;j<2;j++){
+                    int color=image.getRGB(screenWidth/2+i,screenHeight/2+j);//argb
+                    int inverse = color ^ 0xffffffff;
+
+                    image.setRGB(screenWidth/2+i,screenHeight/2+j,inverse);
+                }
+            }
+            //graphics.fillRect(screenWidth/2-2,screenHeight/2-2,4,4);
         }
 
         g.drawImage(image,0,0,this);

@@ -37,6 +37,10 @@ public class Player implements Updateable{
         RotateCamera(deltaTime);
         Move(deltaTime);
         GameScreen.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
+
+        //float fov=60.0f+0.5f*(float)Math.sqrt(Math.pow(aabb.getVelocityByReference().get(0),2)+Math.pow(aabb.getVelocityByReference().get(2),2));
+        //fov=lerp(GameScreen.mainCamera.getFOV(),fov,1.0f);
+        //GameScreen.mainCamera.setFOV(fov);
     }
 
     private void Move(double deltaTime){
@@ -96,9 +100,12 @@ public class Player implements Updateable{
 
         float magnitude=velocity.get(0)*velocity.get(0)+velocity.get(2)*velocity.get(2);
         if(magnitude>maxVelSqr){
-            magnitude=maxVel/(float)Math.sqrt(magnitude);
-            velocity.set(0,velocity.get(0)*magnitude);
-            velocity.set(2,velocity.get(2)*magnitude);
+
+            magnitude=maxVel-magnitude;
+            if(magnitude<-50.0f*(float)deltaTime)
+                magnitude=-50.0f*(float)deltaTime;
+
+            Vector3.sum(velocity,Vector3.multiplyWithScalar(magnitude,velocity));
         }
 
         if(up>1&&canJump){
@@ -127,10 +134,10 @@ public class Player implements Updateable{
         up+=GameScreen.mainCamera.getPitch();
         left+=GameScreen.mainCamera.getYaw();
 
-        if(up<-88)
-            up=-88;
-        else if(up>88)
-            up=88;
+        if(up<-89.9f)
+            up=-89.9f;
+        else if(up>89.9f)
+            up=89.9f;
 
         if(left<-360)
             left+=360;
@@ -144,5 +151,9 @@ public class Player implements Updateable{
     public void respawn(){
         aabb.setVelocity(new Vector3(0,0,0));
         aabb.setPosition(new Vector3(0,0,0));
+    }
+
+    public static float lerp(float a, float b, float i){
+        return a+(b-a)*i;
     }
 }
