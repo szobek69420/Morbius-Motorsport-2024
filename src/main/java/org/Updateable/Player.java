@@ -8,13 +8,14 @@ import main.java.org.Screens.GameScreen;
 public class Player implements Updateable{
     private AABB aabb;
 
-    private static final float MAX_VELOCITY=10;
-    private static final float MAX_VELOCITY_SQUARED=100;
+    private static final float MAX_VELOCITY=4;
+    private static final float MAX_VELOCITY_SQUARED=16;
 
     private boolean canJump=false;
+    private boolean isSprinting=false;
 
     public Player(){
-        aabb=new AABB(new Vector3(0,0,-5),new Vector3(0.25f,0.9f, 0.25f), false);
+        aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false,"Player");
         GameScreen.physics.addAABB(aabb);
     }
 
@@ -25,9 +26,20 @@ public class Player implements Updateable{
         if(aabb.getVelocityByReference().get(1)<-40.0f*deltaTime)
             canJump=false;
 
+        if(aabb.getPositionByReference().get(1)<-50)
+            GameScreen.die();
+        if(aabb.getLastCollisionType()== AABB.CollisionType.BOTTOM&&aabb.getLastCollisionName().equals("Finish"))
+            GameScreen.finish();
+
+        if(InputManager.CONTROL&&InputManager.W&&canJump)
+            isSprinting=true;
+        if(!InputManager.W)
+            isSprinting=false;
+
         RotateCamera(deltaTime);
         Move(deltaTime);
         GameScreen.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
+
     }
 
     private void Move(double deltaTime){
@@ -78,16 +90,26 @@ public class Player implements Updateable{
 
         Vector3 velocity=Vector3.sum(aabb.getVelocityByReference(),acceleration);
 
+        float maxVel=MAX_VELOCITY;
+        float maxVelSqr=MAX_VELOCITY_SQUARED;
+        if(isSprinting){
+            maxVelSqr*=9;
+            maxVel*=3;
+        }
+
         float magnitude=velocity.get(0)*velocity.get(0)+velocity.get(2)*velocity.get(2);
-        if(magnitude>MAX_VELOCITY_SQUARED){
-            magnitude=MAX_VELOCITY/(float)Math.sqrt(magnitude);
-            velocity.set(0,velocity.get(0)*magnitude);
-            velocity.set(2,velocity.get(2)*magnitude);
+        if(magnitude>maxVelSqr){
+
+            magnitude=maxVel-(float)Math.sqrt(magnitude);
+            if(magnitude<-30.0f*(float)deltaTime)
+                magnitude=-30.0f*(float)deltaTime;
+
+            velocity=Vector3.sum(velocity,Vector3.multiplyWithScalar(magnitude,new Vector3(velocity.get(0),0,velocity.get(2))));
         }
 
         if(up>1&&canJump){
             canJump=false;
-            velocity.set(1,20);
+            velocity.set(1,10);
         }
         else
             velocity.set(1,velocity.get(1)-20.0f*(float)deltaTime);
@@ -111,10 +133,10 @@ public class Player implements Updateable{
         up+=GameScreen.mainCamera.getPitch();
         left+=GameScreen.mainCamera.getYaw();
 
-        if(up<-88)
-            up=-88;
-        else if(up>88)
-            up=88;
+        if(up<-89.9f)
+            up=-89.9f;
+        else if(up>89.9f)
+            up=89.9f;
 
         if(left<-360)
             left+=360;
@@ -123,5 +145,14 @@ public class Player implements Updateable{
 
         GameScreen.mainCamera.setPitch(up);
         GameScreen.mainCamera.setYaw(left);
+    }
+
+    public void respawn(){
+        aabb.setVelocity(new Vector3(0,0,0));
+        aabb.setPosition(new Vector3(0,0,0));
+    }
+
+    public static float lerp(float a, float b, float i){
+        return a+(b-a)*i;
     }
 }

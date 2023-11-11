@@ -14,13 +14,15 @@ public class AABB {
     private Vector3 scale;
 
     private Vector3 velocity;
+    private String name;
 
     private CollisionType lastCollisionType;
     private long lastCollision;
+    private String lastCollisionName;
 
     public final boolean isKinematic;
 
-    public AABB(Vector3 position, Vector3 scale, boolean isKinematic){
+    public AABB(Vector3 position, Vector3 scale, boolean isKinematic, String name){
         this.position=position;
 
         this.scale=scale;
@@ -29,6 +31,7 @@ public class AABB {
 
         this.lastCollision=0;
         this.lastCollisionType=CollisionType.NONE;
+        lastCollisionName=null;
 
         this.isKinematic=isKinematic;
     }
@@ -72,6 +75,7 @@ public class AABB {
             }
 
             nonKinematic.lastCollision=System.nanoTime();
+            nonKinematic.lastCollisionName=kinematic.getName();
             switch (index){
                 case 1:
                     if(nonKinematic.getVelocityByReference().get(1)>0)
@@ -109,6 +113,11 @@ public class AABB {
         this.scale=scale;
     }
 
+    public String getName(){return name;}
+    public void setName(String name){
+        this.name=name;
+    }
+
 
     public Vector3 getVelocityByReference(){
         return velocity;
@@ -124,4 +133,6 @@ public class AABB {
     public long getLastCollision(){
         return lastCollision;
     }
+
+    public String getLastCollisionName(){return lastCollisionName;}
 }

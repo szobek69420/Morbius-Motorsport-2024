@@ -17,12 +17,13 @@ public class Camera {
     private final float aspectXY;
 
 
+    private float fov;
     private float nearPlane;
     private float nearPlaneSquared;
-    private final float nearPlaneWidth;
-    private final float nearPlaneHeight;
-    private final float onePerNearPlaneWidth;
-    private final float onePerNearPlaneHeight;
+    private float nearPlaneWidth;
+    private float nearPlaneHeight;
+    private float onePerNearPlaneWidth;
+    private float onePerNearPlaneHeight;
 
 
     private ArrayList<Drawable> drawables;
@@ -49,13 +50,9 @@ public class Camera {
         aspectYX=((float)GAME_HEIGHT/GAME_WIDTH);
 
 
+        fov=60.0f;
         nearPlane=0.05f;
-        nearPlaneSquared=nearPlane*nearPlane;
-        nearPlaneHeight=(float)Math.tan(0.0174532925*60.0)*nearPlane;
-        nearPlaneWidth=nearPlaneHeight*aspectXY;
-
-        onePerNearPlaneWidth=1/nearPlaneWidth;
-        onePerNearPlaneHeight=1/nearPlaneHeight;
+        calculateScreenDimensions();
 
         calculateOrientation();
     }
@@ -128,6 +125,14 @@ public class Camera {
         drawables.add(d);
     }
 
+    private void calculateScreenDimensions(){
+        nearPlaneSquared=nearPlane*nearPlane;
+        nearPlaneHeight=(float)Math.tan(0.0174532925*fov)*nearPlane;
+        nearPlaneWidth=nearPlaneHeight*aspectXY;
+
+        onePerNearPlaneWidth=1/nearPlaneWidth;
+        onePerNearPlaneHeight=1/nearPlaneHeight;
+    }
 
     //getter setters
     public Vector3 getPosition(){
@@ -183,5 +188,14 @@ public class Camera {
 
     public int getScreenHeight(){
         return GAME_HEIGHT;
+    }
+
+    public float getFOV(){
+        return fov;
+    }
+
+    public void setFOV(float fov){
+        this.fov=fov;
+        calculateScreenDimensions();
     }
 }

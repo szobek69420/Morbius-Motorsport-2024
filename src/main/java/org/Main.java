@@ -19,20 +19,28 @@ import java.io.IOException;
 public class Main {
     public static final String mainDirectory=(new File(new File(new File(new File(new File("").getAbsolutePath(),"src"),"main"),"java"),"org")).getAbsolutePath();
     public static final String assetsDirectory=(new File(new File(new File(new File("").getAbsolutePath(),"src"),"main"),"assets")).getAbsolutePath();
+    public static final String dataDirectory=(new File(new File(new File(new File("").getAbsolutePath(),"src"),"main"),"data")).getAbsolutePath();
+
+    private static boolean notLoaded=true;
 
     public static void main(String[] args) {
 
-        try{
-            loadFont();
-        }
-        catch (Exception e){
-            System.err.println(e.getMessage());
-            return;
-        }
+        if(notLoaded){
+            notLoaded=true;
 
-        new MainFrame("Morbius Motorsport 2024 - GOTY Edition");
+            try{
+                loadFont();
+            }
+            catch (Exception e){
+                System.err.println(e.getMessage());
+                return;
+            }
 
-        ((MainFrame)MainFrame.currentFrame).run();
+            var frame=new MainFrame("Morbius Motorsport 2024 - GOTY Edition");
+            frame.setResizable(false);
+
+            ((MainFrame)MainFrame.currentFrame).run();
+        }
 
         //InputManager.showCursor(hehe);
     }

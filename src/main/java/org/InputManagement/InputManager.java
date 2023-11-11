@@ -52,6 +52,8 @@ public class InputManager  {
     public static boolean SPACE=false;
     public static boolean L_SHIT=false;
 
+    public static boolean CONTROL=false;
+
     public static boolean UP=false;
     public static boolean DOWN=false;
     public static boolean LEFT=false;
@@ -67,6 +69,7 @@ public class InputManager  {
                 case KeyEvent.VK_D -> D = true;
                 case KeyEvent.VK_SPACE->SPACE=true;
                 case KeyEvent.VK_SHIFT->L_SHIT=true;
+                case KeyEvent.VK_CONTROL->CONTROL=true;
                 case KeyEvent.VK_UP->UP=true;
                 case KeyEvent.VK_DOWN->DOWN=true;
                 case KeyEvent.VK_LEFT->LEFT=true;
@@ -83,6 +86,7 @@ public class InputManager  {
                 case KeyEvent.VK_D -> D = false;
                 case KeyEvent.VK_SPACE->SPACE=false;
                 case KeyEvent.VK_SHIFT->L_SHIT=false;
+                case KeyEvent.VK_CONTROL->CONTROL=false;
                 case KeyEvent.VK_UP->UP=false;
                 case KeyEvent.VK_DOWN->DOWN=false;
                 case KeyEvent.VK_LEFT->LEFT=false;

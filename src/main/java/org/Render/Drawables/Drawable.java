@@ -63,6 +63,7 @@ public abstract class Drawable {
 
     public final void setName(String name){
         this.name=name;
+        this.aabb.setName(name);
     }
 
     public final String getName(){

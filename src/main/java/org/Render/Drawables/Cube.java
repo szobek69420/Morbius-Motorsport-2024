@@ -58,9 +58,11 @@ public class Cube extends Drawable{
         scale=new Vector3(1,1,1);
         pos=new Vector3(0,0,0);
 
-        aabb=new AABB(new Vector3(0,0,0),new Vector3(1,1,1),true);
+        aabb=new AABB(new Vector3(0,0,0),new Vector3(1,1,1),true,"amogus");
         GameScreen.physics.addAABB(aabb);
         calculateModelMatrix();
+
+        this.setName("amogus");
     }
 
     @Override
