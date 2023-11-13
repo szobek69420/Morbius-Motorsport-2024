@@ -207,7 +207,7 @@ public class LevelSelectionScreen extends JPanel {
         try(PrintWriter pw=new PrintWriter(new FileWriter(levelDataFile))){
             for(int i=0;i<LEVEL_COUNT;i++){
                 pw.println(levelData[i].done);
-                pw.println((int)Math.round(levelData[i].highscore*100));
+                pw.println((int)(levelData[i].highscore*100));
             }
         }
         catch(IOException ex){

@@ -18,9 +18,8 @@ import java.io.IOException;
 
 public class Main {
     public static final String mainDirectory=(new File(new File(new File(new File(new File("").getAbsolutePath(),"src"),"main"),"java"),"org")).getAbsolutePath();
-    public static final String assetsDirectory=(new File(new File(new File(new File("").getAbsolutePath(),"src"),"main"),"assets")).getAbsolutePath();
-    public static final String dataDirectory=(new File(new File(new File(new File("").getAbsolutePath(),"src"),"main"),"data")).getAbsolutePath();
-
+    public static final String assetsDirectory=(new File(new File("").getAbsolutePath(),"src/main/assets")).getAbsolutePath();
+    public static final String dataDirectory=(new File(new File("").getAbsolutePath(),"src/main/data")).getAbsolutePath();
     private static boolean notLoaded=true;
 
     public static void main(String[] args) {
