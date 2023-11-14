@@ -12,6 +12,8 @@ import java.awt.*;
 public class CubeStatic extends Obstacle{
 
     public CubeStatic(String name, Vector3 pos, Vector3 scale, Color color){
+        super();
+
         drawable=new Cube(color);
         drawable.setPosition(pos);
         drawable.setScale(scale);
@@ -20,4 +22,8 @@ public class CubeStatic extends Obstacle{
         aabb=new AABB(pos,scale,true,name);
     }
 
+    @Override
+    public void update(double deltaTime) {
+        //
+    }
 }

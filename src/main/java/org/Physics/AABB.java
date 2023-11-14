@@ -45,6 +45,12 @@ public class AABB {
         position=Vector3.sum(position,Vector3.multiplyWithScalar((float)deltaTime,velocity));
     }
 
+    public void clearHistory(){
+        this.lastCollision=0;
+        this.lastCollisionType=CollisionType.NONE;
+        this.lastCollisionName="";
+    }
+
 
     public static boolean resolveCollision(AABB nonKinematic, AABB kinematic){
         Vector3 deltaPos=Vector3.difference(nonKinematic.position,kinematic.position);
@@ -81,16 +87,23 @@ public class AABB {
 
             nonKinematic.lastCollision=System.nanoTime();
             nonKinematic.lastCollisionName=kinematic.getName();
+            kinematic.lastCollision=System.nanoTime();
+            kinematic.lastCollisionName= nonKinematic.getName();
             switch (index){
                 case 1:
-                    if(nonKinematic.getVelocityByReference().get(1)>0)
+                    if(nonKinematic.getVelocityByReference().get(1)>0) {
                         nonKinematic.lastCollisionType=CollisionType.TOP;
-                    else
-                        nonKinematic.lastCollisionType=CollisionType.BOTTOM;
+                        kinematic.lastCollisionType=CollisionType.BOTTOM;
+                    }
+                    else {
+                        nonKinematic.lastCollisionType = CollisionType.BOTTOM;
+                        kinematic.lastCollisionType=CollisionType.TOP;
+                    }
                     break;
 
                 default:
                     nonKinematic.lastCollisionType=CollisionType.SIDE;
+                    kinematic.lastCollisionType=CollisionType.SIDE;
                     break;
             }
 

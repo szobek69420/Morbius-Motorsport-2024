@@ -2,6 +2,7 @@ package main.java.org.Screens;
 
 import main.java.org.InputManagement.InputManager;
 import main.java.org.Main;
+import main.java.org.Obstacles.Obstacle;
 import main.java.org.Physics.CollisionDetection;
 import main.java.org.Render.Camera.Camera;
 import main.java.org.Render.Drawables.Cube;
@@ -45,6 +46,7 @@ public class GameScreen extends JPanel{
     public UpdateableManager um;
 
     private Player player=null;
+    private ArrayList<Obstacle> obstacles;
 
     private PauseMenu pauseMenu=null;
     private DeathScreen deathScreen=null;
@@ -76,6 +78,8 @@ public class GameScreen extends JPanel{
         player=new Player();
         this.addUpdateable(player);
         player.addToPhysics(GameScreen.physics);
+
+        obstacles=new ArrayList<>();
 
         timerFont=new Font("Monocraft",Font.PLAIN,50);
 
@@ -139,6 +143,9 @@ public class GameScreen extends JPanel{
 
                 this.time=0;
 
+                for(Obstacle obbi:obstacles)
+                    obbi.reset();
+
                 player.respawn();
 
                 MainFrame.currentFrame.requestFocus();
@@ -172,6 +179,9 @@ public class GameScreen extends JPanel{
                 justUnfinished=false;
 
                 this.time=0;
+
+                for(Obstacle obbi:obstacles)
+                    obbi.reset();
 
                 player.respawn();
 
@@ -213,6 +223,10 @@ public class GameScreen extends JPanel{
 
     public void addUpdateable(Updateable u){
         um.addUpdateable(u);
+    }
+
+    public void addObstacle(Obstacle obbi){
+        obstacles.add(obbi);
     }
 
     //static

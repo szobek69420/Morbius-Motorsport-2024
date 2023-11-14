@@ -125,6 +125,10 @@ public class Camera {
         drawables.add(d);
     }
 
+    public void removeDrawable(Drawable d){
+        drawables.remove(d);
+    }
+
     private void calculateScreenDimensions(){
         nearPlaneSquared=nearPlane*nearPlane;
         nearPlaneHeight=(float)Math.tan(0.0174532925*fov)*nearPlane;

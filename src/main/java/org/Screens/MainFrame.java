@@ -4,6 +4,8 @@ import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Main;
 import main.java.org.Obstacles.CubeStatic;
+import main.java.org.Obstacles.CubeWeak;
+import main.java.org.Obstacles.Obstacle;
 import main.java.org.Physics.AABB;
 import main.java.org.Render.Drawables.Cube;
 import main.java.org.Updateable.Player;
@@ -255,13 +257,27 @@ public class MainFrame extends JFrame {
         GameScreen.physics.addAABB(new AABB(new Vector3(0,0.01f*lowestPoint,0),new Vector3(1000,2,1000),true,"Sus"));//bottom of the playfield
 
         for(int i=0;i<blockCount;i++){
+            String name=null;
+            Obstacle obstacle=null;
+
             switch (blockType[i]){
                 case 0,1:
-                    String name=i==blockCount-1?"Finish":blockType[i]==1?"Sus":"amogus";
-                    var obstacle=new CubeStatic(name,blockPosition[i],blockScale[i],blockColour[i]);
+                    name=i==blockCount-1?"Finish":blockType[i]==1?"Sus":"amogus";
+                    obstacle=new CubeStatic(name,blockPosition[i],blockScale[i],blockColour[i]);
                     obstacle.addToCamera(GameScreen.mainCamera);
                     obstacle.addToPhysics(GameScreen.physics);
                     break;
+
+                case 2:
+                    obstacle=new CubeWeak("a mogus",blockPosition[i],blockScale[i],blockColour[i]);
+                    obstacle.addToCamera(GameScreen.mainCamera);
+                    obstacle.addToPhysics(GameScreen.physics);
+                    break;
+            }
+
+            if(obstacle!=null) {
+                gameScreen.um.addUpdateable(obstacle);
+                gameScreen.addObstacle(obstacle);
             }
         }
     }

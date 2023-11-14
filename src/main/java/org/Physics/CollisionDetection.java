@@ -19,6 +19,13 @@ public class CollisionDetection {
             nonKinematic.add(aabb);
     }
 
+    public void removeAABB(AABB aabb){
+        if(aabb.isKinematic)
+            kinematic.remove(aabb);
+        else
+            nonKinematic.remove(aabb);
+    }
+
     public void CalculatePhysics(double deltaTime){
         for(AABB aabb : nonKinematic)
             aabb.move(deltaTime);
