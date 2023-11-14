@@ -60,6 +60,9 @@ public class GameScreen extends JPanel{
     private double highscore;
     private String highscoreString;
 
+    private String devsBestString=null;
+
+
     public GameScreen(int width, int height, double highscore){
         mainCamera=new Camera(width,height);
         physics=new CollisionDetection();
@@ -203,8 +206,10 @@ public class GameScreen extends JPanel{
         if(!paused){
             //time
             graphics.setColor(new Color(0,255,255));
-            graphics.drawString("Time: "+timeString(time),screenWidth-500,50);
-            graphics.drawString("High: "+highscoreString,30,50);
+            graphics.drawString("time: "+timeString(time),screenWidth-500,50);
+            graphics.drawString("highscore: "+highscoreString,30,50);
+            graphics.setColor(Color.white);
+            graphics.drawString("dev's pb: "+devsBestString,30,100);
 
             //cursor
             for(int i=-2;i<2;i++){
@@ -221,6 +226,10 @@ public class GameScreen extends JPanel{
         g.drawImage(image,0,0,this);
     }
 
+    public void setDevsBest(double devsBestInSeconds){
+        devsBestString=timeString(devsBestInSeconds);
+    }
+
     public void addUpdateable(Updateable u){
         um.addUpdateable(u);
     }
@@ -234,7 +243,7 @@ public class GameScreen extends JPanel{
         if(time<0)
             return "unknown";
 
-        int hundreths=(int)(100*(time-(int)time));
+        int hundreths=(int)(100*(time+0.001-(int)time));
         int seconds=((int)time)%60;
         int minutes=((int)time/60)%60;
 

@@ -42,7 +42,7 @@ public class LevelSelectionScreen extends JPanel {
             try(Scanner sc=new Scanner(levelData)){
                 for(int i=0;i<LEVEL_COUNT;i++){
                     boolean done=sc.nextBoolean();
-                    double highscore=0.01*sc.nextInt();
+                    double highscore=0.001*sc.nextInt();
 
                     leveldata[i]=new LevelData(done,highscore);
                 }
@@ -193,7 +193,7 @@ public class LevelSelectionScreen extends JPanel {
         try(Scanner sc=new Scanner(levelDataFile)){
             for(int i=0;i<LEVEL_COUNT;i++){
                 boolean done=sc.nextBoolean();
-                double highscore=0.01*sc.nextInt();
+                double highscore=0.001*sc.nextInt();
 
                 levelData[i]=new LevelData(done,highscore);
             }
@@ -207,7 +207,7 @@ public class LevelSelectionScreen extends JPanel {
         try(PrintWriter pw=new PrintWriter(new FileWriter(levelDataFile))){
             for(int i=0;i<LEVEL_COUNT;i++){
                 pw.println(levelData[i].done);
-                pw.println((int)(levelData[i].highscore*100));
+                pw.println((int)(levelData[i].highscore*1000));
             }
         }
         catch(IOException ex){

@@ -226,6 +226,8 @@ public class MainFrame extends JFrame {
         int[] blockType=null;
 
         try(Scanner sc=new Scanner(levelFile)){
+            gameScreen.setDevsBest(0.001*sc.nextInt());//highscore
+
             lowestPoint=sc.nextInt();
 
             blockCount=sc.nextInt();
