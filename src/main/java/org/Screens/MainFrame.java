@@ -201,7 +201,7 @@ public class MainFrame extends JFrame {
                 break;
 
             case LEVEL_3:
-                levelFile=new File(levelFile,"190467C1EA52B2B69EA0F7700C3507C9199F4A50ADDFB522B7DA2.bingchilling");
+                levelFile=new File(levelFile,"D32D91E8B858B53DB758AA105D1C852A3144B74A5.bingchilling");
                 break;
 
             case LEVEL_4:
