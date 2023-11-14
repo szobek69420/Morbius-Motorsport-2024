@@ -7,6 +7,7 @@ import main.java.org.Render.Camera.Camera;
 import main.java.org.Render.Drawables.Cube;
 import main.java.org.Updateable.Player;
 import main.java.org.Updateable.Updateable;
+import main.java.org.Updateable.UpdateableManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -41,7 +42,7 @@ public class GameScreen extends JPanel{
     private static boolean justUnfinished=false;
 
 
-    public ArrayList<Updateable> updateables;
+    public UpdateableManager um;
 
     private Player player=null;
 
@@ -61,7 +62,7 @@ public class GameScreen extends JPanel{
         mainCamera=new Camera(width,height);
         physics=new CollisionDetection();
 
-        updateables=new ArrayList<>();
+        um=new UpdateableManager();
 
         paused=false;
 
@@ -74,6 +75,7 @@ public class GameScreen extends JPanel{
 
         player=new Player();
         this.addUpdateable(player);
+        player.addToPhysics(GameScreen.physics);
 
         timerFont=new Font("Monocraft",Font.PLAIN,50);
 
@@ -93,8 +95,7 @@ public class GameScreen extends JPanel{
 
             physics.CalculatePhysics(deltaTime);
 
-            for(Updateable u : updateables)
-                u.Update(deltaTime);
+            um.update(deltaTime);
         }
         else if(justPaused){
             repaint();//azert kell, hogy az ido ne legyen kiirva a hatterben ( a paint fuggvenyen belul csak akkor jeleniti meg, ha nem paused)
@@ -211,7 +212,7 @@ public class GameScreen extends JPanel{
     }
 
     public void addUpdateable(Updateable u){
-        updateables.add(u);
+        um.addUpdateable(u);
     }
 
     //static

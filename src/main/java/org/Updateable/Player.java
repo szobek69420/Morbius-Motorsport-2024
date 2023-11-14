@@ -3,6 +3,7 @@ package main.java.org.Updateable;
 import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Physics.AABB;
+import main.java.org.Physics.CollisionDetection;
 import main.java.org.Screens.GameScreen;
 
 public class Player implements Updateable{
@@ -16,17 +17,21 @@ public class Player implements Updateable{
 
     public Player(){
         aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false,"Player");
-        GameScreen.physics.addAABB(aabb);
     }
 
+    public void addToPhysics(CollisionDetection cd){
+        cd.addAABB(aabb);
+    }
+
+
     @Override
-    public void Update(double deltaTime){
+    public void update(double deltaTime){
         if((System.nanoTime()-aabb.getLastCollision())*0.000000001<deltaTime&&aabb.getLastCollisionType()== AABB.CollisionType.BOTTOM)
             canJump=true;
         if(aabb.getVelocityByReference().get(1)<-40.0f*deltaTime)
             canJump=false;
 
-        if(aabb.getPositionByReference().get(1)<-50)
+        if(aabb.getLastCollisionName().equals("Sus"))
             GameScreen.die();
         if(aabb.getLastCollisionType()== AABB.CollisionType.BOTTOM&&aabb.getLastCollisionName().equals("Finish"))
             GameScreen.finish();
@@ -150,6 +155,9 @@ public class Player implements Updateable{
     public void respawn(){
         aabb.setVelocity(new Vector3(0,0,0));
         aabb.setPosition(new Vector3(0,0,0));
+
+        GameScreen.mainCamera.setPitch(0);
+        GameScreen.mainCamera.setYaw(0);
     }
 
     public static float lerp(float a, float b, float i){

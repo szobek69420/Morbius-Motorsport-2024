@@ -29,9 +29,14 @@ public class AABB {
 
         this.velocity=new Vector3(0,0,0);
 
+        if(name==null)
+            this.name="default";
+        else
+            this.name=name;
+
         this.lastCollision=0;
         this.lastCollisionType=CollisionType.NONE;
-        lastCollisionName=null;
+        this.lastCollisionName="";
 
         this.isKinematic=isKinematic;
     }

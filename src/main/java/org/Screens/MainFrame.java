@@ -3,6 +3,8 @@ package main.java.org.Screens;
 import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Main;
+import main.java.org.Obstacles.CubeStatic;
+import main.java.org.Physics.AABB;
 import main.java.org.Render.Drawables.Cube;
 import main.java.org.Updateable.Player;
 
@@ -214,17 +216,22 @@ public class MainFrame extends JFrame {
             this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         }
 
+        int lowestPoint=0;
         int blockCount=0;
         Vector3[] blockPosition=null;
         Vector3[] blockScale=null;
         Color[] blockColour=null;
+        int[] blockType=null;
 
         try(Scanner sc=new Scanner(levelFile)){
+            lowestPoint=sc.nextInt();
+
             blockCount=sc.nextInt();
 
             blockPosition=new Vector3[blockCount];
             blockScale=new Vector3[blockCount];
             blockColour=new Color[blockCount];
+            blockType=new int[blockCount];
 
             for(int i=0;i<blockCount;i++){
 
@@ -236,6 +243,8 @@ public class MainFrame extends JFrame {
                 blockPosition[i]=new Vector3(temp[0]*0.01f,temp[1]*0.01f,temp[2]*0.01f);
                 blockScale[i]=new Vector3(temp[3]*0.01f,temp[4]*0.01f,temp[5]*0.01f);
                 blockColour[i]=new Color(temp[6],temp[7],temp[8]);
+
+                blockType[i]=sc.nextInt();
             }
         }
         catch (IOException ex){
@@ -243,15 +252,17 @@ public class MainFrame extends JFrame {
         }
 
         //creating level
+        GameScreen.physics.addAABB(new AABB(new Vector3(0,0.01f*lowestPoint,0),new Vector3(1000,2,1000),true,"Sus"));//bottom of the playfield
+
         for(int i=0;i<blockCount;i++){
-            var kuba=new Cube(blockColour[i]);
-            kuba.setPosition(blockPosition[i]);
-            kuba.setScale(blockScale[i]);
-
-            if(i==blockCount-1)
-                kuba.setName("Finish");
-
-            GameScreen.mainCamera.addDrawable(kuba);
+            switch (blockType[i]){
+                case 0,1:
+                    String name=i==blockCount-1?"Finish":blockType[i]==1?"Sus":"amogus";
+                    var obstacle=new CubeStatic(name,blockPosition[i],blockScale[i],blockColour[i]);
+                    obstacle.addToCamera(GameScreen.mainCamera);
+                    obstacle.addToPhysics(GameScreen.physics);
+                    break;
+            }
         }
     }
 }
