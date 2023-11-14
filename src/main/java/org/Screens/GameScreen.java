@@ -207,7 +207,7 @@ public class GameScreen extends JPanel{
             //time
             graphics.setColor(new Color(0,255,255));
             graphics.drawString("time: "+timeString(time),screenWidth-500,50);
-            graphics.drawString("highscore: "+highscoreString,30,50);
+            graphics.drawString("best time: "+highscoreString,30,50);
             graphics.setColor(Color.white);
             graphics.drawString("dev's pb: "+devsBestString,30,100);
 
