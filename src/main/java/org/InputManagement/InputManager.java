@@ -49,6 +49,8 @@ public class InputManager  {
     public static boolean S=false;
     public static boolean D=false;
 
+    public static boolean C=false;
+
     public static boolean SPACE=false;
     public static boolean L_SHIT=false;
 
@@ -67,6 +69,7 @@ public class InputManager  {
                 case KeyEvent.VK_A -> A = true;
                 case KeyEvent.VK_S -> S = true;
                 case KeyEvent.VK_D -> D = true;
+                case KeyEvent.VK_C -> C = true;
                 case KeyEvent.VK_SPACE->SPACE=true;
                 case KeyEvent.VK_SHIFT->L_SHIT=true;
                 case KeyEvent.VK_CONTROL->CONTROL=true;
@@ -84,6 +87,7 @@ public class InputManager  {
                 case KeyEvent.VK_A -> A = false;
                 case KeyEvent.VK_S -> S = false;
                 case KeyEvent.VK_D -> D = false;
+                case KeyEvent.VK_C -> C = false;
                 case KeyEvent.VK_SPACE->SPACE=false;
                 case KeyEvent.VK_SHIFT->L_SHIT=false;
                 case KeyEvent.VK_CONTROL->CONTROL=false;

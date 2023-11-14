@@ -188,13 +188,21 @@ public class Cube extends Drawable{
                     }
 
                     for(int j=0;j<2;j++){
-                        //float arany=(nearPlane-transformedVertices[rossz].get(2))/(joZ2[j]-transformedVertices[rossz].get(2));
-                        //modX2[2+j]=x[rossz]+(int)(arany*(modX2[j]-x[rossz]));
-                        //modY2[2+j]=y[rossz]+(int)(arany*(modY2[j]-y[rossz]));
-                        float arany=(nearPlane-rossz.get(2))/(jok2[j].get(2)-rossz.get(2));
+                        float rosszDist=(nearPlane-rossz.get(2));//a kamera mogotti pont tavolsaga a vaszontol
+                        float joDist=(jok2[j].get(2)-nearPlane);//a kamera elotti pont tavolsaga a vaszontol
 
-                        modX2[2+j]=(int)((0.5f*GAME_WIDTH-((rossz.get(0)+(jok2[j].get(0)-rossz.get(0))*arany)*onePerNearPlaneWidth)*0.5f*GAME_WIDTH));
-                        modY2[2+j]=(int)(0.5f*GAME_HEIGHT-((rossz.get(1)+(jok2[j].get(1)-rossz.get(1))*arany)*onePerNearPlaneHeight)*0.5f*GAME_HEIGHT);
+                        if(joDist<0.005f)
+                            joDist=0.005f;
+
+                        Vector3 temp=new Vector3(
+                                joDist*rossz.get(0)+rosszDist*jok2[j].get(0),
+                                joDist*rossz.get(1)+rosszDist*jok2[j].get(1),
+                                joDist*rossz.get(2)+rosszDist*jok2[j].get(2)
+                        );
+                        temp=Vector3.multiplyWithScalar(1/(rosszDist+joDist),temp);
+
+                        modX2[2+j]=(int)((0.5f*GAME_WIDTH-(temp.get(0)*onePerNearPlaneWidth)*0.5f*GAME_WIDTH));
+                        modY2[2+j]=(int)(0.5f*GAME_HEIGHT-(temp.get(1)*onePerNearPlaneHeight)*0.5f*GAME_HEIGHT);
                     }
 
                     g.setColor(faceColors[i]);
@@ -224,15 +232,22 @@ public class Cube extends Drawable{
                         if(!isBehindView[i*3+j])
                             continue;
 
-                        //float arany=(nearPlane-transformedVertices[indices[i*3+j]].get(2))/(joZ-transformedVertices[indices[i*3+j]].get(2));
-                        //modX[index2]=x[indices[i*3+j]]+(int)(arany*(modX[0]-x[indices[i*3+j]]));
-                        //modY[index2]=y[indices[i*3+j]]+(int)(arany*(modY[0]-y[indices[i*3+j]]));
-                        Vector3 tempRossz=transformedVertices[indices[i*3+j]];
+                        Vector3 rossz2=transformedVertices[indices[i*3+j]];
 
-                        float arany=(nearPlane-tempRossz.get(2))/(jo.get(2)-tempRossz.get(2));
+                        float rosszDist=(nearPlane-rossz2.get(2));//a kamera mogotti pont tavolsaga a vaszontol
+                        float joDist=(jo.get(2)-nearPlane);//a kamera elotti pont tavolsaga a vaszontol
+                        if(joDist<0.005f)
+                            joDist=0.005f;
 
-                        modX[index2]=(int)((0.5f*GAME_WIDTH-((tempRossz.get(0)+(jo.get(0)-tempRossz.get(0))*arany)*onePerNearPlaneWidth)*0.5f*GAME_WIDTH));
-                        modY[index2]=(int)(0.5f*GAME_HEIGHT-((tempRossz.get(1)+(jo.get(1)-tempRossz.get(1))*arany)*onePerNearPlaneHeight)*0.5f*GAME_HEIGHT);
+                        Vector3 temp=new Vector3(
+                                joDist*rossz2.get(0)+rosszDist*jo.get(0),
+                                joDist*rossz2.get(1)+rosszDist*jo.get(1),
+                                joDist*rossz2.get(2)+rosszDist*jo.get(2)
+                        );
+                        temp=Vector3.multiplyWithScalar(1/(rosszDist+joDist),temp);
+
+                        modX[index2]=(int)((0.5f*GAME_WIDTH-(temp.get(0)*onePerNearPlaneWidth)*0.5f*GAME_WIDTH));
+                        modY[index2]=(int)(0.5f*GAME_HEIGHT-(temp.get(1)*onePerNearPlaneHeight)*0.5f*GAME_HEIGHT);
 
                         index2++;
                     }

@@ -15,8 +15,16 @@ public class Player implements Updateable{
     private boolean canJump=false;
     private boolean isSprinting=false;
 
+
+    private final float ZOOM_SPEED=300.0f;
+    private final float ZOOMED_FOV=15.0f;
+    private final float BASED_FOV=60.0f;
+    private float currentFov;
+
     public Player(){
         aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false,"Player");
+
+        currentFov=BASED_FOV;
     }
 
     public void addToPhysics(CollisionDetection cd){
@@ -40,6 +48,8 @@ public class Player implements Updateable{
             isSprinting=true;
         if(!InputManager.W)
             isSprinting=false;
+
+        zoomControl((float) deltaTime);
 
         RotateCamera(deltaTime);
         Move(deltaTime);
@@ -120,7 +130,6 @@ public class Player implements Updateable{
             velocity.set(1,velocity.get(1)-20.0f*(float)deltaTime);
 
         aabb.setVelocity(velocity);
-
         //System.out.println(pos);
     }
 
@@ -150,6 +159,21 @@ public class Player implements Updateable{
 
         GameScreen.mainCamera.setPitch(up);
         GameScreen.mainCamera.setYaw(left);
+    }
+
+    private void zoomControl(float deltaTime){
+        if(InputManager.C){
+            currentFov-=deltaTime*ZOOM_SPEED;
+            if(currentFov<ZOOMED_FOV)
+                currentFov=ZOOMED_FOV;
+        }
+        else{
+            currentFov+=deltaTime*ZOOM_SPEED;
+            if(currentFov>BASED_FOV)
+                currentFov=BASED_FOV;
+        }
+
+        GameScreen.mainCamera.setFOV(currentFov);
     }
 
     public void respawn(){
