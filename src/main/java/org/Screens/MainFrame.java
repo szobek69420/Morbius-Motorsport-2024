@@ -3,6 +3,7 @@ package main.java.org.Screens;
 import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Main;
+import main.java.org.Obstacles.CubeMoving;
 import main.java.org.Obstacles.CubeStatic;
 import main.java.org.Obstacles.CubeWeak;
 import main.java.org.Obstacles.Obstacle;
@@ -224,6 +225,7 @@ public class MainFrame extends JFrame {
         Vector3[] blockScale=null;
         Color[] blockColour=null;
         int[] blockType=null;
+        int[][] blockAdditionalInfo=null;
 
         try(Scanner sc=new Scanner(levelFile)){
             gameScreen.setDevsBest(0.001*sc.nextInt());//highscore
@@ -236,6 +238,8 @@ public class MainFrame extends JFrame {
             blockScale=new Vector3[blockCount];
             blockColour=new Color[blockCount];
             blockType=new int[blockCount];
+            blockAdditionalInfo=new int[blockCount][4];
+
 
             for(int i=0;i<blockCount;i++){
 
@@ -249,6 +253,11 @@ public class MainFrame extends JFrame {
                 blockColour[i]=new Color(temp[6],temp[7],temp[8]);
 
                 blockType[i]=sc.nextInt();
+
+                if(blockType[i]==3){
+                    for(int j=0;j<4;j++)
+                        blockAdditionalInfo[i][j]=sc.nextInt();
+                }
             }
         }
         catch (IOException ex){
@@ -275,6 +284,18 @@ public class MainFrame extends JFrame {
                     obstacle.addToCamera(GameScreen.mainCamera);
                     obstacle.addToPhysics(GameScreen.physics);
                     break;
+
+                case 3:
+                    Vector3 amplitude=new Vector3(
+                            0.01f*blockAdditionalInfo[i][0],
+                            0.01f*blockAdditionalInfo[i][1],
+                            0.01f*blockAdditionalInfo[i][2]);
+                    float speed=0.01f*blockAdditionalInfo[i][3];
+                    obstacle=new CubeMoving("am ogus",blockPosition[i],blockScale[i],blockColour[i], amplitude, speed);
+                    obstacle.addToCamera(GameScreen.mainCamera);
+                    obstacle.addToPhysics(GameScreen.physics);
+                    break;
+
             }
 
             if(obstacle!=null) {
