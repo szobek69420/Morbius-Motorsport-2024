@@ -206,11 +206,11 @@ public class MainFrame extends JFrame {
                 break;
 
             case LEVEL_4:
-                levelFile=new File(levelFile,"190467C1EA52B2B69EA0F7700C3507C9199F4A50ADDFB522B7DA2.bingchilling");
+                levelFile=new File(levelFile,"FBD2F960EE7823D5EA8CF11B4094D4B40B81C2F2708A0C28D6C0EC8FEE.bingchilling");
                 break;
 
             case LEVEL_5:
-                levelFile=new File(levelFile,"190467C1EA52B2B69EA0F7700C3507C9199F4A50ADDFB522B7DA2.bingchilling");
+                levelFile=new File(levelFile,"2D3B1F0D647C4D15D0794BE1CF6A53012A4DC03AA6BF33F3F9C1B40C3.bingchilling");
                 break;
         }
 
