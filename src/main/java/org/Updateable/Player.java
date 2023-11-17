@@ -1,5 +1,6 @@
 package main.java.org.Updateable;
 
+import main.java.org.AudioManagement.AudioManager;
 import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Physics.AABB;
@@ -125,6 +126,7 @@ public class Player implements Updateable{
         if(up>1&&canJump){
             canJump=false;
             velocity.set(1,10);
+            AudioManager.playSound(AudioManager.SOUNDS.JUMP);
         }
         else
             velocity.set(1,velocity.get(1)-20.0f*(float)deltaTime);
@@ -182,6 +184,8 @@ public class Player implements Updateable{
 
         GameScreen.mainCamera.setPitch(0);
         GameScreen.mainCamera.setYaw(0);
+
+        AudioManager.playSound(AudioManager.SOUNDS.SPAWN);
     }
 
     public static float lerp(float a, float b, float i){

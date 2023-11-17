@@ -1,5 +1,6 @@
 package main.java.org.Screens;
 
+import main.java.org.AudioManagement.AudioManager;
 import main.java.org.InputManagement.InputManager;
 import main.java.org.Main;
 import main.java.org.Obstacles.Obstacle;
@@ -81,6 +82,7 @@ public class GameScreen extends JPanel{
         player=new Player();
         this.addUpdateable(player);
         player.addToPhysics(GameScreen.physics);
+        player.respawn();
 
         obstacles=new ArrayList<>();
 
@@ -136,6 +138,8 @@ public class GameScreen extends JPanel{
             this.add(deathScreen);
 
             MainFrame.currentFrame.setVisible(true);
+
+            AudioManager.playSound(AudioManager.SOUNDS.DEATH);
         }
         else if(justUndied){
             if(deathScreen!=null){

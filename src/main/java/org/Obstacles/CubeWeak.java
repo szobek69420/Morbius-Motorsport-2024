@@ -1,5 +1,6 @@
 package main.java.org.Obstacles;
 
+import main.java.org.AudioManagement.AudioManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Physics.AABB;
 import main.java.org.Render.Drawables.Cube;
@@ -50,6 +51,7 @@ public class CubeWeak extends Obstacle{
                 drawable.setPosition(new Vector3(0,10000,0));
                 aabb.setPosition(new Vector3(0,10000,0));
                 dead=true;
+                AudioManager.playSound(AudioManager.SOUNDS.BLOCK_BREAKS);
             }
         }
     }

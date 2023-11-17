@@ -1,5 +1,6 @@
 package main.java.org.Screens;
 
+import main.java.org.AudioManagement.AudioManager;
 import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Main;
@@ -15,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
@@ -85,6 +87,13 @@ public class MainFrame extends JFrame {
             @Override
             public void focusGained(FocusEvent e) {}
         });
+
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+                AudioManager.closeAll();
+            }
+        });
+        AudioManager.playSound(AudioManager.SOUNDS.MUSIC);
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
