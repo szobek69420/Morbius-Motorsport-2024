@@ -12,20 +12,48 @@ import main.java.org.Screens.GameScreen;
  */
 public class Player implements Updateable{
 
+    /**
+     * Der Collider des Spielers
+     */
     private AABB aabb;
 
+    /**
+     * Die maximale horizontale Geschwindigkeit, die von dem Spieler durch Spazieren erreicht werden kann
+     */
     private static final float MAX_VELOCITY=4;
+    /**
+     * @hidden
+     */
     private static final float MAX_VELOCITY_SQUARED=16;
-
+    /**
+     * @hidden
+     */
     private boolean canJump=false;
+    /**
+     * @hidden
+     */
     private boolean isSprinting=false;
 
-
+    /**
+     * @hidden
+     */
     private final float ZOOM_SPEED=300.0f;
+    /**
+     * @hidden
+     */
     private final float ZOOMED_FOV=15.0f;
+    /**
+     * @hidden
+     */
     private final float BASED_FOV=60.0f;
+    /**
+     * Das aktuelle Sichtfeld der Kamera
+     */
     private float currentFov;
 
+    /**
+     * Erzeugt eine neue Player-Instanz
+     */
     public Player(){
         aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false,"Player");
 

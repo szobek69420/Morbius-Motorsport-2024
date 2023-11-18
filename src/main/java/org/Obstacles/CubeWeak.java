@@ -9,12 +9,31 @@ import java.awt.*;
 
 public class CubeWeak extends Obstacle{
 
+    /**
+     * Ist das Hindernis vom Spieler berüht?
+     */
     private boolean touched;
+    /**
+     * Wie lang soll das Hinderniss nach Berühren halten, bevor es zerstört wird?
+     */
     private double timeLeft;
+    /**
+     * Ist das Hindernis zerstört?
+     */
     private boolean dead;
 
+    /**
+     * Die Anfangsposition des Hindernisses
+     */
     private final Vector3 basedPosition;
 
+    /**
+     * Erzeugt ein quaderformiges Hindernis, das unbewegbar ist
+     * @param name der Name des Hindernisses
+     * @param pos die Position des Hindernisses
+     * @param scale die Größe des Hindernisses
+     * @param color die Basisfarbe des Hindernisses
+     */
     public CubeWeak(String name, Vector3 pos, Vector3 scale, Color color){
         super();
 
@@ -32,6 +51,12 @@ public class CubeWeak extends Obstacle{
         basedPosition=pos.copy();
     }
 
+    /**
+     * Überschreibt die update-Funktion des Updateable-Interfaces.
+     * Sucht nach Kollisionen mit dem Spieler.
+     * Detektiert, ob es fallen soll.
+     * @param deltaTime die Zeit, die nach dem letzten UpdateableManager-Anruf verging
+     */
     @Override
     public void update(double deltaTime) {
         if(dead)
@@ -56,6 +81,10 @@ public class CubeWeak extends Obstacle{
         }
     }
 
+    /**
+     * Überschreibt die reset-Funktion der Obstacle-Klasse.
+     * Wiederherstellt den Anfangslage des Hindernisses.
+     */
     public void reset(){
         timeLeft=1.0f;
         touched=false;

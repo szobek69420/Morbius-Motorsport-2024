@@ -46,16 +46,39 @@ public class GameScreen extends JPanel{
      */
     public static UpdateableManager um;
 
+    /**
+     * @hidden
+     */
     private static boolean paused=false;
+    /**
+     * @hidden
+     */
     private static boolean justPaused=false;
+    /**
+     * @hidden
+     */
     private static boolean justUnpaused=false;
+    /**
+     * @hidden
+     */
     private static boolean focusLost=false;
 
-
+    /**
+     * @hidden
+     */
     private static boolean justDied=false;
+    /**
+     * @hidden
+     */
     private static boolean justUndied=false;
 
+    /**
+     * @hidden
+     */
     private static boolean justFinished=false;
+    /**
+     * @hidden
+     */
     private static boolean justUnfinished=false;
 
     /**
@@ -68,18 +91,45 @@ public class GameScreen extends JPanel{
      */
     private ArrayList<Obstacle> obstacles;
 
+    /**
+     * @hidden
+     */
     private PauseMenu pauseMenu=null;
+    /**
+     * @hidden
+     */
     private DeathScreen deathScreen=null;
+    /**
+     * @hidden
+     */
     private FinishScreen finishScreen=null;
 
+    /**
+     * @hidden
+     */
     private Font timerFont=null;
 
+    /**
+     * @hidden
+     */
     private int screenWidth,screenHeight;
 
+    /**
+     * @hidden
+     */
     private double time;
+    /**
+     * @hidden
+     */
     private double highscore;
+    /**
+     * @hidden
+     */
     private String highscoreString;
 
+    /**
+     * @hidden
+     */
     private String devsBestString=null;
 
 
@@ -270,14 +320,26 @@ public class GameScreen extends JPanel{
         g.drawImage(image,0,0,this);
     }
 
+    /**
+     * Stellt die PAR-Zeit ein
+     * @param devsBestInSeconds PAR-Zeit in Sekunden
+     */
     public void setDevsBest(double devsBestInSeconds){
         devsBestString=timeString(devsBestInSeconds);
     }
 
+    /**
+     * Registriert ein Updateable-Objekt
+     * @param u zu registrierendes Updateable-Objekt
+     */
     public void addUpdateable(Updateable u){
         um.addUpdateable(u);
     }
 
+    /**
+     * Registriert ein Hindernis
+     * @param obbi zu registrierendes Hindernis
+     */
     public void addObstacle(Obstacle obbi){
         obstacles.add(obbi);
     }

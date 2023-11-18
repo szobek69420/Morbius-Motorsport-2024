@@ -8,12 +8,32 @@ import java.awt.*;
 
 public class CubeMoving extends Obstacle{
 
+    /**
+     * Die vergangene Zeit seit der Erzeugung
+     */
     private double timeGone;
-
+    /**
+     * Die Anfangsposition des Hindernisses
+     */
     private final Vector3 basedPosition;
+    /**
+     * Der maximale Abstand von Anfangsposition
+     */
     private final Vector3 amplitude;
+    /**
+     * Die Bewegungsgeschwindigkeit
+     */
     private final float speed;
 
+    /**
+     * Erzeugt ein quaderformiges Hindernis, das unbewegbar ist
+     * @param name der Name des Hindernisses
+     * @param pos die Position des Hindernisses
+     * @param scale die Größe des Hindernisses
+     * @param color die Basisfarbe des Hindernisses
+     * @param amplitude Was ist die maximale Abweichung der Position von der Anfangsposition
+     * @param speed Die Geschwindigkeit des Hindernisses
+     */
     public CubeMoving(String name, Vector3 pos, Vector3 scale, Color color,Vector3 amplitude, float speed){
         super();
 
@@ -31,6 +51,11 @@ public class CubeMoving extends Obstacle{
         this.speed=speed;
     }
 
+    /**
+     * Überschreibt die update-Funktion des Updateable-Interfaces.
+     * Bewegt das Hindernis.
+     * @param deltaTime die Zeit, die nach dem letzten UpdateableManager-Anruf verging
+     */
     @Override
     public void update(double deltaTime) {
         timeGone+=speed*deltaTime;
@@ -41,6 +66,10 @@ public class CubeMoving extends Obstacle{
         aabb.setPosition(pos);
     }
 
+    /**
+     * Überschreibt die reset-Funktion der Obstacle-Klasse.
+     * Wiederherstellt die Position des Hindernisses.
+     */
     public void reset(){
         timeGone=0.0f;
 

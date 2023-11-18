@@ -11,6 +11,9 @@ public class UpdateableManager {
      */
     private ArrayList<Updateable> updateables;
 
+    /**
+     * Erzeugt eine neue UpdateableManager-Instanz
+     */
     public UpdateableManager(){
         updateables=new ArrayList<>();
     }

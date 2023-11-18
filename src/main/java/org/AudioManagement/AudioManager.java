@@ -6,7 +6,13 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * Lasst andere Teile des Programmes Töne spielen
+ */
 public final class AudioManager {
+    /**
+     * Die Typen der Töne
+     */
     public static enum SOUNDS{
         DEATH,
         JUMP,
@@ -14,12 +20,22 @@ public final class AudioManager {
         BLOCK_BREAKS,
         MUSIC
     };
-
+    /**
+     * Die Liste solcher Töne, die in diesem Zeitpunkt spielen
+     */
     private static ArrayList<Sound> activeSounds=new ArrayList<>();
 
+    /**
+     * Hinzufügt einen Ton zur Liste der aktiven Töne
+     * @param sound der zu hinzufügene Ton
+     */
     private static synchronized void addSound(Sound sound){
         activeSounds.add(sound);
     }
+    /**
+     * Löscht einen Ton von der Liste der aktiven Töne
+     * @param sound der zu löschene Ton
+     */
     private static synchronized void closeSound(Sound sound){
         if(!activeSounds.contains(sound))
             return;
@@ -29,6 +45,9 @@ public final class AudioManager {
         activeSounds.remove(sound);
     }
 
+    /**
+     * Schliesst alle aktive Töne
+     */
     public static synchronized void closeAll(){
         for (Sound s : activeSounds){
             s.clip.stop();
@@ -36,6 +55,10 @@ public final class AudioManager {
         }
     }
 
+    /**
+     * Das Interface für das Programm, Töne zu abspielen
+     * @param sound der Typ des gewünschten Tones
+     */
     public static void playSound(SOUNDS sound){
         switch (sound){
             case DEATH -> addSound(new Sound(SOUNDS.DEATH, false));
@@ -46,9 +69,20 @@ public final class AudioManager {
         }
     }
 
+    /**
+     * Eine Wrapper-Klasse für Audioklippen
+     */
     private static class Sound {
+        /**
+         * Das abgespielete Audioklip
+         */
         public Clip clip;
 
+        /**
+         * Erzeugt einen neuen Ton
+         * @param sound der Typ des gewünschten Tones
+         * @param loopEternally soll der Ton unendlich wiederholt werden?
+         */
         public Sound(AudioManager.SOUNDS sound, boolean loopEternally){
             try{
                 File audioFile=new File(Main.assetsDirectory,"audio");

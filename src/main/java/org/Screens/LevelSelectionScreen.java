@@ -16,8 +16,13 @@ import java.util.Scanner;
  */
 public class LevelSelectionScreen extends JPanel {
 
+    /**
+     * @hidden
+     */
     public static final int LEVEL_COUNT=5;
-
+    /**
+     * @hidden
+     */
     private int screenWidth,screenHeight;
 
     /**

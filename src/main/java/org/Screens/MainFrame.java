@@ -143,13 +143,32 @@ public class MainFrame extends JFrame {
         }
     }
 
+    /**
+     * Stellt die aktuelle Spielstufe ein
+     * @param currentStage GAME_STAGES Variable für die aktuelle Spielstufe
+     */
     public void setCurrentStage(GAME_STAGES currentStage){
         this.currentStage=currentStage;
     }
+
+    /**
+     * Stellt die aktuelle Stufe ein
+     * @param levelSelected LEVELS Variable für die aktuelle Stufe
+     */
     public void setCurrentLevel(LEVELS levelSelected){
         this.levelSelected=levelSelected;
     }
+
+    /**
+     * Gibt die aktuelle Stufe zurück
+     * @return die aktuelle Stufe
+     */
     public LEVELS getCurrentLevel(){return this.levelSelected;}
+
+    /**
+     * Stellt die Bestzeit des Spielers in der gewählten Stufe ein
+     * @param highscore die Bestzeit des Spielers in der gewählten Stufe
+     */
     public void setHighscore(double highscore){
         this.highscore=highscore;
     }
