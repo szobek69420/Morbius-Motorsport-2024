@@ -8,8 +8,16 @@ import main.java.org.Screens.GameScreen;
 
 import java.awt.*;
 
+/**
+ * Ein Würfel, der ans Bildschirm gezeichnet werden kann.
+ * Vererbt von Drawable.
+ */
 public class Cube extends Drawable{
 
+    /**
+     * Erzeugt eine neue Würfelinstanz
+     * @param color Die Basisfarbe des Würfels
+     */
     public Cube(Color color){
         vertices=new Vector3[8];
         vertices[0]=new Vector3(1,-1,-1);
@@ -63,6 +71,11 @@ public class Cube extends Drawable{
         this.setName("amogus");
     }
 
+    /**
+     * Überschreibt die render-Funktion der Drawableklasse.
+     * @param g Die Graphics-Kontext, in der das Objekt gezeichnet werden soll.
+     * @param cam Die Kamera, nach deren Orientation die Bildschirmpositionen berechnet werden sollen.
+     */
     @Override
     public void render(Graphics g, Camera cam){
         g.setColor(Color.red);
