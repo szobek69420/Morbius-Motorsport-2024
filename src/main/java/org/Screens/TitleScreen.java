@@ -10,9 +10,23 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Eine Kindklasse von JPanel.
+ * Beinhaltet den Titelbildschirminhalt.
+ */
 public class TitleScreen extends JPanel {
 
+    /**
+     * Die Größe des Bildschirmes
+     */
     private int screenWidth,screenHeight;
+
+    /**
+     * Erzeugt eine neue TitleScreen-Instanz.
+     * Sein Inhalt besteht aus zwei Teilen: Vordergrund (TitleScreenForeground) und Hintergrund (TitleScreenBackground)
+     * @param width die Breite des Bildschirmes in Pixels
+     * @param height die Höhe des Bildschrimes in Pixels
+     */
     public TitleScreen(int width, int height) {
         screenWidth=width;
         screenHeight=height;
@@ -29,7 +43,10 @@ public class TitleScreen extends JPanel {
         this.add(tb);
     }
 
-
+    /**
+     * Der Vordergrund des Inhaltes, er vererbt von JPanel.
+     * Er beinhaltet die Starttaste, die Fliehtaste und den Title.
+     */
     private class TitleScreenForeground extends JPanel{
         public TitleScreenForeground(){
             super();
@@ -106,9 +123,19 @@ public class TitleScreen extends JPanel {
         }
     }
 
+    /**
+     * Der Hintergrund des Inhaltes, er vererbt von JPanel.
+     * Er beinhaltet das Hintergrundbild.
+     */
     private class TitleScreenBackground extends JPanel{
-
+        /**
+         * Das eingeladene Bild
+         */
         private BufferedImage background;
+
+        /**
+         * Erzeugt eine neue LevelSelectionScreenBackground-Instanz und ladet das Hintergrundbild ein
+         */
         public TitleScreenBackground(){
             super();
 
@@ -127,9 +154,13 @@ public class TitleScreen extends JPanel {
             }
         }
 
+        /**
+         * Überschreibt die paint-Funktion von JComponent, um den Inhalt besser angepasst werden zu können.
+         * @param g  the <code>Graphics</code> context in which to paint
+         */
         @Override
         public void paint(Graphics g){
-            super.paintComponents(g);
+            super.paint(g);
 
             if(background!=null){
                 g.drawImage(background, 0, 0, null);

@@ -38,7 +38,7 @@ public class Main {
             var frame=new MainFrame("Morbius Motorsport 2024 - GOTY Edition");
             frame.setResizable(false);
 
-            ((MainFrame)MainFrame.currentFrame).run();
+            ((MainFrame)MainFrame.currentFrame).start();
         }
 
         //InputManager.showCursor(hehe);

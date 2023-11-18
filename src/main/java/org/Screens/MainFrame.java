@@ -22,16 +22,25 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Eine Kindklasse von JFrame, es verwaltet den Bildschirm, in dem das Spiel passieren wird
+ */
 public class MainFrame extends JFrame {
 
+    /**
+     * Ein Enum für die verschiedenen Stufen des Spieles:
+     * -TITLE_SCREEN: der Startbildschirm, es zeigt den Titel und ein wunderschönes Hintergrundbild
+     * -LEVEL_SELECTOR: der Stufenauswahlbildschirm, es zeigt Tasten, mit denen die Stufen geladen werden können
+     */
     public static enum GAME_STAGES{
         TITLE_SCREEN,
         LEVEL_SELECTOR,
         GAME,
-        END_SCREEN,
-        QUIT
     }
 
+    /**
+     * Ein Enum für die verschiedenen Stufen. Es ist entstanden, um die Kode lesbarer zu machen
+     */
     public static enum LEVELS{
         LEVEL_1,
         LEVEL_2,
@@ -39,6 +48,12 @@ public class MainFrame extends JFrame {
         LEVEL_4,
         LEVEL_5
     }
+
+    /**
+     * LEVELS->int Konverter
+     * @param level das zu konvertierende Stufenenum
+     * @return der dem level entsprechenden Integerwert
+     */
     public static int getLevelNumber(LEVELS level){
         switch (level){
             case LEVEL_1 -> {
@@ -61,11 +76,27 @@ public class MainFrame extends JFrame {
         return -1;
     }
 
+    /**
+     * Das aktuell gezeigtes Bildschirm
+     */
     private GAME_STAGES currentStage;
     private double highscore;
+
+    /**
+     * Aktive MainFrame-Instanz
+     */
     public static JFrame currentFrame=null;
+
+    /**
+     * Die aktuell gewählte Stufe
+     */
     private LEVELS levelSelected;
 
+    /**
+     * Erzeugt eine neue MainFrame-Instanz.
+     * Es stellt currentFrame zu der erzeugten Instanz.
+     * @param name Der Name des erzeugten Fensters
+     */
     public MainFrame(String name){
         super(name);
         currentFrame=this;
@@ -99,7 +130,10 @@ public class MainFrame extends JFrame {
         this.setVisible(true);
     }
 
-    public void run(){
+    /**
+     * Die Spielschleife
+     */
+    public void start(){
         while(true){
             switch (currentStage){
                 case TITLE_SCREEN -> titleScreen();
@@ -120,6 +154,10 @@ public class MainFrame extends JFrame {
         this.highscore=highscore;
     }
 
+    /**
+     * Erzeugt eine TitleScreen-Instanz und wartet für Benutzereingabe.
+     * Das Spiel kann von hier zum Stufenauswahlbildschirm gehen oder geschlossen werden.
+     */
     private void titleScreen()  {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         TitleScreen titleScreen=new TitleScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
@@ -139,6 +177,10 @@ public class MainFrame extends JFrame {
         this.remove(titleScreen);
     }
 
+    /**
+     * Erzeugt eine LevelSelectionScreen-Instanz und wartet für Benutzereingabe.
+     * Das Spiel kann von hier zum Titelbildschirm und Spielbildschirm (GameScreen) gehen oder geschlossen werden.
+     */
     private void levelSelectionScreen()  {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         LevelSelectionScreen levelScreen=new LevelSelectionScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
@@ -158,6 +200,11 @@ public class MainFrame extends JFrame {
         this.remove(levelScreen);
     }
 
+    /**
+     * Erzeugt eine GameScreen-Instanz.
+     * Beinhaltet eine andere Spielschleife, die zyklisch die frame-Funktion der GameScreen-Instanz aufruft. Ein Laufen dieser Schleife ist "Frame" genannt.
+     * Das Spiel kann am höchstens 60 FPS laufen
+     */
     private void game(){
 
 
@@ -198,6 +245,10 @@ public class MainFrame extends JFrame {
         InputManager.showCursor(this);
     }
 
+    /**
+     * Am Spielanfang (GameScreen-Erzeugung) wird die zur Stufe gehörige Datei eingelesen, und danach das Spielfeld gebaut.
+     * @param gameScreen Die aktive GameScreen-Instanz
+     */
     public void fillGameScreen(GameScreen gameScreen){//temporary
 
         File levelFile=new File(Main.dataDirectory);
@@ -308,7 +359,7 @@ public class MainFrame extends JFrame {
             }
 
             if(obstacle!=null) {
-                gameScreen.um.addUpdateable(obstacle);
+                GameScreen.um.addUpdateable(obstacle);
                 gameScreen.addObstacle(obstacle);
             }
         }

@@ -7,7 +7,11 @@ import main.java.org.Physics.AABB;
 import main.java.org.Physics.CollisionDetection;
 import main.java.org.Screens.GameScreen;
 
+/**
+ * Es ist die Entität, die von dem Spieler steuert werden wird
+ */
 public class Player implements Updateable{
+
     private AABB aabb;
 
     private static final float MAX_VELOCITY=4;
@@ -28,11 +32,23 @@ public class Player implements Updateable{
         currentFov=BASED_FOV;
     }
 
+    /**
+     * Registriert den Collider des Spielerinstanzes zu einem Physiksystem
+     * @param cd Das Physiksystem, zu dem der Collider hinzufügt wird
+     */
     public void addToPhysics(CollisionDetection cd){
         cd.addAABB(aabb);
     }
 
 
+    /**
+     * Überschreibt die update Funktion des Updateable Interfaces
+     * Überprüft, ob der Spieler mit einem anderen Collider gestoßen ist. Falls ja:
+     * -falls der andere Collider der Name "Sus" hat, dann wird der Spieler sterben
+     * -falls der andere Collider der Name "Finish" hat und er ist unter dem Spieler, dann wird das Spiel enden
+     * Sucht für Benutzereingaben
+     * @param deltaTime die Zeit, die nach dem letzten Frame verging
+     */
     @Override
     public void update(double deltaTime){
         if((System.nanoTime()-aabb.getLastCollision())*0.000000001<deltaTime&&aabb.getLastCollisionType()== AABB.CollisionType.BOTTOM)
@@ -58,6 +74,10 @@ public class Player implements Updateable{
 
     }
 
+    /**
+     * Überprüft, ob es neue Benutzereingaben gibt und stellt die Geschwindigkeit des Spielers den entsprechend
+     * @param deltaTime die Zeit, die nach dem letzten Frame verging
+     */
     private void Move(double deltaTime){
         float forward=0.0f;
         float left=0.0f;
@@ -135,6 +155,10 @@ public class Player implements Updateable{
         //System.out.println(pos);
     }
 
+    /**
+     * Überprüft, ob eine Mausbewegung passierte und stellt die Kameraeinrichtung dementsprechend
+     * @param deltaTime die Zeit, die nach dem letzten Frame verging
+     */
     private void RotateCamera(double deltaTime){
         //float left=RenderThread.mainCamera.getYaw();
         //float up=RenderThread.mainCamera.getPitch();
@@ -163,6 +187,10 @@ public class Player implements Updateable{
         GameScreen.mainCamera.setYaw(left);
     }
 
+    /**
+     * Verändert das Sichtfeld des Spielers entsprechend den Benutzereingaben
+     * @param deltaTime die Zeit, die nach dem letzten Frame verging
+     */
     private void zoomControl(float deltaTime){
         if(InputManager.C){
             currentFov-=deltaTime*ZOOM_SPEED;
@@ -178,6 +206,10 @@ public class Player implements Updateable{
         GameScreen.mainCamera.setFOV(currentFov);
     }
 
+    /**
+     * Falls das Spiel zum Start zurückgestellt werden soll, wird das von dieser Funktion erledigt
+     * respawn wird vor dem Start und nach Tasten des Respawnbuttones des Endbildschirmes gerufen
+     */
     public void respawn(){
         aabb.setVelocity(new Vector3(0,0,0));
         aabb.setPosition(new Vector3(0,0,0));
@@ -186,9 +218,5 @@ public class Player implements Updateable{
         GameScreen.mainCamera.setYaw(0);
 
         AudioManager.playSound(AudioManager.SOUNDS.SPAWN);
-    }
-
-    public static float lerp(float a, float b, float i){
-        return a+(b-a)*i;
     }
 }

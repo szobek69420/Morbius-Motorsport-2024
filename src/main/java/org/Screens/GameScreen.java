@@ -26,15 +26,30 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/**
+ * Die Kindklasse von JPanel.
+ * Beinhaltet den Spielinhalt.
+ */
 public class GameScreen extends JPanel{
+    /**
+     * Der aktive Renderer
+     */
     public static Camera mainCamera;
+
+    /**
+     * Das aktive Physiksystem
+     */
     public static CollisionDetection physics;
+
+    /**
+     * Der aktive Updateable-Verwalter
+     */
+    public static UpdateableManager um;
 
     private static boolean paused=false;
     private static boolean justPaused=false;
     private static boolean justUnpaused=false;
     private static boolean focusLost=false;
-    private static boolean focusGained=false;
 
 
     private static boolean justDied=false;
@@ -43,10 +58,14 @@ public class GameScreen extends JPanel{
     private static boolean justFinished=false;
     private static boolean justUnfinished=false;
 
-
-    public UpdateableManager um;
-
+    /**
+     * Die aktive Player-Instanz
+     */
     private Player player=null;
+
+    /**
+     * Die Hindernisse des geladenen Spielfeldes
+     */
     private ArrayList<Obstacle> obstacles;
 
     private PauseMenu pauseMenu=null;
@@ -64,6 +83,16 @@ public class GameScreen extends JPanel{
     private String devsBestString=null;
 
 
+    /**
+     * Erzeugt eine neue GameScreen-Instanz.
+     * Gibt neuen Werte für den folgenden statischen Feldern:
+     * -mainCamera
+     * -physics
+     * -um
+     * @param width Die Breite des Fensters
+     * @param height Die Höhe des Fensters
+     * @param highscore Die Bestzeit in der ausgewählten Stufe
+     */
     public GameScreen(int width, int height, double highscore){
         mainCamera=new Camera(width,height);
         physics=new CollisionDetection();
@@ -93,7 +122,12 @@ public class GameScreen extends JPanel{
         MainFrame.currentFrame.setVisible(true);
     }
 
-
+    /**
+     * Ein Frame der inneren Spielschleife.
+     * Aufruft die Render-, Physik- und Updateable-Systeme.
+     * Falls das Bild ist gehalten oder beendet, werden andere Bildschirme als Inhalt angezeigt.
+     * @param deltaTime die Zeit, die seit dem letzten Frame verging.
+     */
     public void frame(double deltaTime){
         if(!paused){
             time+=deltaTime;
@@ -114,7 +148,7 @@ public class GameScreen extends JPanel{
             pauseMenu=new PauseMenu(screenWidth,screenHeight);
             this.add(pauseMenu);
 
-            focusLost=false;
+            focusLost=false;//kell, hogy a PauseMenu ne kérjen egyből focust, ha a játékos elkattintott a képernyőről
             MainFrame.currentFrame.setVisible(true);
         }
         else if(justUnpaused){
@@ -199,8 +233,14 @@ public class GameScreen extends JPanel{
         }
     }
 
+    /**
+     * Überschreibt die paint-Funktion von JComponent, um den Inhalt besser angepasst werden zu können.
+     * @param g  the <code>Graphics</code> context in which to paint
+     */
     @Override
     public void paint(Graphics g){
+        super.paint(g);
+
         BufferedImage image = new BufferedImage(screenWidth,screenHeight,BufferedImage.TYPE_INT_RGB);
         Graphics graphics = image.getGraphics();
 
@@ -243,6 +283,12 @@ public class GameScreen extends JPanel{
     }
 
     //static
+
+    /**
+     * Konvertiert eine, in Sekunden gegebene Zeitintervall zum String mit der Form mm:ss.hh
+     * @param time die zu umformende Zeit
+     * @return das erzeugte String
+     */
     public static String timeString(double time){
         if(time<0)
             return "unknown";
@@ -263,50 +309,71 @@ public class GameScreen extends JPanel{
 
         return String.copyValueOf(chars);
     }
+
+    /**
+     * Ist das Spiel gehalten?
+     * @return TRUE falls das Spiel gehalten ist, FALSE andererweise
+     */
     public static boolean isPaused(){
         return paused;
     }
 
+    /**
+     * Pausiert das Spiel (die Wirkung dieser Funktion wird in dem nächsten Frame gesehen)
+     */
     public static void pause(){
         GameScreen.paused=true;
         GameScreen.justPaused=true;
     }
 
+    /**
+     * Fortfahren mit dem Spiel (die Wirkung dieser Funktion wird in dem nächsten Frame gesehen)
+     */
     public static void unpause(){
         GameScreen.justUnpaused=true;
     }
 
+    /**
+     * Sagt dem GameScreen, dass der Spieler gestorben ist (die Wirkung dieser Funktion wird in dem nächsten Frame gesehen)
+     */
     public static void die(){
         GameScreen.paused=true;
         GameScreen.justDied=true;
     }
 
+    /**
+     * Startet ein neues Spiel (die Wirkung dieser Funktion wird in dem nächsten Frame gesehen)
+     */
     public static void undie(){
         GameScreen.justUndied=true;
     }
 
+    /**
+     * Sagt dem GameScreen, dass der Spieler das Ziel erreicht hat (die Wirkung dieser Funktion wird in dem nächsten Frame gesehen)
+     */
     public static void finish(){
         GameScreen.paused=true;
         GameScreen.justFinished=true;
     }
 
+    /**
+     * Startet ein neues Spiel (die Wirkung dieser Funktion wird in dem nächsten Frame gesehen)
+     */
     public static void unfinish(){
         GameScreen.justUnfinished=true;
     }
 
-    public static void focusLost(){
-        if(!paused){
-            focusLost=true;
-            pause();
-        }
-    }
-
-    public static void focusGained(){
-        focusGained=true;
-    }
-
-
+    /**
+     * Der PauseMenu-Inhalt. Er wird dann gezeigt, falls das Spiel gehalten ist.
+     * Er vererbt von JPanel.
+     */
     private static class PauseMenu extends JPanel{
+
+        /**
+         * Erzeugt eine neue PauseMenu-Instanz und falls das MainFrame Fokus hat, wird er auch nach Fokus fragen.
+         * @param screenWidth Die Breite des Fensters.
+         * @param screenHeight Die Höhe des Fensters.
+         */
         public PauseMenu(int screenWidth, int screenHeight){
             super();
 
@@ -376,7 +443,17 @@ public class GameScreen extends JPanel{
         }
     }
 
+    /**
+     * Das Sterbbildschrim. Es wird dann gezeigt, falls das Spiel gehalten ist.
+     * Es vererbt von JPanel.
+     */
     private static class DeathScreen extends JPanel{
+
+        /**
+         * Erzeugt eine neue DeathScreen-Instanz und wird er auch nach Fokus fragen.
+         * @param screenWidth Die Breite des Fensters.
+         * @param screenHeight Die Höhe des Fensters.
+         */
         public DeathScreen(int screenWidth, int screenHeight){
             super();
 
@@ -444,7 +521,19 @@ public class GameScreen extends JPanel{
         }
     }
 
+    /**
+     * Das Erfolgsbildschrim. Es wird dann gezeigt, falls das Spiel gehalten ist.
+     * Es vererbt von JPanel.
+     */
     private static class FinishScreen extends JPanel{
+
+        /**
+         * Erzeugt eine neue FinishScreen-Instanz und wird er auch nach Fokus fragen.
+         * @param screenWidth Die Breite des Fensters.
+         * @param screenHeight Die Höhe des Fensters.
+         * @param time Die Zeit der Spieler zum Absolvieren gebraucht.
+         * @param highscore Die Bestzeit des Spielers.
+         */
         public FinishScreen(int screenWidth, int screenHeight, String time, String highscore){
             super();
 

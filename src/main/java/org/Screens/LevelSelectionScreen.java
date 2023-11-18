@@ -10,11 +10,21 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Scanner;
 
+/**
+ * Eine Kindklasse von JPanel.
+ * Beinhaltet den Stufenauswahlbildschirminhalt.
+ */
 public class LevelSelectionScreen extends JPanel {
 
     public static final int LEVEL_COUNT=5;
 
     private int screenWidth,screenHeight;
+
+    /**
+     * Erzeugt eine neue LevelSelectionScreen-Instanz
+     * @param width Die Breite des Fensters
+     * @param height Die Höhe des Fensters
+     */
     public LevelSelectionScreen(int width, int height) {
         screenWidth=width;
         screenHeight=height;
@@ -33,6 +43,10 @@ public class LevelSelectionScreen extends JPanel {
         this.add(tb);
     }
 
+    /**
+     * Ladet die Daten der Stufen von einer Datei ein.
+     * @return Ein Array von Stufendaten-Instanzen (LevelData)
+     */
     private LevelData[] fetchLevelData(){
         LevelData[] leveldata=new LevelData[LEVEL_COUNT];
 
@@ -67,18 +81,42 @@ public class LevelSelectionScreen extends JPanel {
         return leveldata;
     }
 
+    /**
+     * Eine Memberklasse des LevelSelectionScreenes.
+     * Nur eine Hilfstruktur für das Speichern der Stufendaten.
+     * Beinhaltet die Daten über eine Stufe.
+     */
     private static class LevelData{
+        /**
+         * Die Bestzeit des Spielers in dieser Stufe
+         */
         public double highscore;
+        /**
+         * TRUE, falls der Spieler dieser Stufe schon absolviert hat
+         */
         public boolean done;
 
+        /**
+         * Erzeugt eine neue LevelData-Instanz
+         * @param done hat der Spieler die Stufe schon absolviert
+         * @param highscore die Bestzeit des Spielers in dieser Stufe
+         */
         public LevelData(boolean done, double highscore){
             this.done=done;
             this.highscore=highscore;
         }
     }
 
-
+    /**
+     * Der Vordergrund des Stufenauswahlbildschirminhaltes, er vererbt von JPanel.
+     * Er beinhaltet die Stufenauswahltasten und noch eine Taste zum Zurückgang.
+     */
     private class LevelSelectionScreenForeground extends JPanel{
+
+        /**
+         * Erzeugt eine neue LevelSelectionScreenForeground-Instanz nach den gegebenen Daten
+         * @param levelData die schon eingeladene Stufendaten nach Stufenreihenfolge geordnet.
+         */
         public LevelSelectionScreenForeground(LevelData[] levelData){
             super();
 
@@ -152,9 +190,19 @@ public class LevelSelectionScreen extends JPanel {
         }
     }
 
+    /**
+     * Der Hintergrund des Stufenauswahlbildschirminhaltes, er vererbt von JPanel.
+     * Er beinhaltet das Hintergrundbild.
+     */
     private class LevelSelectionScreenBackground extends JPanel{
-
+        /**
+         * Das eingeladene Bild
+         */
         private BufferedImage background;
+
+        /**
+         * Erzeugt eine neue LevelSelectionScreenBackground-Instanz und ladet das Hintergrundbild ein
+         */
         public LevelSelectionScreenBackground(){
             super();
 
@@ -173,9 +221,13 @@ public class LevelSelectionScreen extends JPanel {
             }
         }
 
+        /**
+         * Überschreibt die paint-Funktion von JComponent, um den Inhalt besser angepasst werden zu können.
+         * @param g  the <code>Graphics</code> context in which to paint
+         */
         @Override
         public void paint(Graphics g){
-            super.paintComponents(g);
+            super.paint(g);
 
             if(background!=null){
                 g.drawImage(background, 0, 0, null);
@@ -183,6 +235,11 @@ public class LevelSelectionScreen extends JPanel {
         }
     }
 
+    /**
+     * Eine statische Funktion für die Speicherung einer neuen Bestzeit
+     * @param level die Stufe, in der die Bestzeit erreicht worden ist
+     * @param highscoreInSeconds die Bestzeit in Sekunden
+     */
     public static void saveHighscore(MainFrame.LEVELS level, double highscoreInSeconds){
         int levelNumber=MainFrame.getLevelNumber(level);
 
