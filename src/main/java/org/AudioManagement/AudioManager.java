@@ -1,6 +1,7 @@
 package main.java.org.AudioManagement;
 
 import main.java.org.Main;
+import main.java.org.Settings.Settings;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -53,6 +54,21 @@ public final class AudioManager {
             s.clip.stop();
             s.clip.close();
         }
+        activeSounds=new ArrayList<>();
+    }
+
+    /**
+     * Schliesst nur die Effekttöne
+     */
+    public static synchronized void closeAllSfx(){
+        for(int i=0;i<activeSounds.size();i++){
+            if(activeSounds.get(i).type!=SOUNDS.MUSIC){
+                activeSounds.get(i).clip.stop();
+                activeSounds.get(i).clip.close();
+                activeSounds.remove(i);
+                i--;
+            }
+        }
     }
 
     /**
@@ -60,6 +76,9 @@ public final class AudioManager {
      * @param sound der Typ des gewünschten Tones
      */
     public static void playSound(SOUNDS sound){
+        if(sound!=SOUNDS.MUSIC&& !Settings.sfxOn())
+            return;
+
         switch (sound){
             case DEATH -> addSound(new Sound(SOUNDS.DEATH, false));
             case SPAWN -> addSound(new Sound(SOUNDS.SPAWN, false));
@@ -77,6 +96,10 @@ public final class AudioManager {
          * Das abgespielete Audioklip
          */
         public Clip clip;
+        /**
+         * Der Typ des Tones
+         */
+        public final SOUNDS type;
 
         /**
          * Erzeugt einen neuen Ton
@@ -84,6 +107,7 @@ public final class AudioManager {
          * @param loopEternally soll der Ton unendlich wiederholt werden?
          */
         public Sound(AudioManager.SOUNDS sound, boolean loopEternally){
+            type=sound;
             try{
                 File audioFile=new File(Main.assetsDirectory,"audio");
 

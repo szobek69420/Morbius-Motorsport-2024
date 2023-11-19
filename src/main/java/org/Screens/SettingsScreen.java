@@ -1,5 +1,6 @@
 package main.java.org.Screens;
 
+import main.java.org.AudioManagement.AudioManager;
 import main.java.org.Main;
 
 import javax.imageio.ImageIO;
@@ -24,8 +25,8 @@ public class SettingsScreen extends JPanel {
     /**
      * @hidden
      */
-    private static int[] fovValues={20,40,60,80};
-    private static String[] fovNames={"Tiny","Little","Normal","Gigachad"};
+    private static final int[] fovValues={40,50,60,80};
+    private static final String[] fovNames={"Tiny","Little","Normal","Gigachad"};
 
     /**
      * Erzeugt eine neue LevelSelectionScreen-Instanz
@@ -104,6 +105,76 @@ public class SettingsScreen extends JPanel {
             });
             this.add(fovButton);
 
+            //shadow label
+            JLabel shadowLabel=new JLabel("Shadow:",SwingConstants.LEFT);
+            shadowLabel.setFont(new Font("Monocraft", Font.PLAIN, 60));
+            shadowLabel.setBackground(new Color(0,0,0,0));
+            shadowLabel.setForeground(new Color(255,209,0));
+            shadowLabel.setBounds(currentX,currentY+320,300,80);
+            this.add(shadowLabel);
+
+            //shadow button
+            JButton shadowButton=new JButton(Settings.shadowShown()?"on":"off");
+            shadowButton.setHorizontalAlignment(SwingConstants.CENTER);
+            shadowButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
+            shadowButton.setBackground(new Color(0,0,0,255));
+            shadowButton.setForeground(new Color(0,255,255));
+            shadowButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
+            shadowButton.setBounds(maxX-120,currentY+320,120,80);
+            shadowButton.addActionListener(e->{
+                boolean newVal=!Settings.shadowShown();
+                shadowButton.setText(newVal?"on":"off");
+                Settings.setShadow(newVal);
+            });
+            this.add(shadowButton);
+
+
+            //music label
+            JLabel musicLabel=new JLabel("Music:",SwingConstants.LEFT);
+            musicLabel.setFont(new Font("Monocraft", Font.PLAIN, 60));
+            musicLabel.setBackground(new Color(0,0,0,0));
+            musicLabel.setForeground(new Color(255,209,0));
+            musicLabel.setBounds(currentX,currentY+440,300,80);
+            this.add(musicLabel);
+
+            //music button
+            JButton musicButton=new JButton(Settings.musicOn()?"on":"off");
+            musicButton.setHorizontalAlignment(SwingConstants.CENTER);
+            musicButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
+            musicButton.setBackground(new Color(0,0,0,255));
+            musicButton.setForeground(new Color(0,255,255));
+            musicButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
+            musicButton.setBounds(maxX-120,currentY+440,120,80);
+            musicButton.addActionListener(e->{
+                boolean newVal=!Settings.musicOn();
+                musicButton.setText(newVal?"on":"off");
+                Settings.setMusic(newVal);
+            });
+            this.add(musicButton);
+
+            //sfx label
+            JLabel sfxLabel=new JLabel("SFX:",SwingConstants.LEFT);
+            sfxLabel.setFont(new Font("Monocraft", Font.PLAIN, 60));
+            sfxLabel.setBackground(new Color(0,0,0,0));
+            sfxLabel.setForeground(new Color(255,209,0));
+            sfxLabel.setBounds(currentX,currentY+560,300,80);
+            this.add(sfxLabel);
+
+            //sfx button
+            JButton sfxButton=new JButton(Settings.sfxOn()?"on":"off");
+            sfxButton.setHorizontalAlignment(SwingConstants.CENTER);
+            sfxButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
+            sfxButton.setBackground(new Color(0,0,0,255));
+            sfxButton.setForeground(new Color(0,255,255));
+            sfxButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
+            sfxButton.setBounds(maxX-120,currentY+560,120,80);
+            sfxButton.addActionListener(e->{
+                boolean newVal=!Settings.sfxOn();
+                sfxButton.setText(newVal?"on":"off");
+                Settings.setSfx(newVal);
+            });
+            this.add(sfxButton);
+
             //back
             JButton backButton=new JButton("Save changes");
             backButton.setHorizontalAlignment(SwingConstants.CENTER);
@@ -112,11 +183,16 @@ public class SettingsScreen extends JPanel {
             backButton.setForeground(new Color(0,255,255));
             backButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
-            backButton.setBounds(screenWidth/2-250,currentY+600,500,80);
+            backButton.setBounds(screenWidth/2-250,currentY+700,500,80);
 
+            final boolean previousMusicState=Settings.musicOn();
             backButton.addActionListener(e->{
                 if(backButton.isEnabled()){
                     Settings.updateSettings();
+                    if(Settings.musicOn()&& !previousMusicState)
+                        AudioManager.playSound(AudioManager.SOUNDS.MUSIC);
+                    else if(!Settings.musicOn())
+                        AudioManager.closeAll();
                     ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.TITLE_SCREEN);
                 }
             });

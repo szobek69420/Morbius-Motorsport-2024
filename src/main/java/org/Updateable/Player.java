@@ -8,6 +8,7 @@ import main.java.org.Physics.CollisionDetection;
 import main.java.org.Render.Camera.Camera;
 import main.java.org.Render.Drawables.Shadow;
 import main.java.org.Screens.GameScreen;
+import main.java.org.Settings.Settings;
 
 import java.awt.*;
 
@@ -50,11 +51,11 @@ public class Player implements Updateable{
     /**
      * @hidden
      */
-    private final float ZOOMED_FOV=15.0f;
+    private final float ZOOMED_FOV;
     /**
      * @hidden
      */
-    private final float BASED_FOV=60.0f;
+    private final float BASED_FOV;
     /**
      * Das aktuelle Sichtfeld der Kamera
      */
@@ -66,7 +67,10 @@ public class Player implements Updateable{
      */
     public Player(){
         aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false,"Player");
-        shadow=new Shadow(new Vector3(0,-0.88f,0),new Vector3(0.02f,1, 0.02f),new Color(0,0,0,255));
+        shadow=new Shadow(new Vector3(0,-0.88f,0),new Vector3(0.25f,1, 0.25f),new Color(0,0,0, Settings.shadowShown()?100:0));
+
+        BASED_FOV=Settings.getFov();
+        ZOOMED_FOV=Settings.getFov()/4;
 
         currentFov=BASED_FOV;
     }
