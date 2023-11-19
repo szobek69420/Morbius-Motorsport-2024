@@ -161,6 +161,7 @@ public class GameScreen extends JPanel{
         player=new Player();
         this.addUpdateable(player);
         player.addToPhysics(GameScreen.physics);
+        player.addToCamera(GameScreen.mainCamera);
         player.respawn();
 
         obstacles=new ArrayList<>();

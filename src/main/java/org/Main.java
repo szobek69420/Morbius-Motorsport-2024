@@ -8,6 +8,7 @@ import main.java.org.Render.Camera.Camera;
 import main.java.org.Render.Drawables.*;
 import main.java.org.Screens.GameScreen;
 import main.java.org.Screens.MainFrame;
+import main.java.org.Settings.Settings;
 import main.java.org.Updateable.Player;
 import main.java.org.Updateable.Updateable;
 
@@ -52,6 +53,8 @@ public class Main {
 
             var frame=new MainFrame("Morbius Motorsport 2024 - GOTY Edition");
             frame.setResizable(false);
+
+            Settings.fetchSettings();//ez fontos, hogy a frame létrehozása után legyen
 
             ((MainFrame)MainFrame.currentFrame).start();
         }

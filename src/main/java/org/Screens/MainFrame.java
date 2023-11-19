@@ -35,6 +35,7 @@ public class MainFrame extends JFrame {
     public static enum GAME_STAGES{
         TITLE_SCREEN,
         LEVEL_SELECTOR,
+        SETTINGS,
         GAME,
     }
 
@@ -138,6 +139,7 @@ public class MainFrame extends JFrame {
             switch (currentStage){
                 case TITLE_SCREEN -> titleScreen();
                 case LEVEL_SELECTOR -> levelSelectionScreen();
+                case SETTINGS-> settingsScreen();
                 case GAME -> game();
             }
         }
@@ -208,6 +210,29 @@ public class MainFrame extends JFrame {
         this.repaint();
 
         while(currentStage==GAME_STAGES.LEVEL_SELECTOR){
+            try{
+                Thread.sleep(50);
+            }
+            catch (InterruptedException ie){
+
+            }
+        }
+
+        this.remove(levelScreen);
+    }
+
+    /**
+     * Erzeugt eine SettingsScreen-Instanz und wartet für Benutzereingabe.
+     * Das Spiel kann von hier zum Titelbildschirm und Spielbildschirm (GameScreen) gehen oder geschlossen werden.
+     */
+    private void settingsScreen()  {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        SettingsScreen levelScreen=new SettingsScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
+        this.add(levelScreen);
+        this.setVisible(true);
+        this.repaint();
+
+        while(currentStage==GAME_STAGES.SETTINGS){
             try{
                 Thread.sleep(50);
             }

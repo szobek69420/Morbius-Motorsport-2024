@@ -5,7 +5,11 @@ import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Physics.AABB;
 import main.java.org.Physics.CollisionDetection;
+import main.java.org.Render.Camera.Camera;
+import main.java.org.Render.Drawables.Shadow;
 import main.java.org.Screens.GameScreen;
+
+import java.awt.*;
 
 /**
  * Es ist die Entität, die von dem Spieler steuert werden wird
@@ -16,6 +20,11 @@ public class Player implements Updateable{
      * Der Collider des Spielers
      */
     private AABB aabb;
+
+    /**
+     * Der Schatten des Spielers
+     */
+    private Shadow shadow;
 
     /**
      * Die maximale horizontale Geschwindigkeit, die von dem Spieler durch Spazieren erreicht werden kann
@@ -52,10 +61,12 @@ public class Player implements Updateable{
     private float currentFov;
 
     /**
-     * Erzeugt eine neue Player-Instanz
+     * Erzeugt eine neue Player-Instanz.
+     * Die Collider und Schatten des Spielers werden auch hier erzeugt.
      */
     public Player(){
         aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false,"Player");
+        shadow=new Shadow(new Vector3(0,-0.88f,0),new Vector3(0.02f,1, 0.02f),new Color(0,0,0,255));
 
         currentFov=BASED_FOV;
     }
@@ -66,6 +77,14 @@ public class Player implements Updateable{
      */
     public void addToPhysics(CollisionDetection cd){
         cd.addAABB(aabb);
+    }
+
+    /**
+     * Registriert den Schatten in einer Kamera.
+     * @param cam Die Kamera, in der der Schatten registriert wird
+     */
+    public void addToCamera(Camera cam){
+        cam.addDrawable(shadow);
     }
 
 
@@ -98,8 +117,8 @@ public class Player implements Updateable{
 
         RotateCamera(deltaTime);
         Move(deltaTime);
+        shadow.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,-0.88f,0)));
         GameScreen.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
-
     }
 
     /**

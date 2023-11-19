@@ -95,7 +95,7 @@ public class TitleScreen extends JPanel {
             butt.setBackground(new Color(0,0,0,255));
             butt.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
-            butt.setBounds(200,screenHeight/2+100,600,80);
+            butt.setBounds(200,screenHeight/2,600,80);
 
             butt.addActionListener(e->{
                 if(butt.isEnabled()){
@@ -103,6 +103,23 @@ public class TitleScreen extends JPanel {
                 }
             });
             this.add(butt);
+
+            //settings button
+            var butt3=new JButton();
+            butt3.setText("Morb the game");
+            butt3.setFont(new Font("Monocraft", Font.PLAIN, 40));
+            butt3.setForeground(new Color(0,255,255));
+            butt3.setBackground(new Color(0,0,0,255));
+            butt3.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
+
+            butt3.setBounds(200,screenHeight/2+120,600,80);
+
+            butt3.addActionListener(e->{
+                if(butt3.isEnabled()){
+                    ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.SETTINGS);
+                }
+            });
+            this.add(butt3);
 
             //quit button
             var butt2=new JButton();
@@ -112,7 +129,7 @@ public class TitleScreen extends JPanel {
             butt2.setBackground(new Color(0,0,0,255));
             butt2.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
-            butt2.setBounds(200,screenHeight/2+220,600,80);
+            butt2.setBounds(200,screenHeight/2+240,600,80);
 
             butt2.addActionListener(e->{
                 if(butt2.isEnabled()){
