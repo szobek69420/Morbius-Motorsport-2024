@@ -44,7 +44,7 @@ public class Settings {
         }
         catch (Exception ex){
             System.err.println("Settings file could not be opened");
-            MainFrame.currentFrame.dispatchEvent(new WindowEvent(MainFrame.currentFrame, WindowEvent.WINDOW_CLOSING));
+            System.exit(69);
         }
     }
 

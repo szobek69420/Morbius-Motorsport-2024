@@ -325,4 +325,12 @@ public class Camera {
         this.fov=fov;
         calculateScreenDimensions();
     }
+
+    /**
+     * Gibt die Viewmatrix der Kamera zurück. Sie wird nicht kopiert.
+     * @return die Viewmatrix der Kamera
+     */
+    public Matrix3 getViewMatrix(){
+        return viewMatrix;
+    }
 }

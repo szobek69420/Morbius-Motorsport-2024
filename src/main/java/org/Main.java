@@ -51,10 +51,10 @@ public class Main {
                 return;
             }
 
-            var frame=new MainFrame("Morbius Motorsport 2024 - GOTY Edition");
-            frame.setResizable(false);
+            Settings.fetchSettings();
 
-            Settings.fetchSettings();//ez fontos, hogy a frame létrehozása után legyen
+            var frame=new MainFrame("Morbius Motorsport 2024 - GOTY Edition");
+            //frame.setResizable(false);
 
             ((MainFrame)MainFrame.currentFrame).start();
         }

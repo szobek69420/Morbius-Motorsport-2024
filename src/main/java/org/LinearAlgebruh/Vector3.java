@@ -11,7 +11,7 @@ public class Vector3{
     private float[] value;
 
     /**
-     * Erzeugt einen neuen Nullbektor
+     * Erzeugt einen neuen Nullvektor
      */
     public Vector3(){
         value=new float[3];

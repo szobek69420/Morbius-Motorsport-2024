@@ -85,11 +85,12 @@ public abstract class Drawable {
                             this.pos)
                     ,cameraPos);
 
-            transformedVertices[i]=new Vector3(
+            /*transformedVertices[i]=new Vector3(
                     Vector3.dotProduct(left,temp),
                     Vector3.dotProduct(up,temp),
                     Vector3.dotProduct(forward,temp)
-            );
+            );*/
+            transformedVertices[i]=Vector3.multiplyWithMatrix(cam.getViewMatrix(),temp);
         }
 
         //backface cull

@@ -10,17 +10,28 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Scanner;
+
+import main.java.org.Resizable.Resizable;
 import main.java.org.Settings.Settings;
 
 /**
  * Eine Kindklasse von JPanel.
  * Beinhaltet den Stufenauswahlbildschirminhalt.
  */
-public class SettingsScreen extends JPanel {
+public class SettingsScreen extends JPanel implements Resizable {
     /**
      * @hidden
      */
     private int screenWidth,screenHeight;
+
+    /**
+     * @hidden
+     */
+    private SettingsScreenForeground tf;
+    /**
+     * @hidden
+     */
+    private SettingsScreenBackground tb;
 
     /**
      * @hidden
@@ -39,14 +50,25 @@ public class SettingsScreen extends JPanel {
 
         this.setLayout(null);
 
-        SettingsScreenBackground tb=new SettingsScreenBackground();
+        tb=new SettingsScreenBackground();
         tb.setBounds(0,0,screenWidth,screenHeight);
 
-        SettingsScreenForeground tf=new SettingsScreenForeground();
+        tf=new SettingsScreenForeground();
         tf.setBounds(0,0,screenWidth,screenHeight);
 
         this.add(tf);
         this.add(tb);
+    }
+
+    /**
+     * Überschreibt die resize-Funktion des Resizable-Interfaces
+     * @param width die neue Breite des Fensters
+     * @param height die neue Höhe des Fensters
+     */
+    public void onResize(int width, int height){
+        tb.setBounds(0,0,width,height);
+        tf.setBounds(0,0,width,height);
+        tf.onResize(width,height);
     }
 
 
@@ -55,7 +77,29 @@ public class SettingsScreen extends JPanel {
      * Der Vordergrund des Stufenauswahlbildschirminhaltes, er vererbt von JPanel.
      * Er beinhaltet die Stufenauswahltasten und noch eine Taste zum Zurückgang.
      */
-    private class SettingsScreenForeground extends JPanel{
+    private class SettingsScreenForeground extends JPanel implements Resizable{
+
+        /**@hidden */
+        private JLabel title;
+        /**@hidden */
+        private JLabel fovLabel;
+        /**@hidden */
+        private JButton fovButton;
+        /**@hidden */
+        private JLabel shadowLabel;
+        /**@hidden */
+        private JButton shadowButton;
+        /**@hidden */
+        private JLabel musicLabel;
+        /**@hidden */
+        private JButton musicButton;
+        /**@hidden */
+        private JLabel sfxLabel;
+        /**@hidden */
+        private JButton sfxButton;
+        /**@hidden */
+        private JButton backButton;
+
 
         public SettingsScreenForeground(){
             super();
@@ -63,38 +107,32 @@ public class SettingsScreen extends JPanel {
             this.setLayout(null);
             this.setBackground(new Color(0,0,0,100));
 
-            int contentWidth=600;
-            int currentX=(screenWidth/2)-(contentWidth/2);
-            int maxX=(screenWidth/2)+(contentWidth/2);
-            int currentY=(screenHeight/2)-400;
 
             //title
-            JLabel title=new JLabel("Settings",SwingConstants.CENTER);
+            title=new JLabel("Settings",SwingConstants.CENTER);
             title.setFont(new Font("Monocraft", Font.PLAIN, 100));
             title.setBackground(new Color(0,0,0,0));
             title.setForeground(new Color(255,255,255));
-            title.setBounds(currentX,currentY,contentWidth,100);
+
             this.add(title);
 
             //fov label
-            JLabel fovLabel=new JLabel("FOV:",SwingConstants.LEFT);
+            fovLabel=new JLabel("FOV:",SwingConstants.LEFT);
             fovLabel.setFont(new Font("Monocraft", Font.PLAIN, 60));
             fovLabel.setBackground(new Color(0,0,0,0));
             fovLabel.setForeground(new Color(255,209,0));
-            fovLabel.setBounds(currentX,currentY+200,200,80);
             this.add(fovLabel);
 
             //fov button
             int index2=0;
             for(int i=0;i<fovValues.length;i++) if(fovValues[i]==Settings.getFov()) index2=i;
 
-            JButton fovButton=new JButton(fovNames[index2]);
+            fovButton=new JButton(fovNames[index2]);
             fovButton.setHorizontalAlignment(SwingConstants.CENTER);
             fovButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
             fovButton.setBackground(new Color(0,0,0,255));
             fovButton.setForeground(new Color(0,255,255));
             fovButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
-            fovButton.setBounds(maxX-300,currentY+200,300,80);
 
             fovButton.addActionListener(e->{
                 int index=0;
@@ -106,21 +144,19 @@ public class SettingsScreen extends JPanel {
             this.add(fovButton);
 
             //shadow label
-            JLabel shadowLabel=new JLabel("Shadow:",SwingConstants.LEFT);
+            shadowLabel=new JLabel("Shadow:",SwingConstants.LEFT);
             shadowLabel.setFont(new Font("Monocraft", Font.PLAIN, 60));
             shadowLabel.setBackground(new Color(0,0,0,0));
             shadowLabel.setForeground(new Color(255,209,0));
-            shadowLabel.setBounds(currentX,currentY+320,300,80);
             this.add(shadowLabel);
 
             //shadow button
-            JButton shadowButton=new JButton(Settings.shadowShown()?"on":"off");
+            shadowButton=new JButton(Settings.shadowShown()?"on":"off");
             shadowButton.setHorizontalAlignment(SwingConstants.CENTER);
             shadowButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
             shadowButton.setBackground(new Color(0,0,0,255));
             shadowButton.setForeground(new Color(0,255,255));
             shadowButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
-            shadowButton.setBounds(maxX-120,currentY+320,120,80);
             shadowButton.addActionListener(e->{
                 boolean newVal=!Settings.shadowShown();
                 shadowButton.setText(newVal?"on":"off");
@@ -130,21 +166,19 @@ public class SettingsScreen extends JPanel {
 
 
             //music label
-            JLabel musicLabel=new JLabel("Music:",SwingConstants.LEFT);
+            musicLabel=new JLabel("Music:",SwingConstants.LEFT);
             musicLabel.setFont(new Font("Monocraft", Font.PLAIN, 60));
             musicLabel.setBackground(new Color(0,0,0,0));
             musicLabel.setForeground(new Color(255,209,0));
-            musicLabel.setBounds(currentX,currentY+440,300,80);
             this.add(musicLabel);
 
             //music button
-            JButton musicButton=new JButton(Settings.musicOn()?"on":"off");
+            musicButton=new JButton(Settings.musicOn()?"on":"off");
             musicButton.setHorizontalAlignment(SwingConstants.CENTER);
             musicButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
             musicButton.setBackground(new Color(0,0,0,255));
             musicButton.setForeground(new Color(0,255,255));
             musicButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
-            musicButton.setBounds(maxX-120,currentY+440,120,80);
             musicButton.addActionListener(e->{
                 boolean newVal=!Settings.musicOn();
                 musicButton.setText(newVal?"on":"off");
@@ -153,21 +187,19 @@ public class SettingsScreen extends JPanel {
             this.add(musicButton);
 
             //sfx label
-            JLabel sfxLabel=new JLabel("SFX:",SwingConstants.LEFT);
+            sfxLabel=new JLabel("SFX:",SwingConstants.LEFT);
             sfxLabel.setFont(new Font("Monocraft", Font.PLAIN, 60));
             sfxLabel.setBackground(new Color(0,0,0,0));
             sfxLabel.setForeground(new Color(255,209,0));
-            sfxLabel.setBounds(currentX,currentY+560,300,80);
             this.add(sfxLabel);
 
             //sfx button
-            JButton sfxButton=new JButton(Settings.sfxOn()?"on":"off");
+            sfxButton=new JButton(Settings.sfxOn()?"on":"off");
             sfxButton.setHorizontalAlignment(SwingConstants.CENTER);
             sfxButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
             sfxButton.setBackground(new Color(0,0,0,255));
             sfxButton.setForeground(new Color(0,255,255));
             sfxButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
-            sfxButton.setBounds(maxX-120,currentY+560,120,80);
             sfxButton.addActionListener(e->{
                 boolean newVal=!Settings.sfxOn();
                 sfxButton.setText(newVal?"on":"off");
@@ -176,14 +208,13 @@ public class SettingsScreen extends JPanel {
             this.add(sfxButton);
 
             //back
-            JButton backButton=new JButton("Save changes");
+            backButton=new JButton("Save changes");
             backButton.setHorizontalAlignment(SwingConstants.CENTER);
             backButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
             backButton.setBackground(new Color(0,0,0,255));
             backButton.setForeground(new Color(0,255,255));
             backButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
-            backButton.setBounds(screenWidth/2-250,currentY+700,500,80);
 
             final boolean previousMusicState=Settings.musicOn();
             backButton.addActionListener(e->{
@@ -198,6 +229,36 @@ public class SettingsScreen extends JPanel {
             });
 
             this.add(backButton);
+
+            this.onResize(screenWidth,screenHeight);
+        }
+
+        /**
+         * Überschreibt die resize-Funktion des Resizable-Interfaces
+         * @param width die neue Breite des Fensters
+         * @param height die neue Höhe des Fensters
+         */
+        public void onResize(int width, int height){
+            int contentWidth=600;
+            int currentX=(width/2)-(contentWidth/2);
+            int maxX=(width/2)+(contentWidth/2);
+            int currentY=140;
+
+            title.setBounds(currentX,currentY,contentWidth,100);
+
+            fovLabel.setBounds(currentX,currentY+200,200,80);
+            fovButton.setBounds(maxX-300,currentY+200,300,80);
+
+            shadowLabel.setBounds(currentX,currentY+320,300,80);
+            shadowButton.setBounds(maxX-120,currentY+320,120,80);
+
+            musicLabel.setBounds(currentX,currentY+440,300,80);
+            musicButton.setBounds(maxX-120,currentY+440,120,80);
+
+            sfxLabel.setBounds(currentX,currentY+560,300,80);
+            sfxButton.setBounds(maxX-120,currentY+560,120,80);
+
+            backButton.setBounds(width/2-250,height-240,500,80);
         }
     }
 

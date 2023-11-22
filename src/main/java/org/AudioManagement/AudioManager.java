@@ -79,6 +79,9 @@ public final class AudioManager {
         if(sound!=SOUNDS.MUSIC&& !Settings.sfxOn())
             return;
 
+        if(sound==SOUNDS.MUSIC&&!Settings.musicOn())
+            return;
+
         switch (sound){
             case DEATH -> addSound(new Sound(SOUNDS.DEATH, false));
             case SPAWN -> addSound(new Sound(SOUNDS.SPAWN, false));

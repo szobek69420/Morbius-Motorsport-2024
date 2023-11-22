@@ -10,14 +10,12 @@ import main.java.org.Obstacles.CubeWeak;
 import main.java.org.Obstacles.Obstacle;
 import main.java.org.Physics.AABB;
 import main.java.org.Render.Drawables.Cube;
+import main.java.org.Resizable.Resizable;
 import main.java.org.Updateable.Player;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -25,7 +23,7 @@ import java.util.Scanner;
 /**
  * Eine Kindklasse von JFrame, es verwaltet den Bildschirm, in dem das Spiel passieren wird
  */
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements Resizable {
 
     /**
      * Ein Enum für die verschiedenen Stufen des Spieles:
@@ -89,6 +87,11 @@ public class MainFrame extends JFrame {
     public static JFrame currentFrame=null;
 
     /**
+     * Aktiver Bildschirm
+     */
+    private JPanel currentScreen=null;
+
+    /**
      * Die aktuell gewählte Stufe
      */
     private LEVELS levelSelected;
@@ -125,6 +128,11 @@ public class MainFrame extends JFrame {
                 AudioManager.closeAll();
             }
         });
+        this.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent componentEvent) {
+                onResize(componentEvent.getComponent().getWidth(),componentEvent.getComponent().getHeight());
+            }
+        });
         AudioManager.playSound(AudioManager.SOUNDS.MUSIC);
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -142,6 +150,23 @@ public class MainFrame extends JFrame {
                 case SETTINGS-> settingsScreen();
                 case GAME -> game();
             }
+        }
+    }
+
+    /**
+     * Überschreibt die resize-Funktion des Resizable-Interfaces
+     * @param width die neue Breite des Fensters
+     * @param height die neue Höhe des Fensters
+     */
+    public void onResize(int width, int height){
+        if(currentScreen==null)
+            return;
+
+        switch (currentStage){
+            case TITLE_SCREEN -> ((TitleScreen)currentScreen).onResize(width, height);
+            case LEVEL_SELECTOR -> ((LevelSelectionScreen)currentScreen).onResize(width, height);
+            case SETTINGS-> ((SettingsScreen)currentScreen).onResize(width, height);
+            case GAME -> System.out.println("amogus");
         }
     }
 
@@ -186,6 +211,8 @@ public class MainFrame extends JFrame {
         this.setVisible(true);
         this.repaint();
 
+        currentScreen=titleScreen;
+
         while(currentStage==GAME_STAGES.TITLE_SCREEN){
             try{
                 Thread.sleep(50);
@@ -195,6 +222,7 @@ public class MainFrame extends JFrame {
             }
         }
 
+        currentScreen=null;
         this.remove(titleScreen);
     }
 
@@ -209,6 +237,8 @@ public class MainFrame extends JFrame {
         this.setVisible(true);
         this.repaint();
 
+        currentScreen=levelScreen;
+
         while(currentStage==GAME_STAGES.LEVEL_SELECTOR){
             try{
                 Thread.sleep(50);
@@ -218,6 +248,7 @@ public class MainFrame extends JFrame {
             }
         }
 
+        currentScreen=null;
         this.remove(levelScreen);
     }
 
@@ -227,10 +258,12 @@ public class MainFrame extends JFrame {
      */
     private void settingsScreen()  {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        SettingsScreen levelScreen=new SettingsScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
-        this.add(levelScreen);
+        SettingsScreen settingsScreen=new SettingsScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
+        this.add(settingsScreen);
         this.setVisible(true);
         this.repaint();
+
+        currentScreen=settingsScreen;
 
         while(currentStage==GAME_STAGES.SETTINGS){
             try{
@@ -241,7 +274,8 @@ public class MainFrame extends JFrame {
             }
         }
 
-        this.remove(levelScreen);
+        currentScreen=null;
+        this.remove(settingsScreen);
     }
 
     /**

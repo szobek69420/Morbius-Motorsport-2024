@@ -1,6 +1,7 @@
 package main.java.org.Screens;
 
 import main.java.org.Main;
+import main.java.org.Resizable.Resizable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -14,7 +15,7 @@ import java.util.Scanner;
  * Eine Kindklasse von JPanel.
  * Beinhaltet den Stufenauswahlbildschirminhalt.
  */
-public class LevelSelectionScreen extends JPanel {
+public class LevelSelectionScreen extends JPanel implements Resizable {
 
     /**
      * @hidden
@@ -24,6 +25,15 @@ public class LevelSelectionScreen extends JPanel {
      * @hidden
      */
     private int screenWidth,screenHeight;
+
+    /**
+     * @hidden
+     */
+    private LevelSelectionScreenForeground tf;
+    /**
+     * @hidden
+     */
+    private LevelSelectionScreenBackground tb;
 
     /**
      * Erzeugt eine neue LevelSelectionScreen-Instanz
@@ -38,14 +48,25 @@ public class LevelSelectionScreen extends JPanel {
 
         this.setLayout(null);
 
-        LevelSelectionScreenBackground tb=new LevelSelectionScreenBackground();
+        tb=new LevelSelectionScreenBackground();
         tb.setBounds(0,0,screenWidth,screenHeight);
 
-        LevelSelectionScreenForeground tf=new LevelSelectionScreenForeground(levelsDone);
+        tf=new LevelSelectionScreenForeground(levelsDone);
         tf.setBounds(0,0,screenWidth,screenHeight);
 
         this.add(tf);
         this.add(tb);
+    }
+
+    /**
+     * Überschreibt die resize-Funktion des Resizable-Interfaces
+     * @param width die neue Breite des Fensters
+     * @param height die neue Höhe des Fensters
+     */
+    public void onResize(int width, int height){
+        tb.setBounds(0,0,width,height);
+        tf.setBounds(0,0,width,height);
+        tf.onResize(width,height);
     }
 
     /**
@@ -116,7 +137,14 @@ public class LevelSelectionScreen extends JPanel {
      * Der Vordergrund des Stufenauswahlbildschirminhaltes, er vererbt von JPanel.
      * Er beinhaltet die Stufenauswahltasten und noch eine Taste zum Zurückgang.
      */
-    private class LevelSelectionScreenForeground extends JPanel{
+    private class LevelSelectionScreenForeground extends JPanel implements Resizable{
+
+        /**@hidden */
+        JLabel title;
+        /**@hidden */
+        JButton backButton;
+        /**@hidden */
+        JButton[] levelButtons;
 
         /**
          * Erzeugt eine neue LevelSelectionScreenForeground-Instanz nach den gegebenen Daten
@@ -128,21 +156,18 @@ public class LevelSelectionScreen extends JPanel {
             this.setLayout(null);
             this.setBackground(new Color(0,0,0,100));
 
-            int contentWidth=150*LEVEL_COUNT+50*(LEVEL_COUNT-1);
-            int currentX=(screenWidth/2)-(contentWidth/2);
-            int currentY=(screenHeight/2)-75;
 
             //title
-            JLabel title=new JLabel("Select level",SwingConstants.CENTER);
+            title=new JLabel("Select level",SwingConstants.CENTER);
             title.setFont(new Font("Monocraft", Font.PLAIN, 100));
             title.setBackground(new Color(0,0,0,0));
             title.setForeground(new Color(255,255,255));
 
-            title.setBounds(currentX,currentY-250,contentWidth,100);
             this.add(title);
 
             //level start buttons
             MainFrame.LEVELS[] levels=new MainFrame.LEVELS[]{MainFrame.LEVELS.LEVEL_1, MainFrame.LEVELS.LEVEL_2, MainFrame.LEVELS.LEVEL_3, MainFrame.LEVELS.LEVEL_4, MainFrame.LEVELS.LEVEL_5};
+            levelButtons=new JButton[LEVEL_COUNT];
             for(int i=1;i<=LEVEL_COUNT;i++){
                 var butt=new JButton();
                 butt.setText(((Integer)i).toString());
@@ -160,8 +185,6 @@ public class LevelSelectionScreen extends JPanel {
                     butt.setBorder(BorderFactory.createLineBorder(Color.white,5));
                 }
 
-                butt.setBounds(currentX,currentY,150,150);
-                currentX+=200;
 
                 MainFrame.LEVELS level=levels[i-1];
                 double highscore=levelData[i-1].highscore;
@@ -173,17 +196,18 @@ public class LevelSelectionScreen extends JPanel {
                     }
                 });
                 this.add(butt);
+
+                levelButtons[i-1]=butt;
             }
 
             //back
-            JButton backButton=new JButton("Go back");
+            backButton=new JButton("Go back");
             backButton.setHorizontalAlignment(SwingConstants.CENTER);
             backButton.setFont(new Font("Monocraft", Font.PLAIN, 50));
             backButton.setBackground(new Color(0,0,0,255));
             backButton.setForeground(new Color(0,255,255));
             backButton.setBorder(BorderFactory.createLineBorder(new Color(0,255,255),5));
 
-            backButton.setBounds(screenWidth/2-150,currentY+250,300,80);
 
             backButton.addActionListener(e->{
                 if(backButton.isEnabled()){
@@ -192,6 +216,28 @@ public class LevelSelectionScreen extends JPanel {
             });
 
             this.add(backButton);
+
+            this.onResize(screenWidth,screenHeight);
+        }
+
+        /**
+         * Überschreibt die resize-Funktion des Resizable-Interfaces
+         * @param width die neue Breite des Fensters
+         * @param height die neue Höhe des Fensters
+         */
+        public void onResize(int width, int height){
+            int contentWidth=150*LEVEL_COUNT+50*(LEVEL_COUNT-1);
+            int currentX=(width/2)-(contentWidth/2);
+            int currentY=(height/2)-75;
+
+            title.setBounds(currentX,currentY-250,contentWidth,100);
+
+            for(var butt:levelButtons){
+                butt.setBounds(currentX,currentY,150,150);
+                currentX+=200;
+            }
+
+            backButton.setBounds(width/2-150,currentY+250,300,80);
         }
     }
 
