@@ -15,7 +15,7 @@ public class Camera {
     /**
      * Die Bildschirmgröße
      */
-    private final int GAME_WIDTH,GAME_HEIGHT;
+    private int GAME_WIDTH,GAME_HEIGHT;
 
     /**
      * Das Verhältnis zwischen den Bildschirmhöhen und -breiten
@@ -197,6 +197,16 @@ public class Camera {
     }
 
     //getter setters
+
+    /**
+     * Sagt die Kamera, wie groß der Bildschirm ist
+     * @param width Bildschirmbreite
+     * @param height Bildschirmhöhe
+     */
+    public void setScreenSize(int width, int height){
+        GAME_WIDTH=width;
+        GAME_HEIGHT=height;
+    }
 
     /**
      * Zurückgibt den kopierten Wert der Kameraposition

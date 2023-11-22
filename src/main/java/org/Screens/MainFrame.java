@@ -166,7 +166,7 @@ public class MainFrame extends JFrame implements Resizable {
             case TITLE_SCREEN -> ((TitleScreen)currentScreen).onResize(width, height);
             case LEVEL_SELECTOR -> ((LevelSelectionScreen)currentScreen).onResize(width, height);
             case SETTINGS-> ((SettingsScreen)currentScreen).onResize(width, height);
-            case GAME -> System.out.println("amogus");
+            case GAME -> ((GameScreen)currentScreen).onResize(width, height);
         }
     }
 
@@ -205,8 +205,7 @@ public class MainFrame extends JFrame implements Resizable {
      * Das Spiel kann von hier zum Stufenauswahlbildschirm gehen oder geschlossen werden.
      */
     private void titleScreen()  {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        TitleScreen titleScreen=new TitleScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
+        TitleScreen titleScreen=new TitleScreen(this.getWidth(),this.getHeight());
         this.add(titleScreen);
         this.setVisible(true);
         this.repaint();
@@ -231,8 +230,7 @@ public class MainFrame extends JFrame implements Resizable {
      * Das Spiel kann von hier zum Titelbildschirm und Spielbildschirm (GameScreen) gehen oder geschlossen werden.
      */
     private void levelSelectionScreen()  {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        LevelSelectionScreen levelScreen=new LevelSelectionScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
+        LevelSelectionScreen levelScreen=new LevelSelectionScreen(this.getWidth(),this.getHeight());
         this.add(levelScreen);
         this.setVisible(true);
         this.repaint();
@@ -257,8 +255,7 @@ public class MainFrame extends JFrame implements Resizable {
      * Das Spiel kann von hier zum Titelbildschirm und Spielbildschirm (GameScreen) gehen oder geschlossen werden.
      */
     private void settingsScreen()  {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        SettingsScreen settingsScreen=new SettingsScreen((int)screenSize.getWidth(),(int)screenSize.getHeight());
+        SettingsScreen settingsScreen=new SettingsScreen(this.getWidth(),this.getHeight());
         this.add(settingsScreen);
         this.setVisible(true);
         this.repaint();
@@ -285,10 +282,10 @@ public class MainFrame extends JFrame implements Resizable {
      */
     private void game(){
 
-
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        GameScreen gameScreen=new GameScreen((int)screenSize.getWidth(),(int)screenSize.getHeight(), highscore);
+        GameScreen gameScreen=new GameScreen(this.getWidth(),this.getHeight(), highscore);
         this.add(gameScreen);
+
+        currentScreen=gameScreen;
 
         fillGameScreen(gameScreen);
 
@@ -314,6 +311,7 @@ public class MainFrame extends JFrame implements Resizable {
             }
         }
 
+        currentScreen=null;
         this.remove(gameScreen);
         gameScreen=null;
 
