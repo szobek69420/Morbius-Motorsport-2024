@@ -1,32 +1,113 @@
 package main.java.org.Updateable;
 
+import main.java.org.AudioManagement.AudioManager;
 import main.java.org.InputManagement.InputManager;
 import main.java.org.LinearAlgebruh.Vector3;
 import main.java.org.Physics.AABB;
+import main.java.org.Physics.CollisionDetection;
+import main.java.org.Render.Camera.Camera;
+import main.java.org.Render.Drawables.Shadow;
 import main.java.org.Screens.GameScreen;
+import main.java.org.Settings.Settings;
 
+import java.awt.*;
+
+/**
+ * Es ist die Entität, die von dem Spieler steuert werden wird
+ */
 public class Player implements Updateable{
+
+    /**
+     * Der Collider des Spielers
+     */
     private AABB aabb;
 
-    private static final float MAX_VELOCITY=4;
-    private static final float MAX_VELOCITY_SQUARED=16;
+    /**
+     * Der Schatten des Spielers
+     */
+    private Shadow shadow;
 
+    /**
+     * Die maximale horizontale Geschwindigkeit, die von dem Spieler durch Spazieren erreicht werden kann
+     */
+    private static final float MAX_VELOCITY=4;
+    /**
+     * @hidden
+     */
+    private static final float MAX_VELOCITY_SQUARED=16;
+    /**
+     * @hidden
+     */
     private boolean canJump=false;
+    /**
+     * @hidden
+     */
     private boolean isSprinting=false;
 
+    /**
+     * @hidden
+     */
+    private final float ZOOM_SPEED=300.0f;
+    /**
+     * @hidden
+     */
+    private final float ZOOMED_FOV;
+    /**
+     * @hidden
+     */
+    private final float BASED_FOV;
+    /**
+     * Das aktuelle Sichtfeld der Kamera
+     */
+    private float currentFov;
+
+    /**
+     * Erzeugt eine neue Player-Instanz.
+     * Die Collider und Schatten des Spielers werden auch hier erzeugt.
+     */
     public Player(){
         aabb=new AABB(new Vector3(0,0,0),new Vector3(0.25f,0.9f, 0.25f), false,"Player");
-        GameScreen.physics.addAABB(aabb);
+        shadow=new Shadow(new Vector3(0,-0.88f,0),new Vector3(0.25f,1, 0.25f),new Color(0,0,0, Settings.shadowShown()?100:0));
+
+        BASED_FOV=Settings.getFov();
+        ZOOMED_FOV=Settings.getFov()/4;
+
+        currentFov=BASED_FOV;
     }
 
+    /**
+     * Registriert den Collider des Spielerinstanzes zu einem Physiksystem
+     * @param cd Das Physiksystem, zu dem der Collider hinzufügt wird
+     */
+    public void addToPhysics(CollisionDetection cd){
+        cd.addAABB(aabb);
+    }
+
+    /**
+     * Registriert den Schatten in einer Kamera.
+     * @param cam Die Kamera, in der der Schatten registriert wird
+     */
+    public void addToCamera(Camera cam){
+        cam.addDrawable(shadow);
+    }
+
+
+    /**
+     * Überschreibt die update Funktion des Updateable Interfaces
+     * Überprüft, ob der Spieler mit einem anderen Collider gestoßen ist. Falls ja:
+     * -falls der andere Collider der Name "Sus" hat, dann wird der Spieler sterben
+     * -falls der andere Collider der Name "Finish" hat und er ist unter dem Spieler, dann wird das Spiel enden
+     * Sucht für Benutzereingaben
+     * @param deltaTime die Zeit, die nach dem letzten Frame verging
+     */
     @Override
-    public void Update(double deltaTime){
+    public void update(double deltaTime){
         if((System.nanoTime()-aabb.getLastCollision())*0.000000001<deltaTime&&aabb.getLastCollisionType()== AABB.CollisionType.BOTTOM)
             canJump=true;
         if(aabb.getVelocityByReference().get(1)<-40.0f*deltaTime)
             canJump=false;
 
-        if(aabb.getPositionByReference().get(1)<-50)
+        if(aabb.getLastCollisionName().equals("Sus"))
             GameScreen.die();
         if(aabb.getLastCollisionType()== AABB.CollisionType.BOTTOM&&aabb.getLastCollisionName().equals("Finish"))
             GameScreen.finish();
@@ -36,12 +117,18 @@ public class Player implements Updateable{
         if(!InputManager.W)
             isSprinting=false;
 
+        zoomControl((float) deltaTime);
+
         RotateCamera(deltaTime);
         Move(deltaTime);
+        shadow.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,-0.88f,0)));
         GameScreen.mainCamera.setPosition(Vector3.sum(aabb.getPositionByReference(),new Vector3(0,0.8f,0)));
-
     }
 
+    /**
+     * Überprüft, ob es neue Benutzereingaben gibt und stellt die Geschwindigkeit des Spielers den entsprechend
+     * @param deltaTime die Zeit, die nach dem letzten Frame verging
+     */
     private void Move(double deltaTime){
         float forward=0.0f;
         float left=0.0f;
@@ -110,15 +197,19 @@ public class Player implements Updateable{
         if(up>1&&canJump){
             canJump=false;
             velocity.set(1,10);
+            AudioManager.playSound(AudioManager.SOUNDS.JUMP);
         }
         else
             velocity.set(1,velocity.get(1)-20.0f*(float)deltaTime);
 
         aabb.setVelocity(velocity);
-
         //System.out.println(pos);
     }
 
+    /**
+     * Überprüft, ob eine Mausbewegung passierte und stellt die Kameraeinrichtung dementsprechend
+     * @param deltaTime die Zeit, die nach dem letzten Frame verging
+     */
     private void RotateCamera(double deltaTime){
         //float left=RenderThread.mainCamera.getYaw();
         //float up=RenderThread.mainCamera.getPitch();
@@ -147,12 +238,36 @@ public class Player implements Updateable{
         GameScreen.mainCamera.setYaw(left);
     }
 
+    /**
+     * Verändert das Sichtfeld des Spielers entsprechend den Benutzereingaben
+     * @param deltaTime die Zeit, die nach dem letzten Frame verging
+     */
+    private void zoomControl(float deltaTime){
+        if(InputManager.C){
+            currentFov-=deltaTime*ZOOM_SPEED;
+            if(currentFov<ZOOMED_FOV)
+                currentFov=ZOOMED_FOV;
+        }
+        else{
+            currentFov+=deltaTime*ZOOM_SPEED;
+            if(currentFov>BASED_FOV)
+                currentFov=BASED_FOV;
+        }
+
+        GameScreen.mainCamera.setFOV(currentFov);
+    }
+
+    /**
+     * Falls das Spiel zum Start zurückgestellt werden soll, wird das von dieser Funktion erledigt
+     * respawn wird vor dem Start und nach Tasten des Respawnbuttones des Endbildschirmes gerufen
+     */
     public void respawn(){
         aabb.setVelocity(new Vector3(0,0,0));
         aabb.setPosition(new Vector3(0,0,0));
-    }
 
-    public static float lerp(float a, float b, float i){
-        return a+(b-a)*i;
+        GameScreen.mainCamera.setPitch(0);
+        GameScreen.mainCamera.setYaw(0);
+
+        AudioManager.playSound(AudioManager.SOUNDS.SPAWN);
     }
 }
