@@ -79,7 +79,10 @@ public class MainFrame extends JFrame implements Resizable {
      * Das aktuell gezeigtes Bildschirm
      */
     private GAME_STAGES currentStage;
+    /**@hidden*/
     private double highscore;
+    /**@hidden*/
+    private int attempts;
 
     /**
      * Aktive MainFrame-Instanz
@@ -201,6 +204,14 @@ public class MainFrame extends JFrame implements Resizable {
     }
 
     /**
+     * Setzt die Anzahl der Versuche ein
+     * @param attempts die Anzahl der Versuche
+     */
+    public void setAttempts(int attempts){
+        this.attempts=attempts;
+    }
+
+    /**
      * Erzeugt eine TitleScreen-Instanz und wartet für Benutzereingabe.
      * Das Spiel kann von hier zum Stufenauswahlbildschirm gehen oder geschlossen werden.
      */
@@ -282,7 +293,7 @@ public class MainFrame extends JFrame implements Resizable {
      */
     private void game(){
 
-        GameScreen gameScreen=new GameScreen(this.getWidth(),this.getHeight(), highscore);
+        GameScreen gameScreen=new GameScreen(this.getWidth(),this.getHeight(), highscore, attempts);
         this.add(gameScreen);
 
         currentScreen=gameScreen;

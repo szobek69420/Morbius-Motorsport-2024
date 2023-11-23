@@ -131,6 +131,15 @@ public class GameScreen extends JPanel implements Resizable {
     /**
      * @hidden
      */
+    private int attempts;
+    /**
+     * @hidden
+     */
+    private String attemptsString;
+
+    /**
+     * @hidden
+     */
     private String devsBestString=null;
 
 
@@ -144,7 +153,7 @@ public class GameScreen extends JPanel implements Resizable {
      * @param height Die Höhe des Fensters
      * @param highscore Die Bestzeit in der ausgewählten Stufe
      */
-    public GameScreen(int width, int height, double highscore){
+    public GameScreen(int width, int height, double highscore, int attempts){
         mainCamera=new Camera(width,height);
         physics=new CollisionDetection();
 
@@ -158,6 +167,8 @@ public class GameScreen extends JPanel implements Resizable {
         this.time=0;
         this.highscore=highscore;
         this.highscoreString=timeString(highscore);
+        this.attempts=attempts;
+        this.attemptsString=attemptsString(this.attempts);
 
         player=new Player();
         this.addUpdateable(player);
@@ -220,6 +231,10 @@ public class GameScreen extends JPanel implements Resizable {
             justDied=false;
             InputManager.showCursor(MainFrame.currentFrame);
 
+            attempts++;
+            LevelSelectionScreen.updateLevelData(((MainFrame)MainFrame.currentFrame).getCurrentLevel(),highscore,attempts);
+            this.attemptsString=attemptsString(this.attempts);
+
             deathScreen=new DeathScreen(screenWidth,screenHeight);
             this.add(deathScreen);
 
@@ -251,14 +266,16 @@ public class GameScreen extends JPanel implements Resizable {
             justFinished=false;
             InputManager.showCursor(MainFrame.currentFrame);
 
+            attempts++;
             if(highscore<0||time<highscore) {
-                highscore=time;
-                highscoreString=timeString(highscore);
-                LevelSelectionScreen.saveHighscore(((MainFrame)MainFrame.currentFrame).getCurrentLevel(),time);
-                finishScreen = new FinishScreen(screenWidth, screenHeight, timeString(time),highscoreString);
+                highscore = time;
+                highscoreString = timeString(highscore);
             }
-            else
-                finishScreen=new FinishScreen(screenWidth,screenHeight, timeString(time),highscoreString);
+
+            LevelSelectionScreen.updateLevelData(((MainFrame)MainFrame.currentFrame).getCurrentLevel(),highscore,attempts);
+            this.attemptsString=attemptsString(this.attempts);
+
+            finishScreen=new FinishScreen(screenWidth,screenHeight, timeString(time),highscoreString);
 
             this.add(finishScreen);
 
@@ -303,6 +320,7 @@ public class GameScreen extends JPanel implements Resizable {
             //time
             graphics.setColor(new Color(0,255,255));
             graphics.drawString("time: "+timeString(time),screenWidth-500,50);
+            graphics.drawString(attemptsString,screenWidth-500,100);
             graphics.drawString("best time: "+highscoreString,30,50);
             graphics.setColor(Color.white);
             graphics.drawString("dev's pb: "+devsBestString,30,100);
@@ -409,6 +427,29 @@ public class GameScreen extends JPanel implements Resizable {
         chars[7]=(char)(hundreths%10+'0');
 
         return String.copyValueOf(chars);
+    }
+
+    /**
+     * Gibt ein String zurück, das leicht gezeichnet werden kann.
+     * Es ist genauso lang, wie das Timestring (falls attempts≤99999)
+     * @param attempts die Anzahl der Versuche
+     * @return eine Zeichenkette
+     */
+    public static String attemptsString(int attempts){
+        String vissza=null;
+        attempts++;
+        if(attempts<10)
+            vissza="    attempt: "+attempts;
+        else if(attempts<100)
+            vissza="   attempt: "+attempts;
+        else if(attempts<1000)
+            vissza="  attempt: "+attempts;
+        else if(attempts<10000)
+            vissza=" attempt: "+attempts;
+        else
+            vissza="attempt: "+attempts;
+
+        return vissza;
     }
 
     /**

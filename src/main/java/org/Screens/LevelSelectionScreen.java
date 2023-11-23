@@ -83,8 +83,9 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
                 for(int i=0;i<LEVEL_COUNT;i++){
                     boolean done=sc.nextBoolean();
                     double highscore=0.001*sc.nextInt();
+                    int attempts=sc.nextInt();
 
-                    leveldata[i]=new LevelData(done,highscore);
+                    leveldata[i]=new LevelData(done,highscore, attempts);
                 }
             }
             catch (IOException ex){
@@ -96,7 +97,8 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
                 for(int i=0;i<LEVEL_COUNT;i++){
                     pw.println(false);
                     pw.println(-1);
-                    leveldata[i]=new LevelData(false,-1);
+                    pw.println(0);
+                    leveldata[i]=new LevelData(false,-1,0);
                 }
             }
             catch(IOException ex){
@@ -121,15 +123,20 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
          * TRUE, falls der Spieler dieser Stufe schon absolviert hat
          */
         public boolean done;
+        /**
+         * Die Anzahl der Versuche an der bestimmten Stufe
+         */
+        public int attempts;
 
         /**
          * Erzeugt eine neue LevelData-Instanz
          * @param done hat der Spieler die Stufe schon absolviert
          * @param highscore die Bestzeit des Spielers in dieser Stufe
          */
-        public LevelData(boolean done, double highscore){
+        public LevelData(boolean done, double highscore, int attempts){
             this.done=done;
             this.highscore=highscore;
+            this.attempts=attempts;
         }
     }
 
@@ -188,10 +195,12 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
 
                 MainFrame.LEVELS level=levels[i-1];
                 double highscore=levelData[i-1].highscore;
+                int attempts=levelData[i-1].attempts;
                 butt.addActionListener(e->{
                     if(butt.isEnabled()){
                         ((MainFrame)MainFrame.currentFrame).setCurrentLevel(level);
                         ((MainFrame)MainFrame.currentFrame).setHighscore(highscore);
+                        ((MainFrame)MainFrame.currentFrame).setAttempts(attempts);
                         ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.GAME);
                     }
                 });
@@ -290,8 +299,9 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
      * Eine statische Funktion für die Speicherung einer neuen Bestzeit
      * @param level die Stufe, in der die Bestzeit erreicht worden ist
      * @param highscoreInSeconds die Bestzeit in Sekunden
+     * @param attempts die Anzahl der Versuche
      */
-    public static void saveHighscore(MainFrame.LEVELS level, double highscoreInSeconds){
+    public static void updateLevelData(MainFrame.LEVELS level, double highscoreInSeconds, int attempts){
         int levelNumber=MainFrame.getLevelNumber(level);
 
         File levelDataFile=new File(Main.dataDirectory,"1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B.bingchilling");
@@ -302,8 +312,9 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
             for(int i=0;i<LEVEL_COUNT;i++){
                 boolean done=sc.nextBoolean();
                 double highscore=0.001*sc.nextInt();
+                int attemptsTemp=sc.nextInt();
 
-                levelData[i]=new LevelData(done,highscore);
+                levelData[i]=new LevelData(done,highscore, attemptsTemp);
             }
         }
         catch (IOException ex){
@@ -312,10 +323,13 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
 
         levelData[levelNumber].highscore=highscoreInSeconds;
         levelData[levelNumber].done=true;
+        levelData[levelNumber].attempts=attempts;
+
         try(PrintWriter pw=new PrintWriter(new FileWriter(levelDataFile))){
             for(int i=0;i<LEVEL_COUNT;i++){
                 pw.println(levelData[i].done);
                 pw.println((int)(levelData[i].highscore*1000));
+                pw.println(levelData[i].attempts);
             }
         }
         catch(IOException ex){
