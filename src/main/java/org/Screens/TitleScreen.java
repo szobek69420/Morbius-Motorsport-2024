@@ -1,5 +1,6 @@
 package main.java.org.Screens;
 
+import main.java.org.AudioManagement.AudioManager;
 import main.java.org.Main;
 import main.java.org.Resizable.Resizable;
 
@@ -146,6 +147,7 @@ public class TitleScreen extends JPanel implements Resizable {
 
             butt.addActionListener(e->{
                 if(butt.isEnabled()){
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.LEVEL_SELECTOR);
                 }
             });
@@ -162,6 +164,7 @@ public class TitleScreen extends JPanel implements Resizable {
 
             butt3.addActionListener(e->{
                 if(butt3.isEnabled()){
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.SETTINGS);
                 }
             });
@@ -169,7 +172,7 @@ public class TitleScreen extends JPanel implements Resizable {
 
             //quit button
             butt2=new JButton();
-            butt2.setText("I'm gay (quit)");
+            butt2.setText("run");
             butt2.setFont(new Font("Monocraft", Font.PLAIN, 40));
             butt2.setForeground(new Color(0,255,255));
             butt2.setBackground(new Color(0,0,0,255));
@@ -178,6 +181,7 @@ public class TitleScreen extends JPanel implements Resizable {
 
             butt2.addActionListener(e->{
                 if(butt2.isEnabled()){
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     MainFrame.currentFrame.dispatchEvent(new WindowEvent(MainFrame.currentFrame, WindowEvent.WINDOW_CLOSING));
                 }
             });
