@@ -19,6 +19,7 @@ public final class AudioManager {
         JUMP,
         SPAWN,
         BLOCK_BREAKS,
+        BUTTON_CLICK,
         MUSIC
     };
     /**
@@ -87,6 +88,7 @@ public final class AudioManager {
             case SPAWN -> addSound(new Sound(SOUNDS.SPAWN, false));
             case JUMP -> addSound(new Sound(SOUNDS.JUMP, false));
             case BLOCK_BREAKS -> addSound(new Sound(SOUNDS.BLOCK_BREAKS, false));
+            case BUTTON_CLICK -> addSound(new Sound(SOUNDS.BUTTON_CLICK,false));
             case MUSIC -> addSound(new Sound(SOUNDS.MUSIC,true));
         }
     }
@@ -119,6 +121,7 @@ public final class AudioManager {
                     case SPAWN -> audioFile=new File(audioFile,"spawn.wav");
                     case JUMP -> audioFile=new File(audioFile,"jump.wav");
                     case BLOCK_BREAKS -> audioFile=new File(audioFile,"block_breaks.wav");
+                    case BUTTON_CLICK -> audioFile=new File(audioFile,"button_click.wav");
                     case MUSIC -> audioFile=new File(audioFile,"music.wav");
                 }
 

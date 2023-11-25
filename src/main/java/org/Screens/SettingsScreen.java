@@ -140,6 +140,7 @@ public class SettingsScreen extends JPanel implements Resizable {
                 index=index==fovValues.length-1?0:index+1;
                 Settings.setFov(fovValues[index]);
                 fovButton.setText(fovNames[index]);
+                AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
             });
             this.add(fovButton);
 
@@ -161,6 +162,7 @@ public class SettingsScreen extends JPanel implements Resizable {
                 boolean newVal=!Settings.shadowShown();
                 shadowButton.setText(newVal?"on":"off");
                 Settings.setShadow(newVal);
+                AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
             });
             this.add(shadowButton);
 
@@ -183,6 +185,7 @@ public class SettingsScreen extends JPanel implements Resizable {
                 boolean newVal=!Settings.musicOn();
                 musicButton.setText(newVal?"on":"off");
                 Settings.setMusic(newVal);
+                AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
             });
             this.add(musicButton);
 
@@ -204,6 +207,7 @@ public class SettingsScreen extends JPanel implements Resizable {
                 boolean newVal=!Settings.sfxOn();
                 sfxButton.setText(newVal?"on":"off");
                 Settings.setSfx(newVal);
+                AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
             });
             this.add(sfxButton);
 
@@ -225,6 +229,7 @@ public class SettingsScreen extends JPanel implements Resizable {
                     else if(!Settings.musicOn())
                         AudioManager.closeAll();
                     ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.TITLE_SCREEN);
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                 }
             });
 

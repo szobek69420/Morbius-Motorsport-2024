@@ -555,6 +555,7 @@ public class GameScreen extends JPanel implements Resizable {
 
             resumeButton.addActionListener(e->{
                 if(resumeButton.isEnabled()){
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     GameScreen.unpause();
                 }
             });
@@ -574,6 +575,7 @@ public class GameScreen extends JPanel implements Resizable {
 
             quitButton.addActionListener(e->{
                 if(quitButton.isEnabled()){
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.TITLE_SCREEN);
                 }
             });
@@ -653,6 +655,7 @@ public class GameScreen extends JPanel implements Resizable {
 
             restartButton.addActionListener(e->{
                 if(restartButton.isEnabled()){
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     GameScreen.undie();
                 }
             });
@@ -673,6 +676,7 @@ public class GameScreen extends JPanel implements Resizable {
 
             menuButton.addActionListener(e->{
                 if(menuButton.isEnabled()){
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.TITLE_SCREEN);
                 }
             });
@@ -774,6 +778,7 @@ public class GameScreen extends JPanel implements Resizable {
 
             restartButton.addActionListener(e->{
                 if(restartButton.isEnabled()){
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     GameScreen.unfinish();
                 }
             });
@@ -793,6 +798,7 @@ public class GameScreen extends JPanel implements Resizable {
 
             menuButton.addActionListener(e->{
                 if(menuButton.isEnabled()){
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.TITLE_SCREEN);
                 }
             });

@@ -1,5 +1,6 @@
 package main.java.org.Screens;
 
+import main.java.org.AudioManagement.AudioManager;
 import main.java.org.Main;
 import main.java.org.Resizable.Resizable;
 
@@ -202,6 +203,7 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
                         ((MainFrame)MainFrame.currentFrame).setHighscore(highscore);
                         ((MainFrame)MainFrame.currentFrame).setAttempts(attempts);
                         ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.GAME);
+                        AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                     }
                 });
                 this.add(butt);
@@ -221,6 +223,7 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
             backButton.addActionListener(e->{
                 if(backButton.isEnabled()){
                     ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.TITLE_SCREEN);
+                    AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                 }
             });
 
@@ -322,7 +325,8 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
         }
 
         levelData[levelNumber].highscore=highscoreInSeconds;
-        levelData[levelNumber].done=true;
+        if(highscoreInSeconds>0)
+            levelData[levelNumber].done=true;
         levelData[levelNumber].attempts=attempts;
 
         try(PrintWriter pw=new PrintWriter(new FileWriter(levelDataFile))){
