@@ -142,6 +142,19 @@ public class GameScreen extends JPanel implements Resizable {
      */
     private String devsBestString=null;
 
+    /**
+     * Die Anzahl der Gameschleifelaufen in dem letzten halben Sekunden
+     */
+    private int previousFrameCount=0;
+    /**
+     * @hidden
+     */
+    private double timeUntilFrameCountRefresh=0.5;
+    /**
+     * @hidden
+     */
+    private int currentFrameCount=0;
+
 
     /**
      * Erzeugt eine neue GameScreen-Instanz.
@@ -193,6 +206,16 @@ public class GameScreen extends JPanel implements Resizable {
      */
     public void frame(double deltaTime){
         if(!paused){
+            timeUntilFrameCountRefresh-=deltaTime;
+            if(timeUntilFrameCountRefresh<0)
+            {
+                timeUntilFrameCountRefresh=0.5;
+                previousFrameCount=currentFrameCount;
+                currentFrameCount=0;
+            }
+            currentFrameCount++;
+
+
             time+=deltaTime;
 
             InputManager.fetchMousePosition();
@@ -322,6 +345,7 @@ public class GameScreen extends JPanel implements Resizable {
             graphics.drawString("time: "+timeString(time),screenWidth-500,50);
             graphics.drawString(attemptsString,screenWidth-500,100);
             graphics.drawString("best time: "+highscoreString,30,50);
+            graphics.drawString("fps: "+previousFrameCount*2,30,screenHeight-100);
             graphics.setColor(Color.white);
             graphics.drawString("dev's pb: "+devsBestString,30,100);
 

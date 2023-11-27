@@ -1,18 +1,34 @@
 package main.java.org.Settings;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import main.java.org.Main;
 import main.java.org.Screens.MainFrame;
+import main.java.org.Screens.SettingsScreen;
 
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Scanner;
 
 /**
  * Eine statische Klasse für die Sammlung der Einstellungen
  */
 public class Settings {
+
+    private static class SettingsContainer{
+        public int fov;
+        public boolean shadow;
+        public boolean sfx;
+        public boolean music;
+
+        public SettingsContainer(int fov, boolean shadow, boolean sfx, boolean music){
+            this.fov=fov;
+            this.shadow=shadow;
+            this.sfx=sfx;
+            this.music=music;
+        }
+    }
+
     /**
      * @hidden
      */
@@ -36,11 +52,23 @@ public class Settings {
     public static synchronized void fetchSettings(){
         File settingsFile=new File(Main.dataDirectory,"B5774F81D2BCCCF2D5305EB080D2AD206A3DFF317B4B.bingchilling");
 
-        try(Scanner sc=new Scanner(settingsFile)){
-            fov=sc.nextInt();
-            shadow=sc.nextBoolean();
-            sfx=sc.nextBoolean();
-            music=sc.nextBoolean();
+        try(BufferedReader br=new BufferedReader(new FileReader(settingsFile))){
+            StringBuilder settingsJasonBuilder=new StringBuilder();
+
+            while(true){
+                String line=br.readLine();
+                if(line==null)
+                    break;
+                settingsJasonBuilder.append(line);
+            }
+
+            String settingsJason=settingsJasonBuilder.toString();
+            SettingsContainer sc=new GsonBuilder().setPrettyPrinting().create().fromJson(settingsJason,SettingsContainer.class);
+
+            fov=sc.fov;
+            shadow=sc.shadow;
+            sfx=sc.sfx;
+            music=sc.music;
         }
         catch (Exception ex){
             System.err.println("Settings file could not be opened");
@@ -56,10 +84,9 @@ public class Settings {
 
         try(PrintWriter pw=new PrintWriter(new FileWriter(settingsFile)))
         {
-            pw.println(fov);
-            pw.println(shadow);
-            pw.println(sfx);
-            pw.println(music);
+            SettingsContainer sc=new SettingsContainer(fov, shadow,sfx,music);
+            String settingsJason = new GsonBuilder().setPrettyPrinting().create().toJson(sc);
+            pw.println(settingsJason);
         }
         catch(Exception ex){
             System.err.println("Settings file could not be written");

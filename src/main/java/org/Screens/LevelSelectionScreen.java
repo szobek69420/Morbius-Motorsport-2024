@@ -1,5 +1,7 @@
 package main.java.org.Screens;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import main.java.org.AudioManagement.AudioManager;
 import main.java.org.Main;
 import main.java.org.Resizable.Resizable;
@@ -75,39 +77,38 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
      * @return Ein Array von Stufendaten-Instanzen (LevelData)
      */
     private LevelData[] fetchLevelData(){
-        LevelData[] leveldata=new LevelData[LEVEL_COUNT];
+        LevelData[] levelData=null;
+        File levelDataFile=new File(Main.dataDirectory,"1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B.bingchilling");
 
 
-        File levelData=new File(Main.dataDirectory,"1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B.bingchilling");
-        if(levelData.exists()){
-            try(Scanner sc=new Scanner(levelData)){
-                for(int i=0;i<LEVEL_COUNT;i++){
-                    boolean done=sc.nextBoolean();
-                    double highscore=0.001*sc.nextInt();
-                    int attempts=sc.nextInt();
+        //getting text from 1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B.bingchilling
+        StringBuilder jasonStringBuilder= new StringBuilder();
+        String jasonString="";
+        try(BufferedReader br = new BufferedReader(new FileReader(levelDataFile))){
+            while (true) {
+                String line = br.readLine();
+                if (line == null)
+                    break;
 
-                    leveldata[i]=new LevelData(done,highscore, attempts);
-                }
+                jasonStringBuilder.append(line);
             }
-            catch (IOException ex){
-                System.err.println("bro what");
-            }
+            jasonString= jasonStringBuilder.toString();
         }
-        else{
-            try(PrintWriter pw=new PrintWriter(new FileWriter(levelData))){
-                for(int i=0;i<LEVEL_COUNT;i++){
-                    pw.println(false);
-                    pw.println(-1);
-                    pw.println(0);
-                    leveldata[i]=new LevelData(false,-1,0);
-                }
-            }
-            catch(IOException ex){
-                System.err.println("bro what 2");
-            }
+        catch (IOException ex){
+            System.err.println("bro what 3");
         }
 
-        return leveldata;
+        //interpreting jason
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        levelData = gson.fromJson(jasonString, LevelData[].class);
+        if(levelData.length!=LEVEL_COUNT){
+            System.err.println("bro what 3,5");
+            MainFrame.currentFrame.dispatchEvent(new WindowEvent(MainFrame.currentFrame, WindowEvent.WINDOW_CLOSING));
+        }
+
+        return levelData;
     }
 
     /**
@@ -117,9 +118,9 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
      */
     private static class LevelData{
         /**
-         * Die Bestzeit des Spielers in dieser Stufe
+         * Die Bestzeit des Spielers in dieser Stufe (in Millisekunden)
          */
-        public double highscore;
+        public int highscore;
         /**
          * TRUE, falls der Spieler dieser Stufe schon absolviert hat
          */
@@ -134,7 +135,7 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
          * @param done hat der Spieler die Stufe schon absolviert
          * @param highscore die Bestzeit des Spielers in dieser Stufe
          */
-        public LevelData(boolean done, double highscore, int attempts){
+        public LevelData(boolean done, int highscore, int attempts){
             this.done=done;
             this.highscore=highscore;
             this.attempts=attempts;
@@ -195,7 +196,7 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
 
 
                 MainFrame.LEVELS level=levels[i-1];
-                double highscore=levelData[i-1].highscore;
+                double highscore=0.001*levelData[i-1].highscore;
                 int attempts=levelData[i-1].attempts;
                 butt.addActionListener(e->{
                     if(butt.isEnabled()){
@@ -306,35 +307,45 @@ public class LevelSelectionScreen extends JPanel implements Resizable {
      */
     public static void updateLevelData(MainFrame.LEVELS level, double highscoreInSeconds, int attempts){
         int levelNumber=MainFrame.getLevelNumber(level);
-
         File levelDataFile=new File(Main.dataDirectory,"1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B.bingchilling");
 
-        LevelData[] levelData=new LevelData[LEVEL_COUNT];
 
-        try(Scanner sc=new Scanner(levelDataFile)){
-            for(int i=0;i<LEVEL_COUNT;i++){
-                boolean done=sc.nextBoolean();
-                double highscore=0.001*sc.nextInt();
-                int attemptsTemp=sc.nextInt();
+        //getting text from 1D956EA5DD9E1C32BBA10314C01BDAA63A18ED59D7B.bingchilling
+        StringBuilder jasonStringBuilder= new StringBuilder();
+        String jasonString="";
+        try(BufferedReader br = new BufferedReader(new FileReader(levelDataFile))){
+            while (true) {
+                String line = br.readLine();
+                if (line == null)
+                    break;
 
-                levelData[i]=new LevelData(done,highscore, attemptsTemp);
+                jasonStringBuilder.append(line);
             }
+            jasonString= jasonStringBuilder.toString();
         }
         catch (IOException ex){
             System.err.println("bro what 3");
         }
 
-        levelData[levelNumber].highscore=highscoreInSeconds;
+        //interpreting jason
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        LevelData[] levelData = gson.fromJson(jasonString, LevelData[].class);
+        if(levelData.length!=LEVEL_COUNT){
+            System.err.println("bro what 3,5");
+            MainFrame.currentFrame.dispatchEvent(new WindowEvent(MainFrame.currentFrame, WindowEvent.WINDOW_CLOSING));
+        }
+
+
+        levelData[levelNumber].highscore=(int)(1000*highscoreInSeconds);
         if(highscoreInSeconds>0)
             levelData[levelNumber].done=true;
         levelData[levelNumber].attempts=attempts;
 
         try(PrintWriter pw=new PrintWriter(new FileWriter(levelDataFile))){
-            for(int i=0;i<LEVEL_COUNT;i++){
-                pw.println(levelData[i].done);
-                pw.println((int)(levelData[i].highscore*1000));
-                pw.println(levelData[i].attempts);
-            }
+            String levelDataJason = new GsonBuilder().setPrettyPrinting().create().toJson(levelData);
+            pw.println(levelDataJason);
         }
         catch(IOException ex){
                 System.err.println("bro what 4");

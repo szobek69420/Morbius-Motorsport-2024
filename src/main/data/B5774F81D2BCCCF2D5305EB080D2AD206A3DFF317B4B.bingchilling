@@ -1,4 +1,6 @@
-60
-false
-true
-true
+{
+  "fov": 60,
+  "shadow": false,
+  "sfx": true,
+  "music": true
+}

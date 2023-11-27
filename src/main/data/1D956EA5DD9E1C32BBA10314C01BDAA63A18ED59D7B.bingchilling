@@ -1,15 +1,27 @@
-false
--1
-0
-false
--1
-0
-false
--1
-0
-false
--1
-0
-false
--1
-0
+[
+  {
+    "highscore": -1,
+    "done": false,
+    "attempts": 0
+  },
+  {
+    "highscore": -1,
+    "done": false,
+    "attempts": 0
+  },
+  {
+    "highscore": -1,
+    "done": false,
+    "attempts": 0
+  },
+  {
+    "highscore": -1,
+    "done": false,
+    "attempts": 0
+  },
+  {
+    "highscore": -1,
+    "done": false,
+    "attempts": 0
+  }
+]

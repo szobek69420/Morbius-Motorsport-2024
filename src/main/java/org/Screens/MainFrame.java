@@ -99,6 +99,7 @@ public class MainFrame extends JFrame implements Resizable {
      */
     private LEVELS levelSelected;
 
+
     /**
      * Erzeugt eine neue MainFrame-Instanz.
      * Es stellt currentFrame zu der erzeugten Instanz.
@@ -314,7 +315,7 @@ public class MainFrame extends JFrame implements Resizable {
             long now = System.nanoTime();
             deltaTime = (now -lastTime)*0.000000001;
 
-            if(deltaTime>0.01666){
+            if(deltaTime>0.017){
                 //System.out.println(deltaTime);
                 lastTime = now;
 

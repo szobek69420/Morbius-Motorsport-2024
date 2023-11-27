@@ -73,6 +73,20 @@ public final class AudioManager {
     }
 
     /**
+     * Schliesst nur die Musik
+     */
+    public static synchronized void closeMusic(){
+        for(int i=0;i<activeSounds.size();i++){
+            if(activeSounds.get(i).type==SOUNDS.MUSIC){
+                activeSounds.get(i).clip.stop();
+                activeSounds.get(i).clip.close();
+                activeSounds.remove(i);
+                i--;
+            }
+        }
+    }
+
+    /**
      * Das Interface für das Programm, Töne zu abspielen
      * @param sound der Typ des gewünschten Tones
      */

@@ -227,7 +227,7 @@ public class SettingsScreen extends JPanel implements Resizable {
                     if(Settings.musicOn()&& !previousMusicState)
                         AudioManager.playSound(AudioManager.SOUNDS.MUSIC);
                     else if(!Settings.musicOn())
-                        AudioManager.closeAll();
+                        AudioManager.closeMusic();
                     ((MainFrame)MainFrame.currentFrame).setCurrentStage(MainFrame.GAME_STAGES.TITLE_SCREEN);
                     AudioManager.playSound(AudioManager.SOUNDS.BUTTON_CLICK);
                 }
